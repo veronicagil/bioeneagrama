@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lectura Profunda · Bio Eneagrama</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <meta name="robots" content="noindex,nofollow">
+</head>
+<body>
+
+<header class="site-header">
+  <h1>Lectura Profunda</h1>
+  <div class="subtitle">Panel Profesional · Bio Eneagrama</div>
+  <span class="badge-vg">VG · Vero Gil</span>
+</header>
+
+<div class="container">
+
+  <!-- PIN SCREEN -->
+  <div id="pin-screen" class="pin-screen">
+    <h2 class="pin-title">Acceso Profesional</h2>
+    <p class="pin-sub">Ingresá el PIN para continuar</p>
+    <input type="password" id="pin-input" class="pin-input" maxlength="6" placeholder="····" inputmode="numeric">
+    <button class="btn btn-primary" id="btn-pin" style="max-width:160px; margin:0 auto">Entrar</button>
+    <p class="pin-error hidden" id="pin-error">PIN incorrecto. Verificá e intentá de nuevo.</p>
+  </div>
+
+  <!-- ENTRY SCREEN: ingreso manual de puntajes -->
+  <div id="entry-screen" class="hidden">
+    <div class="card">
+      <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--violet); margin-bottom:12px">
+        Ingresá los puntajes
+      </h3>
+      <p style="font-size:0.88rem; color:var(--muted); margin-bottom:16px">
+        Para cada tipo ingresá el puntaje de <strong>Luz (☀️)</strong> y <strong>Sombra (🌑)</strong> (valores 0–10).
+      </p>
+      <div class="score-grid" id="score-grid"></div>
+      <button class="btn btn-primary" id="btn-calcular" style="margin-top:8px">Ver Lectura Profunda</button>
+    </div>
+  </div>
+
+  <!-- PANEL LECTURA (oculto hasta ingresar datos) -->
+  <div id="panel" class="hidden">
+
+    <!-- SVG -->
+    <div class="enea-wrap" style="margin:20px 0">
+      <div id="enea-lectura" style="width:240px;height:240px"></div>
+      <div class="enea-firma">VG · Vero Gil</div>
+    </div>
+
+    <!-- A: Media y dominante -->
+    <div class="lectura-seccion">
+      <div class="lectura-seccion-titulo">📐 Media y Tipo Dominante</div>
+      <div id="sec-media"></div>
+    </div>
+
+    <!-- B: Alas -->
+    <div class="lectura-seccion">
+      <div class="lectura-seccion-titulo">🦋 Alas</div>
+      <div id="sec-alas"></div>
+    </div>
+
+    <!-- C: Ejes de equilibrio -->
+    <div class="lectura-seccion">
+      <div class="lectura-seccion-titulo">⚖️ Ejes de Equilibrio</div>
+      <div id="sec-ejes"></div>
+    </div>
+
+    <!-- D: Dilemas -->
+    <div class="lectura-seccion">
+      <div class="lectura-seccion-titulo">🔀 Dilemas</div>
+      <div id="sec-dilemas"></div>
+    </div>
+
+    <!-- E: Flechas -->
+    <div class="lectura-seccion">
+      <div class="lectura-seccion-titulo">➡️ Brazos / Flechas</div>
+      <div id="sec-flechas"></div>
+    </div>
+
+    <!-- F: Ejes de polaridad (pendiente) -->
+    <div class="lectura-seccion">
+      <div class="lectura-seccion-titulo">🔮 Ejes de Polaridad</div>
+      <div id="sec-polaridad"></div>
+    </div>
+
+    <!-- G: Tríada -->
+    <div class="lectura-seccion">
+      <div class="lectura-seccion-titulo">🔺 Tríada</div>
+      <div id="sec-triada"></div>
+    </div>
+
+    <div class="footer">Bio Eneagrama · VG · Vero Gil</div>
+  </div>
+
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/enea.js"></script>
+<script src="js/lectura.js"></script>
+</body>
+</html>

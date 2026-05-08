@@ -133,17 +133,8 @@
     document.getElementById('res-tipo-centro').textContent = tipo.centro;
     document.getElementById('res-mini-lectura').textContent = tipo.mini_lectura;
 
-    // Características: 3 de luz + 3 de sombra intercaladas, sin etiquetas
-    const hlList = document.getElementById('res-hl-list');
-    hlList.innerHTML = '';
-    [0, 3, 7].forEach(function (i) {
-      const li = document.createElement('li');
-      li.textContent = AFIRMACIONES[dominante].luz[i];
-      hlList.appendChild(li);
-      const li2 = document.createElement('li');
-      li2.textContent = AFIRMACIONES[dominante].sombra[i];
-      hlList.appendChild(li2);
-    });
+    // Orientación para integrar
+    document.getElementById('res-orientacion').textContent = tipo.orientacion;
 
     // SVG + media
     document.getElementById('media-display').textContent = media.toFixed(1);
@@ -158,11 +149,8 @@
     bajosEl.innerHTML = '';
     bajos.forEach(function (t, i) { bajosEl.appendChild(makeTipoCard(t, i === 0 ? '▾' : '', 'bajo')); });
 
-    // Frase final
-    document.getElementById('frase-final').textContent = FRASE_FINAL;
-
-    // Botón WA
-    document.getElementById('btn-wa').onclick = function () {
+    // Botón consulta individual → abre WA con resultados
+    document.getElementById('btn-consulta').onclick = function () {
       const hash = Object.entries(scores).map(function (e) { return e[0] + '=' + e[1].luz + ',' + e[1].sombra; }).join('|');
       const baseUrl = window.location.origin + window.location.pathname.replace('test.html', '');
       const lecturaUrl = baseUrl + 'lectura.html#' + encodeURIComponent(hash);
@@ -201,9 +189,9 @@
     return div;
   }
 
-  // Autofill para testing
+  // Autofill para testing — T2 dominante
   window.autocompletar = function () {
-    const sim = { 1:6, 2:5, 3:4, 4:14, 5:10, 6:7, 7:8, 8:5, 9:9 };
+    const sim = { 1:7, 2:15, 3:5, 4:8, 5:4, 6:10, 7:6, 8:3, 9:7 };
     for (let t = 1; t <= 9; t++) {
       const luz = Math.round(sim[t] * 0.55);
       const sombra = sim[t] - luz;

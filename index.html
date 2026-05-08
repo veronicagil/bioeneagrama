@@ -6,61 +6,292 @@
   <title>Bio Eneagrama · Vero Gil</title>
   <meta name="description" content="Autoconocimiento profundo a través del Eneagrama. Herramienta de transformación personal con Vero Gil.">
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body { overflow-x: hidden; }
+
+    /* Fondo con símbolo del eneagrama */
+    .enea-bg {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(110vw, 110vh);
+      height: min(110vw, 110vh);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.075;
+    }
+
+    .landing-wrap {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Hero */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 72px 24px 48px;
+    }
+
+    .hero-titulo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.6rem, 8vw, 4.2rem);
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      background: linear-gradient(135deg, #B5004F 20%, #4B0082 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .hero-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.1rem, 3.5vw, 1.35rem);
+      color: var(--sub);
+      line-height: 1.55;
+      max-width: 340px;
+      margin-bottom: 32px;
+    }
+
+    .hero-autor {
+      display: inline-block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 40px;
+      position: relative;
+      padding: 0 16px;
+    }
+
+    .hero-autor::before,
+    .hero-autor::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 28px;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .hero-autor::before { right: 100%; margin-right: -12px; }
+    .hero-autor::after  { left:  100%; margin-left:  -12px; }
+
+    .hero-cta {
+      display: inline-block;
+      padding: 16px 48px;
+      background: linear-gradient(135deg, #B5004F, #4B0082);
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      border-radius: 50px;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      box-shadow: 0 8px 32px rgba(181,0,79,0.25);
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+
+    .hero-cta:hover {
+      box-shadow: 0 12px 40px rgba(181,0,79,0.35);
+      transform: translateY(-2px);
+    }
+
+    .hero-cta:active { transform: translateY(0); }
+
+    /* Separador decorativo */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 24px;
+      margin: 0 auto 32px;
+      max-width: 320px;
+      opacity: 0.4;
+    }
+
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
+    .divider-dot  { width: 4px; height: 4px; border-radius: 50%; background: var(--violet); }
+
+    /* Sección info */
+    .info-section {
+      padding: 0 20px 56px;
+      max-width: 560px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .info-card {
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 24px;
+      margin-bottom: 16px;
+    }
+
+    .info-card h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.55rem;
+      color: var(--violet);
+      margin-bottom: 10px;
+    }
+
+    .info-card p {
+      font-size: 0.93rem;
+      color: var(--sub);
+      line-height: 1.65;
+      margin-bottom: 8px;
+    }
+
+    .info-card p:last-child { margin-bottom: 0; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .feat {
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 14px;
+      text-align: center;
+    }
+
+    .feat-icon { font-size: 1.6rem; margin-bottom: 6px; }
+
+    .feat-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: var(--violet);
+      font-weight: 600;
+    }
+
+    .feat-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .footer-land {
+      text-align: center;
+      padding: 20px 16px 32px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+    }
+  </style>
 </head>
 <body>
 
-<div class="container">
+<!-- FONDO: símbolo del eneagrama, delicado, detrás de todo -->
+<svg class="enea-bg" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B5004F"/>
+      <stop offset="100%" stop-color="#4B0082"/>
+    </linearGradient>
+  </defs>
 
-  <div class="landing-hero">
-    <h1>Bio Eneagrama</h1>
-    <p class="tagline">El mapa que te ayuda a visibilizar<br>la energía que te mueve</p>
-    <span class="badge-vg-land">VG · Vero Gil</span>
+  <!-- Círculo exterior -->
+  <circle cx="300" cy="300" r="240" fill="none" stroke="url(#g1)" stroke-width="1.4"/>
 
-    <div class="landing-btns">
-      <a href="test.html" class="btn btn-primary">✨ Hacer el Test Gratuito</a>
-    </div>
+  <!-- Triángulo: T9–T3–T6 -->
+  <polygon points="300,60 508,420 92,420"
+           fill="none" stroke="url(#g1)" stroke-width="1.1"/>
+
+  <!-- Héxada: T1–T4–T2–T8–T5–T7–T1 -->
+  <polyline points="454,116 382,526 536,258 146,116 218,526 64,258 454,116"
+            fill="none" stroke="url(#g1)" stroke-width="1.1"/>
+
+  <!-- Puntos de cada tipo -->
+  <circle cx="300" cy="60"  r="4.5" fill="url(#g1)"/><!-- T9 -->
+  <circle cx="454" cy="116" r="4.5" fill="url(#g1)"/><!-- T1 -->
+  <circle cx="536" cy="258" r="4.5" fill="url(#g1)"/><!-- T2 -->
+  <circle cx="508" cy="420" r="4.5" fill="url(#g1)"/><!-- T3 -->
+  <circle cx="382" cy="526" r="4.5" fill="url(#g1)"/><!-- T4 -->
+  <circle cx="218" cy="526" r="4.5" fill="url(#g1)"/><!-- T5 -->
+  <circle cx="92"  cy="420" r="4.5" fill="url(#g1)"/><!-- T6 -->
+  <circle cx="64"  cy="258" r="4.5" fill="url(#g1)"/><!-- T7 -->
+  <circle cx="146" cy="116" r="4.5" fill="url(#g1)"/><!-- T8 -->
+
+  <!-- Centro -->
+  <circle cx="300" cy="300" r="3" fill="url(#g1)"/>
+</svg>
+
+<!-- CONTENIDO -->
+<div class="landing-wrap">
+
+  <section class="hero">
+    <h1 class="hero-titulo">Bio Eneagrama</h1>
+    <p class="hero-tagline">El mapa que te ayuda a visibilizar<br>la energía que te mueve</p>
+    <span class="hero-autor">Vero Gil</span>
+    <a href="test.html" class="hero-cta">Hacer el Test Gratuito</a>
+  </section>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-dot"></div>
+    <div class="divider-line"></div>
   </div>
 
-  <div class="landing-features">
-    <div class="feature-item">
-      <div class="feature-icon">🌀</div>
-      <div class="feature-title">180 afirmaciones</div>
-      <div class="feature-desc">Test completo que explora tu luz y tu sombra</div>
-    </div>
-    <div class="feature-item">
-      <div class="feature-icon">🎯</div>
-      <div class="feature-title">9 tipos</div>
-      <div class="feature-desc">Descubrí tu tipo dominante y tu energía central</div>
-    </div>
-    <div class="feature-item">
-      <div class="feature-icon">📊</div>
-      <div class="feature-title">Resultados visuales</div>
-      <div class="feature-desc">Tu mapa personal en tiempo real</div>
-    </div>
-    <div class="feature-item">
-      <div class="feature-icon">💡</div>
-      <div class="feature-title">Autoobservación</div>
-      <div class="feature-desc">Punto de partida para tu transformación</div>
-    </div>
-  </div>
+  <section class="info-section">
 
-  <div class="landing-about">
-    <h2>¿Qué es el Eneagrama?</h2>
-    <p>El Eneagrama es una herramienta de autoconocimiento que describe nueve tipos de personalidad y cómo cada uno percibe el mundo, reacciona ante el conflicto y se relaciona con los demás.</p>
-    <p>No te define. Es el mapa que te ayuda a visibilizar aspectos de tu personalidad para conocer la energía que te arrastra. Propicia la autoobservación y te permite integrar aspectos que te llevan a tu evolución consciente.</p>
-    <p style="margin-top:16px"><strong>El test es completamente gratuito.</strong> Vas a obtener tu mapa personal con los 9 tipos, tu tipo dominante y las claves de tu energía central.</p>
-  </div>
+    <div class="features-grid">
+      <div class="feat">
+        <div class="feat-icon">🌀</div>
+        <div class="feat-name">180 afirmaciones</div>
+        <div class="feat-desc">Explora tu luz y tu sombra</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🎯</div>
+        <div class="feat-name">9 tipos</div>
+        <div class="feat-desc">Tu tipo dominante y energía central</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">📊</div>
+        <div class="feat-name">Mapa visual</div>
+        <div class="feat-desc">Tu símbolo personal en tiempo real</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">💡</div>
+        <div class="feat-name">Autoobservación</div>
+        <div class="feat-desc">Punto de partida para transformarte</div>
+      </div>
+    </div>
 
-  <div style="text-align:center; margin-bottom:32px">
-    <a href="test.html" class="btn btn-primary" style="max-width:320px; margin:0 auto">Comenzar ahora →</a>
-  </div>
+    <div class="info-card">
+      <h2>¿Qué es el Eneagrama?</h2>
+      <p>El Eneagrama es una herramienta de autoconocimiento que describe nueve tipos de personalidad y cómo cada uno percibe el mundo, reacciona ante el conflicto y se relaciona con los demás.</p>
+      <p>No te define. Es el mapa que te ayuda a visibilizar aspectos de tu personalidad para conocer la energía que te arrastra y te permite integrar lo que te lleva a tu evolución consciente.</p>
+      <p><strong>El test es completamente gratuito.</strong></p>
+    </div>
+
+  </section>
+
+  <footer class="footer-land">
+    Bio Eneagrama &nbsp;·&nbsp; Vero Gil
+  </footer>
 
 </div>
-
-<footer class="footer">
-  <strong>Bio Eneagrama</strong> · VG · Vero Gil<br>
-  Herramienta de autoconocimiento y transformación personal
-</footer>
 
 </body>
 </html>

@@ -133,21 +133,16 @@
     document.getElementById('res-tipo-centro').textContent = tipo.centro;
     document.getElementById('res-mini-lectura').textContent = tipo.mini_lectura;
 
-    // Highlights: 3 afirmaciones de luz y 3 de sombra
-    const luzList = document.getElementById('res-luz-list');
-    luzList.innerHTML = '';
+    // Características: 3 de luz + 3 de sombra intercaladas, sin etiquetas
+    const hlList = document.getElementById('res-hl-list');
+    hlList.innerHTML = '';
     [0, 3, 7].forEach(function (i) {
       const li = document.createElement('li');
       li.textContent = AFIRMACIONES[dominante].luz[i];
-      luzList.appendChild(li);
-    });
-
-    const sombraList = document.getElementById('res-sombra-list');
-    sombraList.innerHTML = '';
-    [0, 3, 7].forEach(function (i) {
-      const li = document.createElement('li');
-      li.textContent = AFIRMACIONES[dominante].sombra[i];
-      sombraList.appendChild(li);
+      hlList.appendChild(li);
+      const li2 = document.createElement('li');
+      li2.textContent = AFIRMACIONES[dominante].sombra[i];
+      hlList.appendChild(li2);
     });
 
     // SVG + media

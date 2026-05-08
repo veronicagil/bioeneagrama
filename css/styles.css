@@ -31,6 +31,23 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* MARCA DE AGUA — símbolo del Eneagrama en todas las páginas */
+body::before {
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 340px;
+  height: 340px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='74' fill='none' stroke='%234B0082' stroke-width='2'/%3E%3Cpolygon points='100,26 164.1,137 35.9,137' fill='none' stroke='%234B0082' stroke-width='1.5'/%3E%3Cpolyline points='147.6,43.3 125.3,169.5 172.9,87.1 52.4,43.3 74.7,169.5 27.1,87.1 147.6,43.3' fill='none' stroke='%234B0082' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.07;
+  pointer-events: none;
+  z-index: -1;
+}
+
 h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; }
 
 .container {
@@ -761,28 +778,65 @@ textarea.campo:focus { border-color: var(--violet-l); }
   font-style: italic;
 }
 
-/* RESULTADOS — INVITACIÓN FINAL */
-.res-invitacion {
+/* RESULTADOS — CIERRE + REDES */
+.res-cierre {
   background: linear-gradient(135deg, #B5004F, #4B0082);
-  border-radius: 16px;
-  padding: 24px 20px;
-  text-align: center;
+  border-radius: 20px;
+  padding: 28px 20px 24px;
   margin: 24px 0 0;
 }
 
-.res-invitacion-titulo {
+.res-cierre-kicker {
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 6px;
+}
+
+.res-cierre-titulo {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.6rem;
+  font-size: 1.55rem;
   color: #fff;
   font-weight: 600;
+  line-height: 1.2;
   margin-bottom: 8px;
 }
 
-.res-invitacion-texto {
+.res-cierre-texto {
   font-size: 0.88rem;
-  color: rgba(255,255,255,0.85);
-  line-height: 1.6;
-  margin: 0;
+  color: rgba(255,255,255,0.78);
+  margin-bottom: 16px;
+}
+
+.res-social {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.res-social-link {
+  display: block;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 0.9rem;
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.res-social-link:active { background: rgba(255,255,255,0.2); }
+
+.res-social-dim {
+  opacity: 0.6;
+}
+
+.res-social-dest {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.35);
+  font-weight: 500;
 }
 
 /* EMAIL CAPTURE */

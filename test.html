@@ -35,7 +35,7 @@
   <div class="footer">Bio Eneagrama · VG · Vero Gil</div>
 </div>
 
-<!-- PROGRESS BAR (visible durante el test) -->
+<!-- PROGRESS BAR -->
 <div class="progress-bar-wrap hidden" id="progress-wrap">
   <div class="progress-bar-track">
     <div class="progress-bar-fill" id="progress-fill"></div>
@@ -63,14 +63,9 @@
   <div class="card fade-in" id="question-card">
     <div class="question-num" id="q-num"></div>
     <div class="question-text" id="q-text"></div>
-
     <div class="respuesta-wrap">
-      <button class="btn-si" id="btn-si">
-        <span>✓</span> Sí
-      </button>
-      <button class="btn-no" id="btn-no">
-        <span>✕</span> No
-      </button>
+      <button class="btn-si" id="btn-si"><span>✓</span> Sí</button>
+      <button class="btn-no" id="btn-no"><span>✕</span> No</button>
     </div>
   </div>
 
@@ -81,91 +76,68 @@
 
 </div>
 
-<!-- SECCIÓN DEVOLUCIÓN (oculta hasta terminar el test) -->
-<div id="devolucion-section" class="container hidden">
-
-  <!-- Hero tipo dominante -->
-  <div class="dev-hero">
-    <div class="dev-num" id="dev-num"></div>
-    <h2 class="dev-nombre" id="dev-nombre"></h2>
-    <div class="dev-centro" id="dev-centro"></div>
-  </div>
-
-  <!-- Definición del tipo -->
-  <div class="card">
-    <p class="dev-texto" id="dev-mini-lectura"></p>
-  </div>
-
-  <!-- Concepto LUZ / SOMBRA -->
-  <div class="dev-luz-sombra">
-    <p>Cada eneatipo tiene manifestaciones en la <strong>LUZ</strong> y en la <strong>SOMBRA</strong>. Conocerte desde el Eneagrama te invita a observarte para elevar la luz de tu tipología, integrar tus sombras y convertirte en tu mejor versión.</p>
-  </div>
-
-  <!-- Tríada teaser -->
-  <div class="card dev-triada-card" id="dev-triada"></div>
-
-  <!-- Teaser profundidad -->
-  <div class="dev-teaser">
-    <p class="dev-teaser-titulo">Esto es solo la primera capa</p>
-    <p class="dev-teaser-texto">Alas, ejes de equilibrio, dilemas, flechas de integración y desintegración, ejes de polaridad — hay mucho más en tu mapa. Eso es lo que trabajo en las lecturas individuales.</p>
-  </div>
-
-  <!-- CTAs -->
-  <div class="dev-ctas">
-    <button class="btn btn-wa" id="btn-wa-dev">💬 Quiero ir más profundo</button>
-    <button class="btn btn-outline" id="btn-ver-mapa">Ver mi mapa completo</button>
-  </div>
-
-  <div class="footer">Bio Eneagrama · VG · Vero Gil</div>
-
-</div>
-
-<!-- SECCIÓN RESULTADOS (oculta hasta hacer clic en "ver mapa") -->
+<!-- SECCIÓN RESULTADOS -->
 <div id="results-section" class="container hidden">
 
-  <div class="card" style="text-align:center; padding-top:32px">
-    <h2 class="results-title">Tu mapa del Eneagrama</h2>
-    <p class="results-sub">VG · Vero Gil · Bio Eneagrama</p>
-    <div class="media-badge">Media: <span id="media-display">—</span></div>
+  <!-- 1. MARCO CONCEPTUAL -->
+  <div class="res-filosofia">
+    <p class="res-filosofia-titulo">Una foto del momento</p>
+    <p>Este resultado muestra desde dónde estás actuando <strong>hoy</strong>. No te define, no te encasilla — es un punto de partida para comprenderte y evolucionar.</p>
+    <p>El Eneagrama es un sistema en movimiento. Nacemos con una esencia que no cambia — una energía de base que nos arrastra. Las otras tipologías forman nuestra personalidad, adaptativa al contexto y a las circunstancias que atravesamos.</p>
+    <p>¿Para qué sirve? Para la <strong>autoobservación</strong>. Para elevar la luz de tu tipología, integrar tus sombras y convertirte en tu mejor versión.</p>
+  </div>
 
-    <!-- SVG resultado final -->
+  <!-- 2. TIPO DOMINANTE DESTACADO -->
+  <div class="dev-hero">
+    <div class="dev-num" id="res-tipo-num"></div>
+    <h2 class="dev-nombre" id="res-tipo-nombre"></h2>
+    <div class="dev-centro" id="res-tipo-centro"></div>
+  </div>
+  <div class="card" style="border-radius:0 0 16px 16px; margin-top:0; border-top:none">
+    <p class="dev-texto" id="res-mini-lectura"></p>
+  </div>
+
+  <!-- 3. HIGHLIGHTS LUZ / SOMBRA -->
+  <div class="card res-hl-card">
+    <div class="res-hl-seccion">
+      <div class="res-hl-titulo res-luz-titulo">☀️ Algunas expresiones de tu luz</div>
+      <ul class="res-hl-list" id="res-luz-list"></ul>
+    </div>
+    <div class="res-hl-seccion" style="margin-top:16px">
+      <div class="res-hl-titulo res-sombra-titulo">🌑 Algunas expresiones de tu sombra</div>
+      <ul class="res-hl-list" id="res-sombra-list"></ul>
+    </div>
+  </div>
+
+  <!-- 4. SÍMBOLO + MEDIA -->
+  <div class="card" style="text-align:center">
+    <div class="media-badge">Media: <span id="media-display">—</span></div>
     <div class="enea-wrap">
       <div id="enea-results" style="width:220px;height:220px"></div>
       <div class="enea-firma">VG · Vero Gil</div>
     </div>
   </div>
 
-  <!-- Tipo dominante / Clave -->
-  <div class="card">
-    <h3 class="results-title" style="font-size:1.2rem">Clave de tu tipo dominante</h3>
-    <div id="clave-dominante"></div>
-  </div>
+  <!-- 5. TODOS LOS TIPOS -->
+  <p class="grupo-titulo">★ Tipos sobre la media</p>
+  <div id="grupo-altos"></div>
 
-  <!-- Grupo ALTOS -->
-  <div>
-    <p class="grupo-titulo">★ Tipos sobre la media</p>
-    <div id="grupo-altos"></div>
-  </div>
+  <p class="grupo-titulo" style="color:var(--violet)">▾ Tipos bajo la media</p>
+  <div id="grupo-bajos"></div>
 
-  <!-- Grupo BAJOS -->
-  <div>
-    <p class="grupo-titulo" style="color:var(--violet)">▾ Tipos bajo la media</p>
-    <div id="grupo-bajos"></div>
-  </div>
-
-  <!-- Frase final -->
+  <!-- 6. FRASE FINAL -->
   <div class="frase-final" id="frase-final"></div>
 
-  <!-- Botón WhatsApp -->
-  <div style="margin:24px 0">
-    <button class="btn btn-wa" id="btn-wa">
-      💬 Quiero ir más profundo
-    </button>
+  <!-- 7. INVITACIÓN + CTA -->
+  <div class="res-invitacion">
+    <p class="res-invitacion-titulo">¿Querés saber más de vos?</p>
+    <p class="res-invitacion-texto">Este test es la puerta de entrada. En una lectura individual podemos ir mucho más profundo: tus alas, tus ejes, tus contradicciones internas y tu camino de evolución específico.</p>
+  </div>
+  <div style="margin:16px 0 24px">
+    <button class="btn btn-wa" id="btn-wa">💬 Quiero ir más profundo</button>
   </div>
 
-  <div class="footer">
-    Bio Eneagrama · VG · Vero Gil
-  </div>
+  <div class="footer">Bio Eneagrama · VG · Vero Gil</div>
 
 </div>
 

@@ -8,12 +8,8 @@
   let answered = false;
   let questions = [];
 
-  // Datos del usuario (capturados en el formulario inicial)
   let userName = '';
   let userEmail = '';
-
-  // Resultados calculados al finalizar, compartidos entre pantallas
-  let _media = 0, _dominante = 1, _altos = [], _bajos = [];
 
   function buildQuestions() {
     const q = [];
@@ -79,25 +75,6 @@
     }, 380);
   }
 
-  function buildWAMessage() {
-    const hash = Object.entries(scores).map(([t, s]) => `${t}=${s.luz},${s.sombra}`).join('|');
-    const baseUrl = window.location.origin + window.location.pathname.replace('test.html', '');
-    const lecturaUrl = baseUrl + 'lectura.html#' + encodeURIComponent(hash);
-
-    let msg = '🌀 *Bio Eneagrama — Vero Gil*\n📊 Resultados del Test\n\n';
-    if (userName) msg += `👤 ${userName}\n`;
-    if (userEmail) msg += `📧 ${userEmail}\n`;
-    msg += '\n';
-    for (let t = 1; t <= 9; t++) {
-      const s = scores[t];
-      msg += `T${t} ${TIPOS[t].nombre}: ${s.total} (☀️${s.luz} / 🌑${s.sombra})\n`;
-    }
-    msg += `\n📐 Media: ${_media.toFixed(1)}\n`;
-    msg += `\n🔍 Panel profesional:\n${lecturaUrl}`;
-    window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
-  }
-
-  // Manejo del formulario de email
   function setupEmailForm() {
     const btnComenzar = document.getElementById('btn-comenzar');
     const errorEl = document.getElementById('email-error');
@@ -115,7 +92,6 @@
       userName = nombre;
       userEmail = email;
 
-      // Enviar a Formspree (silencioso si falla)
       if (FORMSPREE_ID && FORMSPREE_ID !== 'FORMSPREE_ID') {
         fetch('https://formspree.io/f/' + FORMSPREE_ID, {
           method: 'POST',
@@ -130,7 +106,6 @@
     }
 
     btnComenzar.addEventListener('click', intentarComenzar);
-
     document.getElementById('input-email').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') intentarComenzar();
     });
@@ -139,79 +114,81 @@
     });
   }
 
-  // Calcula resultados y muestra devolución
   function showResults() {
     document.getElementById('progress-wrap').classList.add('hidden');
     document.getElementById('test-section').classList.add('hidden');
-
-    _media = calcMedia();
-    const tipos = Array.from({ length: 9 }, (_, i) => i + 1);
-    _altos = tipos.filter(t => scores[t].total >= _media).sort((a, b) => scores[b].total - scores[a].total);
-    _bajos = tipos.filter(t => scores[t].total < _media).sort((a, b) => scores[a].total - scores[b].total);
-    _dominante = _altos[0] || 1;
-
-    showDevolucion();
-  }
-
-  // Primera pantalla post-test: devolución interpretativa
-  function showDevolucion() {
-    document.getElementById('devolucion-section').classList.remove('hidden');
-    window.scrollTo(0, 0);
-
-    const tipo = TIPOS[_dominante];
-
-    document.getElementById('dev-num').textContent = 'Tipo ' + _dominante;
-    document.getElementById('dev-nombre').textContent = tipo.nombre;
-    document.getElementById('dev-centro').textContent = tipo.centro;
-    document.getElementById('dev-mini-lectura').textContent = tipo.mini_lectura;
-
-    const triada = TRIADAS[tipo.triada];
-    document.getElementById('dev-triada').innerHTML = `
-      <div class="dev-triada-nombre">${triada.nombre}</div>
-      <p class="dev-triada-teaser">Tu tipo pertenece a esta tríada — lo que dice algo específico sobre cómo reaccionás en conflicto, qué herida está en el fondo y cuál es tu movimiento evolutivo. Eso es parte de lo que exploramos en la lectura individual.</p>
-    `;
-
-    document.getElementById('btn-wa-dev').onclick = buildWAMessage;
-    document.getElementById('btn-ver-mapa').onclick = function () {
-      document.getElementById('devolucion-section').classList.add('hidden');
-      showTechnicalResults();
-    };
-  }
-
-  // Segunda pantalla: mapa técnico completo
-  function showTechnicalResults() {
     document.getElementById('results-section').classList.remove('hidden');
     window.scrollTo(0, 0);
 
-    document.getElementById('media-display').textContent = _media.toFixed(1);
+    const media = calcMedia();
+    const tipos = Array.from({ length: 9 }, (_, i) => i + 1);
+    const altos = tipos.filter(t => scores[t].total >= media).sort((a, b) => scores[b].total - scores[a].total);
+    const bajos = tipos.filter(t => scores[t].total < media).sort((a, b) => scores[a].total - scores[b].total);
+    const dominante = altos[0] || 1;
+    const tipo = TIPOS[dominante];
 
+    // Featured tipo dominante
+    document.getElementById('res-tipo-num').textContent = 'Tipo ' + dominante + ' · Tu tipo dominante';
+    document.getElementById('res-tipo-nombre').textContent = tipo.nombre;
+    document.getElementById('res-tipo-centro').textContent = tipo.centro;
+    document.getElementById('res-mini-lectura').textContent = tipo.mini_lectura;
+
+    // Highlights: 3 afirmaciones de luz y 3 de sombra
+    const luzList = document.getElementById('res-luz-list');
+    luzList.innerHTML = '';
+    [0, 3, 7].forEach(function (i) {
+      const li = document.createElement('li');
+      li.textContent = AFIRMACIONES[dominante].luz[i];
+      luzList.appendChild(li);
+    });
+
+    const sombraList = document.getElementById('res-sombra-list');
+    sombraList.innerHTML = '';
+    [0, 3, 7].forEach(function (i) {
+      const li = document.createElement('li');
+      li.textContent = AFIRMACIONES[dominante].sombra[i];
+      sombraList.appendChild(li);
+    });
+
+    // SVG + media
+    document.getElementById('media-display').textContent = media.toFixed(1);
+    renderEnea('enea-results', scores, media, true);
+
+    // Todos los tipos
     const altosEl = document.getElementById('grupo-altos');
     altosEl.innerHTML = '';
-    _altos.forEach((t, i) => altosEl.appendChild(makeTipoCard(t, i === 0 ? '★' : String(i + 1), 'alto')));
+    altos.forEach(function (t, i) { altosEl.appendChild(makeTipoCard(t, i === 0 ? '★' : String(i + 1), 'alto')); });
 
     const bajosEl = document.getElementById('grupo-bajos');
     bajosEl.innerHTML = '';
-    _bajos.forEach((t, i) => bajosEl.appendChild(makeTipoCard(t, i === 0 ? '▾' : '', 'bajo')));
+    bajos.forEach(function (t, i) { bajosEl.appendChild(makeTipoCard(t, i === 0 ? '▾' : '', 'bajo')); });
 
-    const tipo = TIPOS[_dominante];
-    document.getElementById('clave-dominante').innerHTML = `
-      <div class="clave-box"><div class="clave-label">Miedo</div><div class="clave-val">${tipo.miedo}</div></div>
-      <div class="clave-box"><div class="clave-label">Motivación</div><div class="clave-val">${tipo.motivacion}</div></div>
-      <div class="clave-box"><div class="clave-label">Centro</div><div class="clave-val">${tipo.centro}</div></div>
-      <div class="clave-box"><div class="clave-label">Transformación</div><div class="clave-val">${tipo.transformacion}</div></div>
-    `;
-
-    renderEnea('enea-results', scores, _media, true);
+    // Frase final
     document.getElementById('frase-final').textContent = FRASE_FINAL;
-    document.getElementById('btn-wa').onclick = buildWAMessage;
+
+    // Botón WA
+    document.getElementById('btn-wa').onclick = function () {
+      const hash = Object.entries(scores).map(function (e) { return e[0] + '=' + e[1].luz + ',' + e[1].sombra; }).join('|');
+      const baseUrl = window.location.origin + window.location.pathname.replace('test.html', '');
+      const lecturaUrl = baseUrl + 'lectura.html#' + encodeURIComponent(hash);
+      let msg = '🌀 *Bio Eneagrama — Vero Gil*\n📊 Resultados del Test\n\n';
+      if (userName) msg += '👤 ' + userName + '\n';
+      if (userEmail) msg += '📧 ' + userEmail + '\n';
+      msg += '\n';
+      for (let t = 1; t <= 9; t++) {
+        const s = scores[t];
+        msg += 'T' + t + ' ' + TIPOS[t].nombre + ': ' + s.total + ' (☀️' + s.luz + ' / 🌑' + s.sombra + ')\n';
+      }
+      msg += '\n📐 Media: ' + media.toFixed(1) + '\n';
+      msg += '\n🔍 Panel profesional:\n' + lecturaUrl;
+      window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
+    };
   }
 
   function makeTipoCard(t, badge, grupo) {
     const div = document.createElement('div');
     div.className = 'tipo-card ' + grupo;
     const s = scores[t];
-    const luzFlex = s.luz;
-    const sombraFlex = s.sombra;
     const emptyFlex = 20 - s.total;
     const badgeClass = grupo === 'bajo' ? 'tipo-badge bajo-badge' : 'tipo-badge';
     div.innerHTML = `
@@ -221,14 +198,15 @@
       </div>
       <div class="tipo-score">Total: ${s.total} &nbsp;|&nbsp; ☀️ Luz: ${s.luz} &nbsp;|&nbsp; 🌑 Sombra: ${s.sombra}</div>
       <div class="mini-bars">
-        <div class="mini-bar-luz" style="flex:${luzFlex}"></div>
-        <div class="mini-bar-sombra" style="flex:${sombraFlex}"></div>
-        ${emptyFlex > 0 ? `<div style="flex:${emptyFlex};height:5px;background:var(--border)"></div>` : ''}
-      </div>`;
+        <div class="mini-bar-luz" style="flex:${s.luz}"></div>
+        <div class="mini-bar-sombra" style="flex:${s.sombra}"></div>
+        ${emptyFlex > 0 ? '<div style="flex:' + emptyFlex + ';height:5px;background:var(--border)"></div>' : ''}
+      </div>
+      <p class="tipo-resena">${TIPOS[t].resena}</p>`;
     return div;
   }
 
-  // Autofill para testing: simula puntajes realistas de un T4 dominante
+  // Autofill para testing
   window.autocompletar = function () {
     const sim = { 1:6, 2:5, 3:4, 4:14, 5:10, 6:7, 7:8, 8:5, 9:9 };
     for (let t = 1; t <= 9; t++) {
@@ -245,13 +223,11 @@
     renderQuestion();
     setupEmailForm();
 
-    document.getElementById('btn-si').addEventListener('click', () => handleAnswer('si'));
-    document.getElementById('btn-no').addEventListener('click', () => handleAnswer('no'));
+    document.getElementById('btn-si').addEventListener('click', function () { handleAnswer('si'); });
+    document.getElementById('btn-no').addEventListener('click', function () { handleAnswer('no'); });
 
     document.addEventListener('keydown', function (e) {
       if (document.getElementById('test-section').classList.contains('hidden')) return;
-      if (!document.getElementById('devolucion-section').classList.contains('hidden')) return;
-      if (!document.getElementById('results-section').classList.contains('hidden')) return;
       if (e.key === 's' || e.key === 'S' || e.key === 'y' || e.key === 'Y') handleAnswer('si');
       if (e.key === 'n' || e.key === 'N') handleAnswer('no');
     });

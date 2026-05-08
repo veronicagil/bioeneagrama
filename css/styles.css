@@ -693,6 +693,98 @@ textarea.campo:focus { border-color: var(--violet-l); }
 
 .fade-in { animation: fadeIn 0.25s ease both; }
 
+/* RESULTADOS — MARCO FILOSÓFICO */
+.res-filosofia {
+  background: linear-gradient(135deg, rgba(181,0,79,0.03), rgba(75,0,130,0.05));
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 20px;
+  margin: 16px 0 8px;
+}
+
+.res-filosofia-titulo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  color: var(--violet);
+  font-weight: 600;
+  margin-bottom: 10px;
+  letter-spacing: 0.03em;
+}
+
+.res-filosofia p {
+  font-size: 0.9rem;
+  color: var(--sub);
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+
+.res-filosofia p:last-child { margin-bottom: 0; }
+
+/* RESULTADOS — HIGHLIGHTS LUZ / SOMBRA */
+.res-hl-card { margin-top: 4px; }
+
+.res-hl-seccion {}
+
+.res-hl-titulo {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+.res-luz-titulo { color: var(--verde); }
+.res-sombra-titulo { color: var(--rojo); }
+
+.res-hl-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.res-hl-list li {
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.5;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.res-hl-list li:last-child { border-bottom: none; }
+
+/* RESULTADOS — RESEÑA EN TARJETA DE TIPO */
+.tipo-resena {
+  font-size: 0.82rem;
+  color: var(--sub);
+  margin-top: 8px;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* RESULTADOS — INVITACIÓN FINAL */
+.res-invitacion {
+  background: linear-gradient(135deg, #B5004F, #4B0082);
+  border-radius: 16px;
+  padding: 24px 20px;
+  text-align: center;
+  margin: 24px 0 0;
+}
+
+.res-invitacion-titulo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.res-invitacion-texto {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.6;
+  margin: 0;
+}
+
 /* EMAIL CAPTURE */
 .email-card {
   margin-top: 24px;

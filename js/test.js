@@ -151,6 +151,18 @@
     return div;
   }
 
+  // Autofill para testing: simula puntajes realistas de un T4 dominante
+  window.autocompletar = function () {
+    const sim = { 1:6, 2:5, 3:4, 4:14, 5:10, 6:7, 7:8, 8:5, 9:9 };
+    for (let t = 1; t <= 9; t++) {
+      const luz = Math.round(sim[t] * 0.55);
+      const sombra = sim[t] - luz;
+      scores[t] = { luz, sombra, total: sim[t] };
+    }
+    currentQ = questions.length;
+    showResults();
+  };
+
   // Init
   document.addEventListener('DOMContentLoaded', function () {
     questions = buildQuestions();

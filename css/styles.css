@@ -692,3 +692,111 @@ textarea.campo:focus { border-color: var(--violet-l); }
 }
 
 .fade-in { animation: fadeIn 0.25s ease both; }
+
+/* DEVOLUCIÓN */
+.dev-hero {
+  background: linear-gradient(135deg, #B5004F, #4B0082);
+  border-radius: 20px;
+  padding: 40px 24px 32px;
+  text-align: center;
+  margin: 16px 0;
+}
+
+.dev-num {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.65);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.dev-nombre {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.6rem;
+  color: #fff;
+  font-weight: 600;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+
+.dev-centro {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 20px;
+  padding: 5px 18px;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.88);
+  letter-spacing: 0.04em;
+}
+
+.dev-texto {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.28rem;
+  line-height: 1.75;
+  color: var(--text);
+  font-style: italic;
+}
+
+.dev-balance {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  color: var(--sub);
+  margin: 4px 0 12px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.dev-triada-card {
+  border-left: 4px solid var(--violet);
+}
+
+.dev-triada-nombre {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+
+.dev-triada-teaser {
+  font-size: 0.9rem;
+  color: var(--sub);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.dev-teaser {
+  background: linear-gradient(135deg, rgba(181,0,79,0.03), rgba(75,0,130,0.05));
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 20px;
+  margin: 8px 0 20px;
+  text-align: center;
+}
+
+.dev-teaser-titulo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  color: var(--violet);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.dev-teaser-texto {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.dev-ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 0 24px;
+}

@@ -1,7 +1,6 @@
 (function () {
   'use strict';
 
-  // Estado
   const scores = {};
   for (let t = 1; t <= 9; t++) scores[t] = { luz: 0, sombra: 0, total: 0 };
 
@@ -9,7 +8,9 @@
   let answered = false;
   let questions = [];
 
-  // Construir las 180 preguntas intercalando rondas LUZ y SOMBRA
+  // Resultados calculados al finalizar el test, compartidos entre pantallas
+  let _media = 0, _dominante = 1, _altos = [], _bajos = [];
+
   function buildQuestions() {
     const q = [];
     for (let r = 0; r < 10; r++) {
@@ -74,31 +75,88 @@
     }, 380);
   }
 
+  function buildWAMessage() {
+    const hash = Object.entries(scores).map(([t, s]) => `${t}=${s.luz},${s.sombra}`).join('|');
+    const baseUrl = window.location.origin + window.location.pathname.replace('test.html', '');
+    const lecturaUrl = baseUrl + 'lectura.html#' + encodeURIComponent(hash);
+    let msg = '🌀 *Bio Eneagrama — Vero Gil*\n📊 Resultados del Test\n\n';
+    for (let t = 1; t <= 9; t++) {
+      const s = scores[t];
+      msg += `T${t} ${TIPOS[t].nombre}: ${s.total} (☀️${s.luz} / 🌑${s.sombra})\n`;
+    }
+    msg += `\n📐 Media: ${_media.toFixed(1)}\n`;
+    msg += `\n🔍 Panel profesional:\n${lecturaUrl}`;
+    window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
+  }
+
+  // Llamada al terminar el test: calcula todo y muestra devolución
   function showResults() {
+    document.getElementById('progress-wrap').classList.add('hidden');
     document.getElementById('test-section').classList.add('hidden');
+
+    _media = calcMedia();
+    const tipos = Array.from({ length: 9 }, (_, i) => i + 1);
+    _altos = tipos.filter(t => scores[t].total >= _media).sort((a, b) => scores[b].total - scores[a].total);
+    _bajos = tipos.filter(t => scores[t].total < _media).sort((a, b) => scores[a].total - scores[b].total);
+    _dominante = _altos[0] || 1;
+
+    showDevolucion();
+  }
+
+  // Primera pantalla: devolución interpretativa
+  function showDevolucion() {
+    document.getElementById('devolucion-section').classList.remove('hidden');
+    window.scrollTo(0, 0);
+
+    const tipo = TIPOS[_dominante];
+    const s = scores[_dominante];
+
+    document.getElementById('dev-num').textContent = 'Tipo ' + _dominante;
+    document.getElementById('dev-nombre').textContent = tipo.nombre;
+    document.getElementById('dev-centro').textContent = tipo.centro;
+    document.getElementById('dev-mini-lectura').textContent = tipo.mini_lectura;
+
+    const diff = s.luz - s.sombra;
+    let balanceText;
+    if (Math.abs(diff) <= 1) {
+      balanceText = '✦ Tu patrón dominante muestra un equilibrio entre luz y sombra — señal de un momento de mayor conciencia y transición.';
+    } else if (diff > 0) {
+      balanceText = '☀️ Tu patrón dominante se expresa principalmente desde la luz, integrando recursos genuinos que ya tenés activos.';
+    } else {
+      balanceText = '🌑 Tu patrón dominante se expresa principalmente desde la sombra, lo que suele aparecer en momentos de tensión, búsqueda o mayor autoexigencia.';
+    }
+    document.getElementById('dev-balance').textContent = balanceText;
+
+    const triada = TRIADAS[tipo.triada];
+    document.getElementById('dev-triada').innerHTML = `
+      <div class="dev-triada-nombre">${triada.nombre}</div>
+      <p class="dev-triada-teaser">Tu tipo pertenece a esta tríada — lo que dice algo específico sobre cómo reaccionás en conflicto, qué herida está en el fondo y cuál es tu movimiento evolutivo. Eso es parte de lo que exploramos en la lectura individual.</p>
+    `;
+
+    document.getElementById('btn-wa-dev').onclick = buildWAMessage;
+
+    document.getElementById('btn-ver-mapa').onclick = function () {
+      document.getElementById('devolucion-section').classList.add('hidden');
+      showTechnicalResults();
+    };
+  }
+
+  // Segunda pantalla: mapa técnico completo
+  function showTechnicalResults() {
     document.getElementById('results-section').classList.remove('hidden');
     window.scrollTo(0, 0);
 
-    const media = calcMedia();
-    document.getElementById('media-display').textContent = media.toFixed(1);
+    document.getElementById('media-display').textContent = _media.toFixed(1);
 
-    const tipos = Array.from({ length: 9 }, (_, i) => i + 1);
-    const altos = tipos.filter(t => scores[t].total >= media).sort((a, b) => scores[b].total - scores[a].total);
-    const bajos = tipos.filter(t => scores[t].total < media).sort((a, b) => scores[a].total - scores[b].total);
-    const dominante = altos[0] || 1;
-
-    // Render grupo ALTOS
     const altosEl = document.getElementById('grupo-altos');
     altosEl.innerHTML = '';
-    altos.forEach((t, i) => altosEl.appendChild(makeTipoCard(t, i === 0 ? '★' : String(i + 1), 'alto')));
+    _altos.forEach((t, i) => altosEl.appendChild(makeTipoCard(t, i === 0 ? '★' : String(i + 1), 'alto')));
 
-    // Render grupo BAJOS
     const bajosEl = document.getElementById('grupo-bajos');
     bajosEl.innerHTML = '';
-    bajos.forEach((t, i) => bajosEl.appendChild(makeTipoCard(t, i === 0 ? '▾' : '', 'bajo')));
+    _bajos.forEach((t, i) => bajosEl.appendChild(makeTipoCard(t, i === 0 ? '▾' : '', 'bajo')));
 
-    // Clave del tipo dominante
-    const tipo = TIPOS[dominante];
+    const tipo = TIPOS[_dominante];
     document.getElementById('clave-dominante').innerHTML = `
       <div class="clave-box"><div class="clave-label">Miedo</div><div class="clave-val">${tipo.miedo}</div></div>
       <div class="clave-box"><div class="clave-label">Motivación</div><div class="clave-val">${tipo.motivacion}</div></div>
@@ -106,27 +164,9 @@
       <div class="clave-box"><div class="clave-label">Transformación</div><div class="clave-val">${tipo.transformacion}</div></div>
     `;
 
-    // SVG final con etiquetas
-    renderEnea('enea-results', scores, media, true);
-
-    // Frase final
+    renderEnea('enea-results', scores, _media, true);
     document.getElementById('frase-final').textContent = FRASE_FINAL;
-
-    // Botón WhatsApp
-    document.getElementById('btn-wa').onclick = function () {
-      const hash = Object.entries(scores).map(([t, s]) => `${t}=${s.luz},${s.sombra}`).join('|');
-      const baseUrl = window.location.origin + window.location.pathname.replace('test.html', '');
-      const lecturaUrl = baseUrl + 'lectura.html#' + encodeURIComponent(hash);
-
-      let msg = '🌀 *Bio Eneagrama — Vero Gil*\n📊 Resultados del Test\n\n';
-      for (let t = 1; t <= 9; t++) {
-        const s = scores[t];
-        msg += `T${t} ${TIPOS[t].nombre}: ${s.total} (☀️${s.luz} / 🌑${s.sombra})\n`;
-      }
-      msg += `\n📐 Media: ${media.toFixed(1)}\n`;
-      msg += `\n🔍 Panel profesional:\n${lecturaUrl}`;
-      window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
-    };
+    document.getElementById('btn-wa').onclick = buildWAMessage;
   }
 
   function makeTipoCard(t, badge, grupo) {
@@ -163,7 +203,6 @@
     showResults();
   };
 
-  // Init
   document.addEventListener('DOMContentLoaded', function () {
     questions = buildQuestions();
     renderQuestion();
@@ -171,9 +210,9 @@
     document.getElementById('btn-si').addEventListener('click', () => handleAnswer('si'));
     document.getElementById('btn-no').addEventListener('click', () => handleAnswer('no'));
 
-    // Teclado: S/Y = Sí, N = No
     document.addEventListener('keydown', function (e) {
-      if (document.getElementById('results-section') && !document.getElementById('results-section').classList.contains('hidden')) return;
+      if (!document.getElementById('devolucion-section').classList.contains('hidden')) return;
+      if (!document.getElementById('results-section').classList.contains('hidden')) return;
       if (e.key === 's' || e.key === 'S' || e.key === 'y' || e.key === 'Y') handleAnswer('si');
       if (e.key === 'n' || e.key === 'N') handleAnswer('no');
     });

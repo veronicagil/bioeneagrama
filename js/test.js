@@ -8,7 +8,11 @@
   let answered = false;
   let questions = [];
 
-  // Resultados calculados al finalizar el test, compartidos entre pantallas
+  // Datos del usuario (capturados en el formulario inicial)
+  let userName = '';
+  let userEmail = '';
+
+  // Resultados calculados al finalizar, compartidos entre pantallas
   let _media = 0, _dominante = 1, _altos = [], _bajos = [];
 
   function buildQuestions() {
@@ -79,7 +83,11 @@
     const hash = Object.entries(scores).map(([t, s]) => `${t}=${s.luz},${s.sombra}`).join('|');
     const baseUrl = window.location.origin + window.location.pathname.replace('test.html', '');
     const lecturaUrl = baseUrl + 'lectura.html#' + encodeURIComponent(hash);
+
     let msg = '🌀 *Bio Eneagrama — Vero Gil*\n📊 Resultados del Test\n\n';
+    if (userName) msg += `👤 ${userName}\n`;
+    if (userEmail) msg += `📧 ${userEmail}\n`;
+    msg += '\n';
     for (let t = 1; t <= 9; t++) {
       const s = scores[t];
       msg += `T${t} ${TIPOS[t].nombre}: ${s.total} (☀️${s.luz} / 🌑${s.sombra})\n`;
@@ -89,7 +97,49 @@
     window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
   }
 
-  // Llamada al terminar el test: calcula todo y muestra devolución
+  // Manejo del formulario de email
+  function setupEmailForm() {
+    const btnComenzar = document.getElementById('btn-comenzar');
+    const errorEl = document.getElementById('email-error');
+
+    function intentarComenzar() {
+      const nombre = document.getElementById('input-nombre').value.trim();
+      const email = document.getElementById('input-email').value.trim();
+      const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+      if (!nombre || !emailValido) {
+        errorEl.classList.remove('hidden');
+        return;
+      }
+      errorEl.classList.add('hidden');
+      userName = nombre;
+      userEmail = email;
+
+      // Enviar a Formspree (silencioso si falla)
+      if (FORMSPREE_ID && FORMSPREE_ID !== 'FORMSPREE_ID') {
+        fetch('https://formspree.io/f/' + FORMSPREE_ID, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ nombre: nombre, email: email, origen: 'Bio Eneagrama Test' })
+        }).catch(function () {});
+      }
+
+      document.getElementById('email-section').classList.add('hidden');
+      document.getElementById('progress-wrap').classList.remove('hidden');
+      document.getElementById('test-section').classList.remove('hidden');
+    }
+
+    btnComenzar.addEventListener('click', intentarComenzar);
+
+    document.getElementById('input-email').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') intentarComenzar();
+    });
+    document.getElementById('input-nombre').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') document.getElementById('input-email').focus();
+    });
+  }
+
+  // Calcula resultados y muestra devolución
   function showResults() {
     document.getElementById('progress-wrap').classList.add('hidden');
     document.getElementById('test-section').classList.add('hidden');
@@ -103,29 +153,17 @@
     showDevolucion();
   }
 
-  // Primera pantalla: devolución interpretativa
+  // Primera pantalla post-test: devolución interpretativa
   function showDevolucion() {
     document.getElementById('devolucion-section').classList.remove('hidden');
     window.scrollTo(0, 0);
 
     const tipo = TIPOS[_dominante];
-    const s = scores[_dominante];
 
     document.getElementById('dev-num').textContent = 'Tipo ' + _dominante;
     document.getElementById('dev-nombre').textContent = tipo.nombre;
     document.getElementById('dev-centro').textContent = tipo.centro;
     document.getElementById('dev-mini-lectura').textContent = tipo.mini_lectura;
-
-    const diff = s.luz - s.sombra;
-    let balanceText;
-    if (Math.abs(diff) <= 1) {
-      balanceText = '✦ Tu patrón dominante muestra un equilibrio entre luz y sombra — señal de un momento de mayor conciencia y transición.';
-    } else if (diff > 0) {
-      balanceText = '☀️ Tu patrón dominante se expresa principalmente desde la luz, integrando recursos genuinos que ya tenés activos.';
-    } else {
-      balanceText = '🌑 Tu patrón dominante se expresa principalmente desde la sombra, lo que suele aparecer en momentos de tensión, búsqueda o mayor autoexigencia.';
-    }
-    document.getElementById('dev-balance').textContent = balanceText;
 
     const triada = TRIADAS[tipo.triada];
     document.getElementById('dev-triada').innerHTML = `
@@ -134,7 +172,6 @@
     `;
 
     document.getElementById('btn-wa-dev').onclick = buildWAMessage;
-
     document.getElementById('btn-ver-mapa').onclick = function () {
       document.getElementById('devolucion-section').classList.add('hidden');
       showTechnicalResults();
@@ -206,11 +243,13 @@
   document.addEventListener('DOMContentLoaded', function () {
     questions = buildQuestions();
     renderQuestion();
+    setupEmailForm();
 
     document.getElementById('btn-si').addEventListener('click', () => handleAnswer('si'));
     document.getElementById('btn-no').addEventListener('click', () => handleAnswer('no'));
 
     document.addEventListener('keydown', function (e) {
+      if (document.getElementById('test-section').classList.contains('hidden')) return;
       if (!document.getElementById('devolucion-section').classList.contains('hidden')) return;
       if (!document.getElementById('results-section').classList.contains('hidden')) return;
       if (e.key === 's' || e.key === 'S' || e.key === 'y' || e.key === 'Y') handleAnswer('si');

@@ -15,8 +15,28 @@
   <span class="badge-vg">VG · Vero Gil</span>
 </header>
 
+<!-- SECCIÓN EMAIL (primera pantalla) -->
+<div id="email-section" class="container">
+  <div class="card email-card">
+    <p class="email-bienvenida">Antes de comenzar</p>
+    <h2 class="email-titulo">¿Quién sos vos?</h2>
+    <p class="email-sub">Dejá tu nombre y tu mail para recibir tu resultado y poder acompañarte en este camino de autoconocimiento.</p>
+    <div class="campo-wrap">
+      <label class="campo-label" for="input-nombre">Nombre</label>
+      <input type="text" id="input-nombre" class="campo-input" placeholder="Tu nombre" autocomplete="given-name">
+    </div>
+    <div class="campo-wrap">
+      <label class="campo-label" for="input-email">Mail</label>
+      <input type="email" id="input-email" class="campo-input" placeholder="nombre@mail.com" autocomplete="email">
+    </div>
+    <div class="email-error hidden" id="email-error">Completá tu nombre y un mail válido para continuar.</div>
+    <button class="btn btn-primary" id="btn-comenzar">Comenzar el test →</button>
+  </div>
+  <div class="footer">Bio Eneagrama · VG · Vero Gil</div>
+</div>
+
 <!-- PROGRESS BAR (visible durante el test) -->
-<div class="progress-bar-wrap" id="progress-wrap">
+<div class="progress-bar-wrap hidden" id="progress-wrap">
   <div class="progress-bar-track">
     <div class="progress-bar-fill" id="progress-fill"></div>
   </div>
@@ -24,7 +44,7 @@
 </div>
 
 <!-- SECCIÓN TEST -->
-<div id="test-section" class="container">
+<div id="test-section" class="container hidden">
 
   <!-- BOTÓN DE PRUEBA — sacar cuando el flujo esté listo -->
   <div style="text-align:center; margin:12px 0 0">
@@ -71,18 +91,20 @@
     <div class="dev-centro" id="dev-centro"></div>
   </div>
 
-  <!-- Mini lectura -->
+  <!-- Definición del tipo -->
   <div class="card">
     <p class="dev-texto" id="dev-mini-lectura"></p>
   </div>
 
-  <!-- Balance luz/sombra -->
-  <div class="dev-balance" id="dev-balance"></div>
+  <!-- Concepto LUZ / SOMBRA -->
+  <div class="dev-luz-sombra">
+    <p>Cada eneatipo tiene manifestaciones en la <strong>LUZ</strong> y en la <strong>SOMBRA</strong>. Conocerte desde el Eneagrama te invita a observarte para elevar la luz de tu tipología, integrar tus sombras y convertirte en tu mejor versión.</p>
+  </div>
 
-  <!-- Tríada -->
+  <!-- Tríada teaser -->
   <div class="card dev-triada-card" id="dev-triada"></div>
 
-  <!-- Teaser -->
+  <!-- Teaser profundidad -->
   <div class="dev-teaser">
     <p class="dev-teaser-titulo">Esto es solo la primera capa</p>
     <p class="dev-teaser-texto">Alas, ejes de equilibrio, dilemas, flechas de integración y desintegración, ejes de polaridad — hay mucho más en tu mapa. Eso es lo que trabajo en las lecturas individuales.</p>

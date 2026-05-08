@@ -693,6 +693,72 @@ textarea.campo:focus { border-color: var(--violet-l); }
 
 .fade-in { animation: fadeIn 0.25s ease both; }
 
+/* EMAIL CAPTURE */
+.email-card {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.email-bienvenida {
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.email-titulo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  color: var(--violet);
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.email-sub {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.campo-wrap {
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.campo-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--sub);
+  margin-bottom: 5px;
+  letter-spacing: 0.04em;
+}
+
+.campo-input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  color: var(--text);
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+  min-height: 44px;
+}
+
+.campo-input:focus { border-color: var(--violet-l); }
+
+.email-error {
+  color: var(--rojo);
+  font-size: 0.84rem;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
 /* DEVOLUCIÓN */
 .dev-hero {
   background: linear-gradient(135deg, #B5004F, #4B0082);
@@ -749,6 +815,22 @@ textarea.campo:focus { border-color: var(--violet-l); }
   margin: 4px 0 12px;
   text-align: center;
   line-height: 1.5;
+}
+
+.dev-luz-sombra {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  font-size: 0.93rem;
+  color: var(--sub);
+  line-height: 1.65;
+  margin: 4px 0 12px;
+  text-align: center;
+}
+
+.dev-luz-sombra strong {
+  color: var(--violet);
 }
 
 .dev-triada-card {

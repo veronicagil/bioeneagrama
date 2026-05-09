@@ -15,16 +15,18 @@
 <!-- HEADER -->
 <header class="site-header">
   <h1>Bio Eneagrama</h1>
-  <div class="subtitle">Test de autoconocimiento · 180 afirmaciones</div>
+  <div class="subtitle">Test de autoconocimiento · Vero Gil</div>
   <span class="badge-vg">VG · Vero Gil</span>
 </header>
 
-<!-- SECCIÓN EMAIL (primera pantalla) -->
+<!-- SECCIÓN EMAIL -->
 <div id="email-section" class="container">
   <div class="card email-card">
-    <p class="email-bienvenida">Antes de comenzar</p>
     <h2 class="email-titulo">Bio Eneagrama</h2>
-    <p class="email-sub">Dejá tu nombre y mail para recibir tu resultado.</p>
+    <p class="email-tagline">Un test para conocerte más profundamente</p>
+    <p class="email-autor">Vero Gil · Test de autoconocimiento</p>
+    <p class="email-claim">El Eneagrama no te define, te ayuda a comprenderte para poder evolucionar.</p>
+    <div class="email-divider"></div>
     <div class="campo-wrap">
       <label class="campo-label" for="input-nombre">Nombre</label>
       <input type="text" id="input-nombre" class="campo-input" placeholder="Tu nombre" autocomplete="given-name">
@@ -34,7 +36,7 @@
       <input type="email" id="input-email" class="campo-input" placeholder="nombre@mail.com" autocomplete="email">
     </div>
     <div class="email-error hidden" id="email-error">Completá tu nombre y un mail válido para continuar.</div>
-    <button class="btn btn-primary" id="btn-comenzar">Comenzar el test →</button>
+    <button class="btn btn-primary" id="btn-comenzar">¡Comenzá ya!</button>
   </div>
   <div class="footer">Bio Eneagrama · VG · Vero Gil</div>
 </div>
@@ -57,13 +59,11 @@
     </button>
   </div>
 
-  <!-- SVG en vivo -->
   <div class="enea-wrap">
     <div id="enea-live" style="width:200px;height:200px"></div>
     <div class="enea-firma">VG · Vero Gil</div>
   </div>
 
-  <!-- Tarjeta de pregunta -->
   <div class="card fade-in" id="question-card">
     <div class="question-num" id="q-num"></div>
     <div class="question-text" id="q-text"></div>
@@ -73,11 +73,37 @@
     </div>
   </div>
 
+  <!-- Botón volver -->
+  <div style="text-align:center; margin:4px 0 8px">
+    <button id="btn-back" class="btn-back hidden">← Anterior</button>
+  </div>
+
   <p style="text-align:center; font-size:0.78rem; color:var(--muted); margin-top:4px">
     Respondé con lo que más se acerca a vos, no lo que quisieras ser.<br>
     Podés usar las teclas <strong>S</strong> (Sí) y <strong>N</strong> (No).
   </p>
 
+</div>
+
+<!-- LOADING (5 segundos entre test y resultados) -->
+<div id="loading-section" class="container hidden">
+  <div class="loading-wrap">
+    <div class="loading-enea">
+      <svg viewBox="0 0 200 200" width="140" height="140">
+        <defs>
+          <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#B5004F"/>
+            <stop offset="100%" stop-color="#4B0082"/>
+          </linearGradient>
+        </defs>
+        <circle cx="100" cy="100" r="74" fill="none" stroke="url(#lg)" stroke-width="2"/>
+        <polygon points="100,26 164.1,137 35.9,137" fill="none" stroke="url(#lg)" stroke-width="1.5"/>
+        <polyline points="147.6,43.3 125.3,169.5 172.9,87.1 52.4,43.3 74.7,169.5 27.1,87.1 147.6,43.3" fill="none" stroke="url(#lg)" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <p class="loading-texto">Analizando tu perfil</p>
+    <div class="loading-dots"><span></span><span></span><span></span></div>
+  </div>
 </div>
 
 <!-- SECCIÓN RESULTADOS -->
@@ -92,23 +118,17 @@
     <p>Una punta concreta: observá los tipos con <strong>menor puntaje</strong> — esas son las energías más dormidas que invitan a ser integradas. El camino de mayor evolución es ir llevando todas las energías hacia la media y la luz.</p>
   </div>
 
-  <!-- 2. TIPO DOMINANTE DESTACADO -->
+  <!-- 2. TIPO DOMINANTE -->
   <div class="dev-hero">
     <div class="dev-num" id="res-tipo-num"></div>
     <h2 class="dev-nombre" id="res-tipo-nombre"></h2>
     <div class="dev-centro" id="res-tipo-centro"></div>
   </div>
   <div class="card" style="border-radius:0 0 16px 16px; margin-top:0; border-top:none">
-    <p class="dev-texto" id="res-mini-lectura"></p>
+    <p class="dev-texto" id="res-sintesis"></p>
   </div>
 
-  <!-- 3. ORIENTACIÓN PARA INTEGRAR -->
-  <div class="card res-hl-card">
-    <div class="res-hl-titulo">Para observar e integrar</div>
-    <p class="dev-texto" id="res-orientacion"></p>
-  </div>
-
-  <!-- 4. SÍMBOLO + MEDIA -->
+  <!-- 3. SÍMBOLO + MEDIA -->
   <div class="card" style="text-align:center">
     <div class="media-badge">Media: <span id="media-display">—</span></div>
     <div class="enea-wrap">
@@ -117,18 +137,16 @@
     </div>
   </div>
 
-  <!-- 5. TODOS LOS TIPOS -->
+  <!-- 4. TODOS LOS TIPOS -->
   <p class="grupo-titulo">★ Tipos sobre la media</p>
   <div id="grupo-altos"></div>
-
   <p class="grupo-titulo" style="color:var(--violet)">▾ Tipos bajo la media</p>
   <div id="grupo-bajos"></div>
 
-  <!-- 6. CIERRE + REDES -->
+  <!-- 5. CIERRE + REDES -->
   <div class="res-cierre">
-    <p class="res-cierre-kicker">Este es solo el comienzo</p>
-    <p class="res-cierre-titulo">Un primer paso concreto en tu camino de autoconocimiento.</p>
-    <p class="res-cierre-texto">Si querés profundizar y ver cómo seguir evolucionando:</p>
+    <p class="res-cierre-titulo">¿Querés saber más de vos?</p>
+    <p class="res-cierre-texto">A través de esta herramienta te puedo ayudar a saber desde dónde estás actuando hoy, utilizar tus fortalezas e integrar tus puntos débiles para superar los obstáculos que sentís que te traban en tu desarrollo, y convertir tu crisis en oportunidad. Te permitirá conocer rápidamente a las personas con las que te relacionás para generar vínculos más nutritivos y saludables. Te encontrarás progresivamente con tu mejor versión.</p>
     <div class="res-social">
       <a href="https://instagram.com/consultoraveronicagil" target="_blank" class="res-social-link">
         📲 Instagram · @consultoraveronicagil

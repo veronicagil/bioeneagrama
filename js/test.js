@@ -7,6 +7,7 @@
   let currentQ = 0;
   let answered = false;
   let questions = [];
+  let answerHistory = []; // para el botón "Anterior"
 
   let userName = '';
   let userEmail = '';
@@ -37,12 +38,20 @@
     document.getElementById('progress-label').textContent = currentQ + ' / ' + questions.length;
 
     const numEl = document.getElementById('q-num');
-    numEl.innerHTML = `Pregunta ${currentQ + 1} de ${questions.length} <span class="question-firma">VG · Vero Gil</span>`;
+    numEl.innerHTML = 'Pregunta ' + (currentQ + 1) + ' de ' + questions.length + ' <span class="question-firma">VG · Vero Gil</span>';
     document.getElementById('q-text').textContent = q.texto;
 
     document.getElementById('btn-si').classList.remove('selected');
     document.getElementById('btn-no').classList.remove('selected');
     answered = false;
+
+    // Mostrar/ocultar botón anterior
+    const btnBack = document.getElementById('btn-back');
+    if (currentQ > 0) {
+      btnBack.classList.remove('hidden');
+    } else {
+      btnBack.classList.add('hidden');
+    }
 
     const card = document.getElementById('question-card');
     card.classList.remove('fade-in');
@@ -63,20 +72,34 @@
       document.getElementById('btn-no').classList.add('selected');
     }
 
+    answerHistory.push({ tipo: q.tipo, seccion: q.seccion, resp: resp });
     renderEnea('enea-live', scores, calcMedia(), false);
 
-    setTimeout(() => {
+    setTimeout(function () {
       currentQ++;
       if (currentQ >= questions.length) {
-        showResults();
+        startLoading();
       } else {
         renderQuestion();
       }
     }, 380);
   }
 
+  function handleBack() {
+    if (currentQ <= 0 || answerHistory.length === 0) return;
+
+    const last = answerHistory.pop();
+    if (last.resp === 'si') {
+      scores[last.tipo][last.seccion]--;
+      scores[last.tipo].total--;
+    }
+    currentQ--;
+    answered = false;
+    renderEnea('enea-live', scores, calcMedia(), false);
+    renderQuestion();
+  }
+
   function setupEmailForm() {
-    const btnComenzar = document.getElementById('btn-comenzar');
     const errorEl = document.getElementById('email-error');
 
     function intentarComenzar() {
@@ -105,7 +128,7 @@
       document.getElementById('test-section').classList.remove('hidden');
     }
 
-    btnComenzar.addEventListener('click', intentarComenzar);
+    document.getElementById('btn-comenzar').addEventListener('click', intentarComenzar);
     document.getElementById('input-email').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') intentarComenzar();
     });
@@ -114,42 +137,51 @@
     });
   }
 
-  function showResults() {
+  // Muestra el loading 5 segundos antes de los resultados
+  function startLoading() {
     document.getElementById('progress-wrap').classList.add('hidden');
     document.getElementById('test-section').classList.add('hidden');
+    document.getElementById('loading-section').classList.remove('hidden');
+    window.scrollTo(0, 0);
+
+    setTimeout(function () {
+      document.getElementById('loading-section').classList.add('hidden');
+      showResults();
+    }, 5000);
+  }
+
+  function showResults() {
     document.getElementById('results-section').classList.remove('hidden');
     window.scrollTo(0, 0);
 
     const media = calcMedia();
     const tipos = Array.from({ length: 9 }, (_, i) => i + 1);
-    const altos = tipos.filter(t => scores[t].total >= media).sort((a, b) => scores[b].total - scores[a].total);
-    const bajos = tipos.filter(t => scores[t].total < media).sort((a, b) => scores[a].total - scores[b].total);
+    const altos = tipos.filter(function (t) { return scores[t].total >= media; }).sort(function (a, b) { return scores[b].total - scores[a].total; });
+    const bajos = tipos.filter(function (t) { return scores[t].total < media; }).sort(function (a, b) { return scores[a].total - scores[b].total; });
     const dominante = altos[0] || 1;
     const tipo = TIPOS[dominante];
 
-    // Featured tipo dominante
+    // Tipo dominante
     document.getElementById('res-tipo-num').textContent = 'Tipo ' + dominante + ' · Tu tipo dominante';
     document.getElementById('res-tipo-nombre').textContent = tipo.nombre;
     document.getElementById('res-tipo-centro').textContent = tipo.centro;
-    document.getElementById('res-mini-lectura').textContent = tipo.mini_lectura;
-
-    // Orientación para integrar
-    document.getElementById('res-orientacion').textContent = tipo.orientacion;
+    document.getElementById('res-sintesis').textContent = tipo.sintesis;
 
     // SVG + media
     document.getElementById('media-display').textContent = media.toFixed(1);
     renderEnea('enea-results', scores, media, true);
 
-    // Todos los tipos
+    // Tipos altos
     const altosEl = document.getElementById('grupo-altos');
     altosEl.innerHTML = '';
     altos.forEach(function (t, i) { altosEl.appendChild(makeTipoCard(t, i === 0 ? '★' : String(i + 1), 'alto')); });
 
+    // Tipos bajos
     const bajosEl = document.getElementById('grupo-bajos');
     bajosEl.innerHTML = '';
     bajos.forEach(function (t, i) { bajosEl.appendChild(makeTipoCard(t, i === 0 ? '▾' : '', 'bajo')); });
 
-    // Botón consulta individual → abre WA con resultados
+    // Botón consulta → WA
     document.getElementById('btn-consulta').onclick = function () {
       const hash = Object.entries(scores).map(function (e) { return e[0] + '=' + e[1].luz + ',' + e[1].sombra; }).join('|');
       const baseUrl = window.location.origin + window.location.pathname.replace('test.html', '');
@@ -174,18 +206,18 @@
     const s = scores[t];
     const emptyFlex = 20 - s.total;
     const badgeClass = grupo === 'bajo' ? 'tipo-badge bajo-badge' : 'tipo-badge';
-    div.innerHTML = `
-      <div class="tipo-nombre">
-        <span class="${badgeClass}">${badge}</span>
-        <span>T${t} · ${TIPOS[t].nombre}</span>
-      </div>
-      <div class="tipo-score">Total: ${s.total} &nbsp;|&nbsp; ☀️ Luz: ${s.luz} &nbsp;|&nbsp; 🌑 Sombra: ${s.sombra}</div>
-      <div class="mini-bars">
-        <div class="mini-bar-luz" style="flex:${s.luz}"></div>
-        <div class="mini-bar-sombra" style="flex:${s.sombra}"></div>
-        ${emptyFlex > 0 ? '<div style="flex:' + emptyFlex + ';height:5px;background:var(--border)"></div>' : ''}
-      </div>
-      <p class="tipo-resena">${TIPOS[t].resena}</p>`;
+    div.innerHTML =
+      '<div class="tipo-nombre">' +
+        '<span class="' + badgeClass + '">' + badge + '</span>' +
+        '<span>T' + t + ' · ' + TIPOS[t].nombre + '</span>' +
+      '</div>' +
+      '<div class="tipo-score">Total: ' + s.total + ' &nbsp;|&nbsp; ☀️ Luz: ' + s.luz + ' &nbsp;|&nbsp; 🌑 Sombra: ' + s.sombra + '</div>' +
+      '<div class="mini-bars">' +
+        '<div class="mini-bar-luz" style="flex:' + s.luz + '"></div>' +
+        '<div class="mini-bar-sombra" style="flex:' + s.sombra + '"></div>' +
+        (emptyFlex > 0 ? '<div style="flex:' + emptyFlex + ';height:5px;background:var(--border)"></div>' : '') +
+      '</div>' +
+      '<p class="tipo-resena">' + TIPOS[t].resena + '</p>';
     return div;
   }
 
@@ -198,7 +230,7 @@
       scores[t] = { luz, sombra, total: sim[t] };
     }
     currentQ = questions.length;
-    showResults();
+    startLoading();
   };
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -208,6 +240,7 @@
 
     document.getElementById('btn-si').addEventListener('click', function () { handleAnswer('si'); });
     document.getElementById('btn-no').addEventListener('click', function () { handleAnswer('no'); });
+    document.getElementById('btn-back').addEventListener('click', handleBack);
 
     document.addEventListener('keydown', function (e) {
       if (document.getElementById('test-section').classList.contains('hidden')) return;

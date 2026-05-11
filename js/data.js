@@ -36,8 +36,8 @@ const TIPOS = {
 const AFIRMACIONES = {
   1: {
     luz: [
-      "La gente confía en mí porque soy justo y hago lo que corresponde.",
-      "Estoy orgulloso de mantener mis puntos de vista — soy congruente con lo que creo.",
+      "La gente puede confiar en mí porque tiendo a hacer lo que es correcto.",
+      "Mantengo mis puntos de vista, soy congruente con lo que creo.",
       "Soy una persona metódica y organizada — eso le da estructura a todo lo que hago.",
       "Cuido los detalles, el orden y la precisión porque me importa que las cosas salgan bien.",
       "Me es fácil identificarme con causas que defienden lo correcto contra lo injusto.",
@@ -64,31 +64,31 @@ const AFIRMACIONES = {
     luz: [
       "La gente suele venir a pedirme que los conforte o aconseje — y me sale natural.",
       "Me gusta cuidar a los demás — es algo que me sale solo.",
-      "Necesito sentirme cerca de las personas para estar bien.",
+      "Elijo sentirme cerca de las personas, eso me hace sentir bien.",
       "Cuando tengo tiempo libre, termino ayudando a alguien.",
       "Tengo una gran capacidad de escuchar al otro y estar presente en lo que le pasa.",
-      "Me gusta salvar a alguien cuando veo que está en apuros.",
+      "Tiendo a rescatar a alguien cuando creo que lo necesita.",
       "Me importan mucho los problemas emocionales de las personas que quiero.",
       "La gente se acerca a mí porque soy extrovertido y me comprometo con ellos.",
       "Cuando quiero a alguien me entrego de una manera total — mi afecto no es a medias.",
-      "Mi actitud de servicio me lleva a poner toda mi energía en los demás."
+      "Mi actitud de servicio me lleva a poner gran parte de mi energía en los demás."
     ],
     sombra: [
       "A veces siento que me usan o se aprovechan de lo que doy.",
       "Siento que debo ayudar a las personas aunque no me lo pidan.",
       "Me esfuerzo para que no me vean como egoísta.",
       "Necesito ser importante en la vida de otras personas.",
-      "El deseo de ayudar me ha afectado mi propia salud y bienestar.",
+      "En ocasiones el impulso por ayudar a otros ha afectado mi bienestar.",
       "Muchas veces me siento sobrecargado por lo que los demás esperan de mí.",
       "Siento que si dejo de dar, los demás podrían no quererme.",
-      "Me muestro más preocupado por el otro de lo que realmente estoy.",
+      "A veces demuestro más preocupación por los demás de la que genuinamente siento.",
       "No me gusta que me pongan límites — necesito estar disponible para los demás.",
-      "Soy adicto a los otros porque no sé decir que no."
+      "Me resulta muy difícil decir que no, y termino disponiendo mi tiempo y energía para los demás por encima de mis propias necesidades."
     ]
   },
   3: {
     luz: [
-      "Soy ambicioso y muy motivado — siempre fui así.",
+      "Me percibo como una persona ambiciosa y muy motivada.",
       "Me gusta tener objetivos claros y saber exactamente en qué punto estoy.",
       "Me adapto con facilidad a situaciones y entornos distintos.",
       "Soy visto por los demás como alguien seguro y decidido.",
@@ -104,7 +104,7 @@ const AFIRMACIONES = {
       "Gran parte de mis éxitos se debieron a que sé dar una buena impresión.",
       "Me identifico tanto con mi trabajo que a veces me olvido de quién soy.",
       "Proyectar una imagen ganadora es muy importante para mí.",
-      "Me esforcé mucho para que los demás me acepten y quieran.",
+      "Hago muchas cosas para que me acepten y me quieran.",
       "Me molesta que me digan que lo que estoy haciendo no está bien.",
       "Vivo con cierta tensión porque me propongo demasiados objetivos a la vez.",
       "A veces hay que poner entre paréntesis las propias normas para lograr el éxito.",
@@ -153,7 +153,7 @@ const AFIRMACIONES = {
     ],
     sombra: [
       "Suelo quedarme atrás observando en lugar de involucrarme.",
-      "Me cuesta mucho pedir o alcanzar lo que necesito.",
+      "Me cuesta mucho pedir lo que necesito.",
       "Cuando me presionan, me vuelvo huidizo.",
       "Las sorpresas me generan malestar — prefiero saber qué esperar.",
       "Necesito mucho espacio y tiempo privado — sin eso me agoto.",
@@ -194,7 +194,7 @@ const AFIRMACIONES = {
     luz: [
       "Tengo una energía genuina que hace que la gente quiera estar cerca.",
       "Siempre veo el lado lleno del vaso — encuentro posibilidades donde otros ven problemas.",
-      "La gente me dice que soy el alma de las reuniones.",
+      "Me convierto fácilmente en el alma de las reuniones.",
       "Si tengo que elegir entre lo nuevo y lo conocido, elijo lo nuevo.",
       "Soy muy entusiasta respecto al futuro.",
       "Suelo ver el lado bueno de las cosas naturalmente.",
@@ -212,16 +212,16 @@ const AFIRMACIONES = {
       "Mi teoría es: si algo es bueno, más es mejor.",
       "No creo que sea bueno quedarse triste demasiado tiempo.",
       "Algunas personas me consideran superficial — y a veces tienen algo de razón.",
-      "Me cuesta conectarme con el dolor propio sin transformarlo en otra cosa.",
+      "Cuando algo me duele, tiendo a transformarlo rápidamente en otra cosa en vez de quedarme con ese sentimiento.",
       "Comienzo muchas cosas y me cuesta terminarlas cuando dejan de ser nuevas."
     ]
   },
   8: {
     luz: [
-      "Me pongo al frente en las situaciones difíciles — no me escondo.",
+      "Me pongo espontáneamente al frente de situaciones difíciles.",
       "Tengo un fuerte sentido de la justicia — cuando algo no está bien lo digo.",
       "Soy capaz de dar la vida por quien amo — mi lealtad es absoluta.",
-      "Detecto dónde reside el poder en un grupo.",
+      "Puedo detectar con facilidad dónde reside el poder en un grupo.",
       "Protejo a quienes están bajo mi responsabilidad.",
       "No me asusta enfrentarme con otros cuando es necesario.",
       "Sé cómo hacer las cosas — y lo hago.",
@@ -235,7 +235,7 @@ const AFIRMACIONES = {
       "No me gusta estar arrinconado — reacciono mal cuando eso pasa.",
       "Tuve que ser fuerte para los demás y no tuve tiempo de ver mis propios miedos.",
       "Me muestro más duro de lo que realmente soy.",
-      "Me preocupa que alguien se aproveche de mí cuando bajo la guardia.",
+      "Siento que si bajo la guardia se van a aprovechar de mí.",
       "No me gusta que me digan que me adapte o me conforme.",
       "Me cuesta aceptar y expresar mi lado tierno o vulnerable.",
       "Tiendo más a actuar que a detenerme en los sentimientos.",
@@ -246,7 +246,7 @@ const AFIRMACIONES = {
     luz: [
       "Casi siempre estoy calmado y tranquilo — eso le hace bien a mi entorno.",
       "La armonía y la aceptación son valores muy importantes para mí.",
-      "Puedo ser un árbitro imparcial — para mí las dos partes son iguales.",
+      "Puedo ser un árbitro imparcial, tiendo a considerar los distintos puntos de vista.",
       "Tiendo a no juzgar a las personas — las acepto como son.",
       "Me precio de ser una persona estable y confiable.",
       "Soy extremadamente tratable — me llevo bien con casi todo el mundo.",
@@ -256,7 +256,7 @@ const AFIRMACIONES = {
       "Cuando me comprometo con una causa, lo hago desde un lugar genuino."
     ],
     sombra: [
-      "Me fastidia que me perturben — prefiero que todo siga su curso.",
+      "Me fastidia mucho que me perturben, prefiero estar en calma.",
       "Me resulta difícil decir no.",
       "Generalmente sigo la línea de menor resistencia.",
       "No hay nada tan urgente que no pueda esperar hasta mañana.",

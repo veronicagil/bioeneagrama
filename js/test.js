@@ -228,21 +228,53 @@
       window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
     };
 
-    // Botón consulta → WA
+    // Botón consulta → WA profesional completo
     document.getElementById('btn-consulta').onclick = function () {
       const hash = Object.entries(scores).map(function (e) { return e[0] + '=' + e[1].luz + ',' + e[1].sombra; }).join('|');
       const baseUrl = window.location.origin + window.location.pathname.replace('test.html', '');
       const lecturaUrl = baseUrl + 'lectura.html#' + encodeURIComponent(hash);
-      let msg = '🌀 *Bio Eneagrama — Vero Gil*\n📊 Resultados del Test\n\n';
-      if (userName) msg += '👤 ' + userName + '\n';
+
+      const tipo = TIPOS[dominante];
+      const triadaKey = tipo.triada;
+      const triada = TRIADAS[triadaKey];
+
+      // Tipos ordenados de mayor a menor
+      const ordenados = Array.from({ length: 9 }, (_, i) => i + 1)
+        .sort(function (a, b) { return scores[b].total - scores[a].total; });
+      const sobMedia = ordenados.filter(function (t) { return scores[t].total >= media; });
+      const bajMedia = ordenados.filter(function (t) { return scores[t].total < media; });
+
+      let msg = '🌀 *BIO ENEAGRAMA — Consulta profesional*\n';
+      msg += '━━━━━━━━━━━━━━━━━━━━\n';
+      if (userName) msg += '👤 *' + userName + '*\n';
       if (userEmail) msg += '📧 ' + userEmail + '\n';
       msg += '\n';
-      for (let t = 1; t <= 9; t++) {
+
+      msg += '★ *TIPO DOMINANTE: T' + dominante + ' — ' + tipo.nombre + '*\n';
+      msg += '• Centro: ' + tipo.centro + '\n';
+      msg += '• Transformación: ' + tipo.transformacion + '\n';
+      msg += '• Ala que desarrolla: T' + tipo.ala_desarrolla + ' — ' + TIPOS[tipo.ala_desarrolla].nombre + '\n';
+      msg += '• Ala que le cuesta: T' + tipo.ala_cuesta + ' — ' + TIPOS[tipo.ala_cuesta].nombre + '\n';
+      msg += '• Integración → T' + tipo.integracion + ' — ' + TIPOS[tipo.integracion].nombre + '\n';
+      msg += '• Desintegración → T' + tipo.desintegracion + ' — ' + TIPOS[tipo.desintegracion].nombre + '\n';
+      msg += '• ' + triada.nombre + ' (herida: ' + triada.herida + ')\n';
+      msg += '• Luz: ' + scores[dominante].luz + ' / Sombra: ' + scores[dominante].sombra + '\n';
+      msg += '\n';
+
+      msg += '📊 *PUNTAJES (mayor a menor)*\n';
+      msg += '📐 Media: ' + media.toFixed(1) + '\n\n';
+      msg += '▲ Sobre la media:\n';
+      sobMedia.forEach(function (t) {
         const s = scores[t];
-        msg += 'T' + t + ' ' + TIPOS[t].nombre + ': ' + s.total + ' (☀️' + s.luz + ' / 🌑' + s.sombra + ')\n';
-      }
-      msg += '\n📐 Media: ' + media.toFixed(1) + '\n';
-      msg += '\n🔍 Panel profesional:\n' + lecturaUrl;
+        msg += 'T' + t + ' ' + TIPOS[t].nombre + ': *' + s.total + '* (☀️' + s.luz + ' 🌑' + s.sombra + ')\n';
+      });
+      msg += '\n▽ Bajo la media:\n';
+      bajMedia.forEach(function (t) {
+        const s = scores[t];
+        msg += 'T' + t + ' ' + TIPOS[t].nombre + ': ' + s.total + ' (☀️' + s.luz + ' 🌑' + s.sombra + ')\n';
+      });
+
+      msg += '\n🔍 *Panel profesional:*\n' + lecturaUrl;
       window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
     };
   }

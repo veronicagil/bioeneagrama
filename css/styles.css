@@ -907,11 +907,11 @@ textarea.campo:focus { border-color: var(--violet-l); }
 
 .email-tagline {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.15rem;
-  font-style: italic;
-  color: var(--sub);
-  margin-bottom: 4px;
-  line-height: 1.4;
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 6px;
+  line-height: 1.35;
 }
 
 .email-autor {
@@ -1109,6 +1109,18 @@ textarea.campo:focus { border-color: var(--violet-l); }
   flex-direction: column;
   gap: 12px;
   margin: 0 0 24px;
+}
+
+.res-foto-hoy {
+  background: var(--fucsia-bg);
+  border: 1px solid var(--fucsia-l);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  color: var(--fucsia);
+  text-align: center;
+  line-height: 1.55;
+  margin: 16px 0 0;
 }
 
 .res-cierre-final {

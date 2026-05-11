@@ -1,6 +1,9 @@
 const WA_NUMBER = "5491149169532";
 const PIN_LECTURA = "2408";
 const FORMSPREE_ID = "xnjwgnle";
+const EMAILJS_SERVICE_ID  = "EMAILJS_SERVICE_ID";
+const EMAILJS_TEMPLATE_ID = "EMAILJS_TEMPLATE_ID";
+const EMAILJS_PUBLIC_KEY  = "EMAILJS_PUBLIC_KEY";
 const FRASE_FINAL = "El Eneagrama no te define. Es el mapa que te ayuda a visibilizar aspectos de tu personalidad para conocer la energía que te arrastra. Propicia la autoobservación y te permite integrar aspectos que te llevan a tu evolución consciente.";
 
 const TIPOS = {

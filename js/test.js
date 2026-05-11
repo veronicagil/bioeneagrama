@@ -99,6 +99,32 @@
     renderQuestion();
   }
 
+  function enviarEmailResultados(dominante, media) {
+    if (!EMAILJS_PUBLIC_KEY || EMAILJS_PUBLIC_KEY === 'EMAILJS_PUBLIC_KEY') return;
+    if (!userEmail) return;
+
+    try {
+      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+      const tipo = TIPOS[dominante];
+      let puntajes = '';
+      for (let t = 1; t <= 9; t++) {
+        puntajes += 'T' + t + ' ' + TIPOS[t].nombre + ': ' + scores[t].total + ' (Luz: ' + scores[t].luz + ' / Sombra: ' + scores[t].sombra + ')\n';
+      }
+
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_name:     userName,
+        to_email:    userEmail,
+        tipo_num:    'Tipo ' + dominante,
+        tipo_nombre: tipo.nombre,
+        tipo_centro: tipo.centro,
+        sintesis:    tipo.sintesis,
+        puntajes:    puntajes,
+        media:       media.toFixed(1)
+      }).catch(function () {});
+    } catch (e) {}
+  }
+
   function setupEmailForm() {
     const errorEl = document.getElementById('email-error');
 
@@ -170,6 +196,9 @@
     // SVG + media
     document.getElementById('media-display').textContent = media.toFixed(1);
     renderEnea('enea-results', scores, media, true);
+
+    // Email al respondente
+    enviarEmailResultados(dominante, media);
 
     // Tipos altos
     const altosEl = document.getElementById('grupo-altos');

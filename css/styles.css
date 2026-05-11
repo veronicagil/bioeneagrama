@@ -1110,3 +1110,13 @@ textarea.campo:focus { border-color: var(--violet-l); }
   gap: 12px;
   margin: 0 0 24px;
 }
+
+.res-cierre-final {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--violet);
+  text-align: center;
+  padding: 28px 20px 12px;
+  line-height: 1.3;
+}

@@ -210,6 +210,24 @@
     bajosEl.innerHTML = '';
     bajos.forEach(function (t, i) { bajosEl.appendChild(makeTipoCard(t, i === 0 ? '▾' : '', 'bajo')); });
 
+    // Botón guardar resultados → WA propio
+    document.getElementById('btn-guardar').onclick = function () {
+      const nombreMostrar = userName ? userName : 'Mis resultados';
+      let msg = '🌀 *Bio Eneagrama · ' + nombreMostrar + '*\n\n';
+      msg += '★ *Tipo dominante: ' + TIPOS[dominante].nombre + '*\n';
+      msg += TIPOS[dominante].centro + '\n\n';
+      msg += TIPOS[dominante].sintesis + '\n\n';
+      msg += '📊 *Puntajes:*\n';
+      for (let t = 1; t <= 9; t++) {
+        const s = scores[t];
+        const marca = t === dominante ? ' ★' : '';
+        msg += 'T' + t + ' ' + TIPOS[t].nombre + ': ' + s.total + marca + '\n';
+      }
+      msg += '\n📐 Media: ' + media.toFixed(1);
+      msg += '\n\n_Bio Eneagrama · Vero Gil_\nbioeneagrama.vercel.app';
+      window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+    };
+
     // Botón consulta → WA
     document.getElementById('btn-consulta').onclick = function () {
       const hash = Object.entries(scores).map(function (e) { return e[0] + '=' + e[1].luz + ',' + e[1].sombra; }).join('|');

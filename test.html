@@ -109,6 +109,16 @@
 <!-- SECCIÓN RESULTADOS -->
 <div id="results-section" class="container hidden">
 
+  <!-- BANNER PDF -->
+  <div id="pdf-banner" style="background:linear-gradient(135deg,#B5004F,#4B0082);padding:20px 24px;text-align:center;border-radius:16px;margin-bottom:16px">
+    <p style="margin:0 0 4px;color:rgba(255,255,255,0.85);font-size:0.82rem">Tu resultado del Bio Eneagrama</p>
+    <p style="margin:0 0 14px;color:#fff;font-size:1rem;font-weight:bold">Guardalo para no perderlo</p>
+    <button id="btn-pdf" onclick="generarPDF()" style="background:#fff;color:#B5004F;border:none;padding:13px 28px;border-radius:25px;font-size:0.95rem;font-weight:bold;cursor:pointer;font-family:inherit">
+      📄 Descargar mi resultado en PDF
+    </button>
+    <p style="margin:10px 0 0;color:rgba(255,255,255,0.7);font-size:0.75rem">También te enviamos el resultado por mail</p>
+  </div>
+
   <!-- 1. MARCO CONCEPTUAL -->
   <div class="res-filosofia">
     <p class="res-filosofia-titulo">Una foto del momento</p>
@@ -181,6 +191,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="js/data.js"></script>
 <script src="js/enea.js"></script>
 <script src="js/test.js"></script>

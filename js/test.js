@@ -265,14 +265,44 @@
     return txt;
   }
 
+  window.generarPDF = function () {
+    var btn = document.getElementById('btn-pdf');
+    if (btn) { btn.textContent = '⏳ Generando PDF...'; btn.disabled = true; }
+
+    // Ocultar el banner PDF y los botones de acción del PDF temporal
+    var banner = document.getElementById('pdf-banner');
+    var btnGuardar = document.getElementById('btn-guardar');
+    if (banner) banner.style.display = 'none';
+    if (btnGuardar) btnGuardar.style.display = 'none';
+
+    var elemento = document.getElementById('results-section');
+    var nombre = userName ? userName.replace(/\s+/g, '-') : 'resultado';
+    var opciones = {
+      margin:      [8, 8, 8, 8],
+      filename:    'BioEneagrama-' + nombre + '.pdf',
+      image:       { type: 'jpeg', quality: 0.92 },
+      html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollY: 0 },
+      jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opciones).from(elemento).save().then(function () {
+      if (banner) banner.style.display = '';
+      if (btnGuardar) btnGuardar.style.display = '';
+      if (btn) { btn.textContent = '✓ PDF descargado'; btn.disabled = false; }
+    }).catch(function () {
+      if (banner) banner.style.display = '';
+      if (btnGuardar) btnGuardar.style.display = '';
+      if (btn) { btn.textContent = '📄 Descargar mi resultado en PDF'; btn.disabled = false; }
+    });
+  };
+
   function enviarEmailResultados(dominante, media) {
     if (!userEmail) return;
 
     var tipo = TIPOS[dominante];
-    var htmlBody = buildEmailHTML(dominante, media);
     var textBody = buildEmailText(dominante, media);
 
-    // EmailJS al cliente
+    // EmailJS al cliente — texto estructurado limpio
     if (EMAILJS_PUBLIC_KEY && EMAILJS_PUBLIC_KEY !== 'EMAILJS_PUBLIC_KEY') {
       try {
         emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
@@ -286,23 +316,21 @@
           sintesis:    tipo.sintesis,
           media:       media.toFixed(1),
           puntajes:    textBody,
-          html_body:   htmlBody,
-          message:     htmlBody
+          message:     textBody
         };
         emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, paramsCliente).catch(function () {});
 
-        // EmailJS a Vero con los resultados del cliente
+        // EmailJS a Vero con datos del cliente + sus resultados
         var paramsVero = {
-          to_name:        'Vero Gil',
-          to_email:       'mverogil@gmail.com',
-          tipo_num:       'Tipo ' + dominante,
-          tipo_nombre:    tipo.nombre,
-          tipo_centro:    tipo.centro,
-          sintesis:       tipo.sintesis,
-          media:          media.toFixed(1),
-          puntajes:       'Resultado de ' + userName + ' (' + userEmail + ')\n\n' + textBody,
-          html_body:      htmlBody,
-          message:        htmlBody
+          to_name:     'Vero Gil',
+          to_email:    'mverogil@gmail.com',
+          tipo_num:    'Tipo ' + dominante,
+          tipo_nombre: tipo.nombre,
+          tipo_centro: tipo.centro,
+          sintesis:    tipo.sintesis,
+          media:       media.toFixed(1),
+          puntajes:    textBody,
+          message:     'RESULTADO DE: ' + userName + ' (' + userEmail + ')\n\n' + textBody
         };
         emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, paramsVero).catch(function () {});
 
@@ -356,15 +384,6 @@
       errorEl.classList.add('hidden');
       userName = nombre;
       userEmail = email;
-
-      // Captura del lead al inicio (aunque no termine el test)
-      if (FORMSPREE_ID && FORMSPREE_ID !== 'FORMSPREE_ID') {
-        fetch('https://formspree.io/f/' + FORMSPREE_ID, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({ nombre: nombre, email: email, origen: 'Bio Eneagrama Test — Inicio' })
-        }).catch(function () {});
-      }
 
       document.getElementById('email-section').classList.add('hidden');
       document.getElementById('progress-wrap').classList.remove('hidden');

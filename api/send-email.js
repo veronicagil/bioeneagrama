@@ -10,11 +10,13 @@ module.exports = async function (req, res) {
     return res.status(503).json({ error: 'Email no configurado' });
   }
 
-  const { toName, toEmail, tipoNum, tipoNombre, centro, sintesis, puntajes, media, pdfBase64, pdfFilename } = req.body || {};
+  const { toName, toApellido, toEmail, toTelefono, toOrigen, tipoNum, tipoNombre, centro, sintesis, puntajes, media, pdfBase64, pdfFilename } = req.body || {};
 
   if (!toEmail || !toName) {
     return res.status(400).json({ error: 'Faltan datos del destinatario' });
   }
+
+  const nombreCompleto = toApellido ? toName + ' ' + toApellido : toName;
 
   try {
     const transporter = nodemailer.createTransport({
@@ -22,7 +24,7 @@ module.exports = async function (req, res) {
       auth: { user: GMAIL_USER, pass: GMAIL_PASS }
     });
 
-    const emailHtml = buildResultEmail(toName, tipoNum, tipoNombre, centro, sintesis, puntajes, media);
+    const emailHtml = buildResultEmail(nombreCompleto, tipoNum, tipoNombre, centro, sintesis, puntajes, media);
 
     const attachments = [];
     if (pdfBase64 && pdfBase64.length < 5000000) {
@@ -44,12 +46,21 @@ module.exports = async function (req, res) {
       attachments: attachments
     });
 
-    // Email a Vero (copia con identificacion del cliente)
+    // Email a Vero con datos de contacto completos del cliente
+    const datosCliente =
+      '<div style="background:#f0e8f8;padding:16px 20px;border-radius:8px;margin-bottom:20px;font-family:sans-serif;font-size:13px;color:#3a3a5c">' +
+      '<p style="margin:0 0 6px;font-weight:bold;font-size:14px">📋 Datos del cliente</p>' +
+      '<p style="margin:2px 0">👤 ' + nombreCompleto + '</p>' +
+      '<p style="margin:2px 0">📧 ' + toEmail + '</p>' +
+      (toTelefono ? '<p style="margin:2px 0">📱 ' + toTelefono + '</p>' : '') +
+      (toOrigen   ? '<p style="margin:2px 0">🔍 Llegó por: ' + toOrigen + '</p>' : '') +
+      '</div>';
+
     await transporter.sendMail({
       from: '"Bio Eneagrama" <' + GMAIL_USER + '>',
       to: GMAIL_USER,
-      subject: '🌀 Resultado de ' + toName + ' — ' + toEmail,
-      html: emailHtml,
+      subject: '🌀 ' + nombreCompleto + ' · ' + tipoNum + ' ' + tipoNombre,
+      html: datosCliente + emailHtml,
       attachments: attachments
     });
 

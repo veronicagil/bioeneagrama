@@ -9,8 +9,11 @@
   let questions  = [];
   let answerHistory = [];
 
-  let userName  = '';
-  let userEmail = '';
+  let userName     = '';
+  let userApellido = '';
+  let userEmail    = '';
+  let userTelefono = '';
+  let userOrigen   = '';
 
   // Guardamos el dominante y la media para usarlos al generar el PDF
   let resultDominante = 1;
@@ -176,15 +179,18 @@
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              toName:     userName,
-              toEmail:    userEmail,
-              tipoNum:    'Tipo ' + dominante,
-              tipoNombre: tipo.nombre,
-              centro:     tipo.centro,
-              sintesis:   tipo.sintesis,
-              puntajes:   puntajes,
-              media:      media.toFixed(1),
-              pdfBase64:  uri,
+              toName:      userName,
+              toApellido:  userApellido,
+              toEmail:     userEmail,
+              toTelefono:  userTelefono,
+              toOrigen:    userOrigen,
+              tipoNum:     'Tipo ' + dominante,
+              tipoNombre:  tipo.nombre,
+              centro:      tipo.centro,
+              sintesis:    tipo.sintesis,
+              puntajes:    puntajes,
+              media:       media.toFixed(1),
+              pdfBase64:   uri,
               pdfFilename: filename
             })
           }).catch(function () {});
@@ -217,17 +223,23 @@
     const errorEl = document.getElementById('email-error');
 
     function intentarComenzar() {
-      const nombre = document.getElementById('input-nombre').value.trim();
-      const email  = document.getElementById('input-email').value.trim();
+      const nombre   = document.getElementById('input-nombre').value.trim();
+      const apellido = document.getElementById('input-apellido').value.trim();
+      const email    = document.getElementById('input-email').value.trim();
+      const tel      = document.getElementById('input-telefono').value.trim();
+      const origen   = document.getElementById('input-origen').value;
       const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-      if (!nombre || !emailValido) {
+      if (!nombre || !apellido || !emailValido) {
         errorEl.classList.remove('hidden');
         return;
       }
       errorEl.classList.add('hidden');
-      userName  = nombre;
-      userEmail = email;
+      userName     = nombre;
+      userApellido = apellido;
+      userEmail    = email;
+      userTelefono = tel;
+      userOrigen   = origen;
 
       document.getElementById('email-section').classList.add('hidden');
       document.getElementById('progress-wrap').classList.remove('hidden');

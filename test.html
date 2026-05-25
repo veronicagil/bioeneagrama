@@ -31,10 +31,32 @@
       <input type="text" id="input-nombre" class="campo-input" placeholder="Tu nombre" autocomplete="given-name">
     </div>
     <div class="campo-wrap">
+      <label class="campo-label" for="input-apellido">Apellido</label>
+      <input type="text" id="input-apellido" class="campo-input" placeholder="Tu apellido" autocomplete="family-name">
+    </div>
+    <div class="campo-wrap">
       <label class="campo-label" for="input-email">Mail</label>
       <input type="email" id="input-email" class="campo-input" placeholder="nombre@mail.com" autocomplete="email">
     </div>
-    <div class="email-error hidden" id="email-error">Completá tu nombre y un mail válido para continuar.</div>
+    <div class="campo-wrap">
+      <label class="campo-label" for="input-telefono">Teléfono</label>
+      <input type="tel" id="input-telefono" class="campo-input" placeholder="Ej: +54 11 1234-5678" autocomplete="tel">
+    </div>
+    <div class="campo-wrap">
+      <label class="campo-label" for="input-origen">¿Cómo llegaste al Bio Eneagrama?</label>
+      <select id="input-origen" class="campo-input" style="cursor:pointer">
+        <option value="" disabled selected>Elegí una opción</option>
+        <option value="Me lo recomendó un amigo o familiar">Me lo recomendó un amigo o familiar</option>
+        <option value="Conozco a Vero Gil personalmente">Conozco a Vero Gil personalmente</option>
+        <option value="Instagram de Vero Gil">Instagram de Vero Gil</option>
+        <option value="Google / búsqueda en internet">Google / búsqueda en internet</option>
+        <option value="LinkedIn">LinkedIn</option>
+        <option value="Un taller o evento">Un taller o evento</option>
+        <option value="YouTube o podcast">YouTube o podcast</option>
+        <option value="Otro">Otro</option>
+      </select>
+    </div>
+    <div class="email-error hidden" id="email-error">Completá todos los campos obligatorios (nombre, apellido y mail).</div>
     <button class="btn btn-primary" id="btn-comenzar">¡Comenzá ya!</button>
   </div>
   <div class="footer">Bio Eneagrama · VG · Vero Gil</div>

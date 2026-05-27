@@ -49,7 +49,6 @@
     const pct = (currentQ / questions.length) * 100;
 
     document.getElementById('progress-fill').style.width  = pct + '%';
-    document.getElementById('progress-label').textContent = currentQ + ' / ' + questions.length;
 
     document.getElementById('q-num').innerHTML =
       'Pregunta ' + (currentQ + 1) + ' de ' + questions.length +

@@ -64,6 +64,29 @@ module.exports = async function (req, res) {
       attachments: attachments
     });
 
+    // Guardar en Google Sheets si está configurado
+    const SHEETS_URL = process.env.SHEETS_WEBHOOK_URL;
+    if (SHEETS_URL) {
+      try {
+        await fetch(SHEETS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nombre: toName,
+            apellido: toApellido || '',
+            email: toEmail,
+            telefono: toTelefono || '',
+            origen: toOrigen || '',
+            tipoNum: tipoNum || '',
+            tipoNombre: tipoNombre || ''
+          }),
+          redirect: 'follow'
+        });
+      } catch (sheetErr) {
+        console.error('sheets error:', sheetErr.message);
+      }
+    }
+
     res.status(200).json({ ok: true });
   } catch (err) {
     console.error('send-email error:', err.message);

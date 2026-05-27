@@ -843,14 +843,31 @@ textarea.campo:focus { border-color: var(--violet-l); }
   padding: 32px 16px;
 }
 
-.loading-enea {
-  animation: loadingPulse 1.8s ease-in-out infinite;
+.loading-logro {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.6rem;
+  font-weight: 600;
+  color: var(--violet);
+  margin-bottom: 10px;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+}
+
+.loading-aplauso {
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.6;
   margin-bottom: 28px;
 }
 
-@keyframes loadingPulse {
-  0%, 100% { opacity: 0.5; transform: scale(0.92) rotate(0deg); }
-  50%       { opacity: 1;   transform: scale(1.04) rotate(180deg); }
+.loading-enea {
+  animation: loadingSpin 3s linear infinite;
+  margin-bottom: 28px;
+}
+
+@keyframes loadingSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 .loading-texto {

@@ -46,13 +46,13 @@
   // ──────────────────────────────────────────────
   function renderQuestion() {
     const q   = questions[currentQ];
-    const pct = (currentQ / questions.length) * 100;
+    const step5 = Math.floor(currentQ / 5) * 5;
+    const pct   = (step5 / questions.length) * 100;
 
-    document.getElementById('progress-fill').style.width  = pct + '%';
+    document.getElementById('progress-fill').style.width = pct + '%';
 
     document.getElementById('q-num').innerHTML =
-      'Pregunta ' + (currentQ + 1) + ' de ' + questions.length +
-      ' <span class="question-firma">VG · Vero Gil</span>';
+      '<span class="question-firma">VG · Vero Gil</span>';
     document.getElementById('q-text').textContent = q.texto;
 
     document.getElementById('btn-si').classList.remove('selected');

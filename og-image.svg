@@ -1,0 +1,71 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B5004F"/>
+      <stop offset="100%" stop-color="#4B0082"/>
+    </linearGradient>
+    <linearGradient id="line" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.6)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fondo degradado -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Punto de luz sutil en la esquina superior derecha -->
+  <radialGradient id="glow" cx="80%" cy="20%" r="40%">
+    <stop offset="0%" stop-color="rgba(255,255,255,0.08)"/>
+    <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+  </radialGradient>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- Símbolo del Eneagrama decorativo (derecha, semitransparente) -->
+  <!-- cx=880 cy=315 r=200 -->
+  <circle cx="880" cy="315" r="200" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="3"/>
+  <!-- Triángulo T9-T3-T6 -->
+  <polygon points="880,115 1053.2,415 706.8,415" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="2.5"/>
+  <!-- Héxada T1-T4-T2-T8-T5-T7-T1 -->
+  <polyline points="1008.5,181.4 966.3,512.3 1145.9,264.0 734.1,181.4 792.7,512.3 614.1,264.0 1008.5,181.4" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="2.5" fill="none"/>
+
+  <!-- Línea decorativa fina -->
+  <line x1="80" y1="450" x2="560" y2="450" stroke="url(#line)" stroke-width="1"/>
+
+  <!-- BIO -->
+  <text x="80" y="230"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="108"
+    font-weight="normal"
+    fill="rgba(255,255,255,0.55)"
+    letter-spacing="18">BIO</text>
+
+  <!-- ENEAGRAMA -->
+  <text x="80" y="360"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="108"
+    font-weight="normal"
+    fill="white"
+    letter-spacing="4">ENEAGRAMA</text>
+
+  <!-- Separador -->
+  <text x="80" y="415"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="16"
+    fill="rgba(255,255,255,0.45)"
+    letter-spacing="10">────────────────</text>
+
+  <!-- VERO GIL -->
+  <text x="82" y="475"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="28"
+    font-weight="400"
+    fill="rgba(255,255,255,0.85)"
+    letter-spacing="8">VERO GIL</text>
+
+  <!-- Tagline -->
+  <text x="82" y="520"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="22"
+    font-style="italic"
+    fill="rgba(255,255,255,0.5)">Test de autoconocimiento · 180 afirmaciones</text>
+</svg>

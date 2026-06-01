@@ -75,6 +75,25 @@
     buildForm();
 
     document.getElementById('btn-enviar').addEventListener('click', function () {
+      // Recopilar datos de contacto
+      const email    = (document.getElementById('cues-email') || {}).value || '';
+      const telefono = (document.getElementById('cues-tel')   || {}).value || '';
+
+      // Recopilar las 15 respuestas
+      const respuestas = [];
+      for (let i = 1; i <= PREGUNTAS.length; i++) {
+        respuestas.push((document.getElementById('p' + i) || {}).value || '');
+      }
+      const nombre = respuestas[0] || ''; // La primera pregunta es el nombre completo
+
+      // Guardar en Google Sheets (en paralelo, no bloquea el flujo)
+      fetch('/api/save-cuestionario', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ nombre, email, telefono, respuestas })
+      }).catch(function () {});
+
+      // Abrir WhatsApp (comportamiento original)
       const msg = buildMessage();
       window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
     });

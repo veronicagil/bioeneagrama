@@ -10,7 +10,7 @@ module.exports = async function (req, res) {
     return res.status(503).json({ error: 'Email no configurado' });
   }
 
-  const { toName, toApellido, toEmail, toTelefono, toOrigen, tipoNum, tipoNombre, centro, sintesis, puntajes, media, pdfBase64, pdfFilename } = req.body || {};
+  const { toName, toApellido, toEmail, toTelefono, toOrigen, tipoNum, tipoNombre, centro, sintesis, puntajes, media, scoresData, pdfBase64, pdfFilename } = req.body || {};
 
   if (!toEmail || !toName) {
     return res.status(400).json({ error: 'Faltan datos del destinatario' });
@@ -72,13 +72,16 @@ module.exports = async function (req, res) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            nombre: toName,
-            apellido: toApellido || '',
-            email: toEmail,
-            telefono: toTelefono || '',
-            origen: toOrigen || '',
-            tipoNum: tipoNum || '',
-            tipoNombre: tipoNombre || ''
+            source:     'test',
+            nombre:     toName,
+            apellido:   toApellido || '',
+            email:      toEmail,
+            telefono:   toTelefono || '',
+            origen:     toOrigen || '',
+            tipoNum:    tipoNum || '',
+            tipoNombre: tipoNombre || '',
+            media:      media || '',
+            scores:     scoresData || {}
           }),
           redirect: 'follow'
         });

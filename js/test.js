@@ -174,6 +174,12 @@
           const tipo = TIPOS[dominante];
           const puntajes = buildPuntajesTexto(dominante, media);
 
+          // Serializar puntajes como objeto estructurado para la base de datos
+          var scoresData = {};
+          Object.keys(scores).forEach(function(t) {
+            scoresData['T' + t] = { luz: scores[t].luz, sombra: scores[t].sombra, total: scores[t].total };
+          });
+
           fetch('/api/send-email', {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -189,6 +195,7 @@
               sintesis:    tipo.sintesis,
               puntajes:    puntajes,
               media:       media.toFixed(1),
+              scoresData:  scoresData,
               pdfBase64:   uri,
               pdfFilename: filename
             })

@@ -176,6 +176,22 @@
     });
   }
 
+  // El símbolo SVG sale vacío en el PDF: durante la generación se reemplaza por su versión PNG
+  function ponerSimboloComoImagen(png) {
+    const box = document.getElementById('enea-results');
+    const svg = box && box.querySelector('svg');
+    if (!png || !svg) return Promise.resolve(function () {});
+    const img = new Image();
+    img.style.cssText = 'display:block;width:100%;max-width:420px;height:auto;margin:0 auto';
+    const listo = new Promise(function (resolve) { img.onload = resolve; img.onerror = resolve; });
+    img.src = png;
+    svg.style.display = 'none';
+    box.appendChild(img);
+    return listo.then(function () {
+      return function restaurar() { img.remove(); svg.style.display = ''; };
+    });
+  }
+
   function iniciarGeneracionPDF(dominante, media) {
     const btn    = document.getElementById('btn-pdf');
     const banner = document.getElementById('pdf-banner');
@@ -183,39 +199,56 @@
 
     if (btn) { btn.textContent = '⏳ Preparando tu resultado...'; btn.disabled = true; }
 
-    // Ocultar controles que no deben ir en el PDF
-    if (banner) banner.style.display = 'none';
-    if (btnG)   btnG.style.display   = 'none';
-
     const elemento = document.getElementById('results-section');
     const nombre   = userName.replace(/\s+/g, '-') || 'resultado';
     const filename = 'BioEneagrama-' + nombre + '.pdf';
 
-    // Los celulares tienen un límite de tamaño de imagen (canvas): si el resultado es muy largo
-    // y la escala es alta, la imagen se corta. Se ajusta la escala al largo del contenido.
-    const altoAprox = elemento.scrollHeight * (elemento.offsetWidth / 730 || 1);
-    const escala = Math.max(1, Math.min(2, Math.sqrt(12000000 / (730 * Math.max(altoAprox, 1)))));
+    let eneaPng  = null;
+    let restaurarSimbolo = function () {};
 
-    const opciones = {
-      margin:      [10, 8, 10, 8],
-      filename:    filename,
-      image:       { type: 'jpeg', quality: 0.92 },
-      html2canvas: { scale: escala, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0, windowWidth: 640 },
-      jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      // Ningún párrafo, título o tarjeta queda partido entre dos páginas del PDF
-      pagebreak:   { mode: ['avoid-all', 'css', 'legacy'] }
-    };
+    function restaurarPantalla() {
+      restaurarSimbolo();
+      if (banner) banner.style.display = '';
+      if (btnG)   btnG.style.display   = '';
+      if (btn)  { btn.textContent = '📄 Descargar mi resultado en PDF'; btn.disabled = false; }
+    }
 
-    html2pdf().set(opciones).from(elemento).outputPdf('blob')
+    eneaToPng()
+      .then(function (png) {
+        eneaPng = png;
+        return ponerSimboloComoImagen(png);
+      })
+      .then(function (restaurar) {
+        restaurarSimbolo = restaurar;
+
+        // Ocultar controles que no deben ir en el PDF
+        if (banner) banner.style.display = 'none';
+        if (btnG)   btnG.style.display   = 'none';
+
+        // Los celulares tienen un límite de tamaño de imagen (canvas): si el resultado es muy largo
+        // y la escala es alta, la imagen se corta. Se ajusta la escala al largo del contenido.
+        const altoAprox = elemento.scrollHeight * (elemento.offsetWidth / 730 || 1);
+        const escala = Math.max(1, Math.min(2, Math.sqrt(12000000 / (730 * Math.max(altoAprox, 1)))));
+
+        const opciones = {
+          margin:      [10, 8, 10, 8],
+          filename:    filename,
+          image:       { type: 'jpeg', quality: 0.92 },
+          // Sin windowWidth: con una ventana simulada más angosta que la hoja, el contenido salía corrido a la izquierda
+          html2canvas: { scale: escala, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0 },
+          jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          // Ningún párrafo, título o tarjeta queda partido entre dos páginas; la lectura empieza en página nueva
+          pagebreak:   { mode: ['avoid-all', 'css', 'legacy'], before: '#devolucion-lectura' }
+        };
+
+        return html2pdf().set(opciones).from(elemento).outputPdf('blob');
+      })
       .then(function (blob) {
         pdfGenerado = URL.createObjectURL(blob);
         return blobToBase64(blob);
       })
       .then(function (uri) {
-        // Restaurar controles
-        if (banner) banner.style.display = '';
-        if (btnG)   btnG.style.display   = '';
-        if (btn)  { btn.textContent = '📄 Descargar mi resultado en PDF'; btn.disabled = false; }
+        restaurarPantalla();
 
         // Enviar email con PDF adjunto
         if (userEmail) {
@@ -228,7 +261,7 @@
             scoresData['T' + t] = { luz: scores[t].luz, sombra: scores[t].sombra, total: scores[t].total };
           });
 
-          eneaToPng().then(function (eneaPng) { return fetch('/api/send-email', {
+          fetch('/api/send-email', {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -251,14 +284,10 @@
               pdfBase64:     uri,
               pdfFilename:   filename
             })
-          }); }).catch(function () {});
+          }).catch(function () {});
         }
       })
-      .catch(function () {
-        if (banner) banner.style.display = '';
-        if (btnG)   btnG.style.display   = '';
-        if (btn)  { btn.textContent = '📄 Descargar mi resultado en PDF'; btn.disabled = false; }
-      });
+      .catch(restaurarPantalla);
   }
 
   // Botón de descarga — usa el PDF ya generado

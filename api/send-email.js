@@ -134,7 +134,7 @@ function buildDevolucionHtml(dev) {
   };
 
   var base = '<div style="padding:24px 30px;border-bottom:2px solid #ede8f5;background:#faf7ff">' +
-    '<p style="margin:0 0 12px;font-size:17px;font-weight:bold;color:#4B0082;font-family:Georgia,serif">El Eneagrama: qué es y qué refleja este test</p>' +
+    '<p style="margin:0 0 14px;padding-bottom:10px;border-bottom:2px solid #F9D6E8;text-align:center;font-size:28px;line-height:1.2;font-weight:bold;color:#B5004F;font-family:Georgia,serif">El Eneagrama, ¿qué es?</p>' +
     dev.base.map(function (p) { return '<p style="' + P + '">' + estilizar(p) + '</p>'; }).join('') +
     '</div>';
 

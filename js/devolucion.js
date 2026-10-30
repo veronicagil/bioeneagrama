@@ -195,7 +195,7 @@ function construirDevolucion(scores) {
 function renderDevolucionBase(containerId, dev) {
   const el = document.getElementById(containerId);
   if (!el) return;
-  el.innerHTML = '<p class="res-filosofia-titulo">El Eneagrama: qué es y qué refleja este test</p>' +
+  el.innerHTML = '<h2 class="res-filosofia-titulo">El Eneagrama, ¿qué es?</h2>' +
     dev.base.map(p => '<p>' + p + '</p>').join('');
 }
 

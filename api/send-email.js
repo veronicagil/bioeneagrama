@@ -226,9 +226,11 @@ function buildResultEmail(nombre, tipoNum, tipoNombre, centro, sintesis, puntaje
     '</div>' +
 
     '<div style="padding:26px 30px;background:linear-gradient(135deg,#B5004F,#4B0082);text-align:center">' +
-    '<h3 style="margin:0 0 10px;color:#fff;font-size:20px;font-family:Georgia,serif">Un paso más hacia tu evolución</h3>' +
-    '<p style="margin:0 0 18px;color:rgba(255,255,255,0.88);font-size:13px;line-height:1.7;font-family:sans-serif">Este es un punto de partida para que puedas seguir viendo tu mapa con más claridad cada día.</p>' +
-    '<a href="https://wa.me/5491149169532" style="display:inline-block;padding:13px 28px;background:#fff;color:#B5004F;text-decoration:none;border-radius:25px;font-weight:bold;font-size:14px;font-family:sans-serif">💬 Quiero ir más profundo</a>' +
+    '<h3 style="margin:0 0 10px;color:#fff;font-size:20px;font-family:Georgia,serif">¿Querés profundizar tu lectura?</h3>' +
+    '<p style="margin:0 0 18px;color:rgba(255,255,255,0.92);font-size:13px;line-height:1.7;font-family:sans-serif">Este test es una primera foto. Si querés profundizar tu lectura, solicitá una consulta personalizada: completá el cuestionario con tus datos personales y con esa información preparo tu lectura completa.</p>' +
+    '<a href="https://bioeneagrama.vercel.app/cuestionario.html" style="display:inline-block;margin:0 4px 10px;padding:13px 24px;background:#fff;color:#B5004F;text-decoration:none;border-radius:25px;font-weight:bold;font-size:14px;font-family:sans-serif">💬 Profundizar mi lectura en consulta individual</a>' +
+    '<a href="https://wa.me/5491149169532?text=' + encodeURIComponent('Hola Vero, hice el test de Bio Eneagrama y quiero hacer un proceso a partir del Eneagrama.') + '" style="display:inline-block;margin:0 4px 10px;padding:13px 24px;background:#fff;color:#4B0082;text-decoration:none;border-radius:25px;font-weight:bold;font-size:14px;font-family:sans-serif">🌀 Quiero hacer un proceso a partir del Eneagrama</a>' +
+    '<p style="margin:10px 0 0;color:rgba(255,255,255,0.88);font-size:12px;line-height:1.7;font-family:sans-serif">También podés elegir un <strong>acompañamiento personalizado en formato proceso</strong>: encuentros periódicos para trabajar tus energías, sostener los cambios en el tiempo y transformar tus crisis en oportunidades.</p>' +
     '</div>' +
 
     '<div style="padding:18px 30px 30px;text-align:center;background:#f5f0ff">' +

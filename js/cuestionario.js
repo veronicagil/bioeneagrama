@@ -49,6 +49,11 @@
   document.addEventListener('DOMContentLoaded', function () {
     buildForm();
 
+    // Si viene desde el test, precargar mail y teléfono
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('email')) document.getElementById('cues-email').value = params.get('email');
+    if (params.get('tel'))   document.getElementById('cues-tel').value   = params.get('tel');
+
     document.getElementById('btn-enviar').addEventListener('click', function () {
       // Recopilar datos de contacto
       const email    = (document.getElementById('cues-email') || {}).value || '';

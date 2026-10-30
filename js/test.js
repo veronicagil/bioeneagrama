@@ -191,14 +191,19 @@
     const nombre   = userName.replace(/\s+/g, '-') || 'resultado';
     const filename = 'BioEneagrama-' + nombre + '.pdf';
 
+    // Los celulares tienen un límite de tamaño de imagen (canvas): si el resultado es muy largo
+    // y la escala es alta, la imagen se corta. Se ajusta la escala al largo del contenido.
+    const altoAprox = elemento.scrollHeight * (elemento.offsetWidth / 730 || 1);
+    const escala = Math.max(1, Math.min(2, Math.sqrt(12000000 / (730 * Math.max(altoAprox, 1)))));
+
     const opciones = {
-      margin:      [8, 8, 8, 8],
+      margin:      [10, 8, 10, 8],
       filename:    filename,
       image:       { type: 'jpeg', quality: 0.92 },
-      html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollY: 0, windowWidth: 640 },
+      html2canvas: { scale: escala, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0, windowWidth: 640 },
       jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      // Evita que un bloque quede partido entre dos páginas del PDF
-      pagebreak:   { mode: ['css', 'legacy'], avoid: ['.card', '.tipo-card', '.media-box', '.dev-hero','.res-cierre', '.res-foto-hoy', '.result-note', '.grupo-titulo', '.enea-wrap', '.devolucion-seccion', '.devolucion li', '.res-filosofia p'] }
+      // Ningún párrafo, título o tarjeta queda partido entre dos páginas del PDF
+      pagebreak:   { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
     html2pdf().set(opciones).from(elemento).outputPdf('blob')
@@ -380,8 +385,8 @@
       window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
     };
 
-    // Botón WhatsApp consulta profesional
-    document.getElementById('btn-consulta').onclick = function () {
+    // Botón WhatsApp "Quiero hacer un proceso": le llegan a Vero los puntajes y el link al panel
+    const solicitarProceso = function () {
       const hash = Object.entries(scores)
         .map(e => e[0] + '=' + e[1].luz + ',' + e[1].sombra).join('|');
       const baseUrl = window.location.origin + window.location.pathname.replace('test.html', '');
@@ -393,7 +398,7 @@
       const sobMedia = ordenados.filter(t => scores[t].total >= media);
       const bajMedia = ordenados.filter(t => scores[t].total  < media);
 
-      let msg = '🌀 *BIO ENEAGRAMA — Consulta profesional*\n━━━━━━━━━━━━━━━━━━━━\n';
+      let msg = '🌀 *BIO ENEAGRAMA — Quiero hacer un proceso a partir del Eneagrama*\n━━━━━━━━━━━━━━━━━━━━\n';
       if (userName)  msg += '👤 *' + userName  + '*\n';
       if (userEmail) msg += '📧 ' + userEmail + '\n';
       msg += '\n★ *TIPO DOMINANTE: T' + dominante + ' — ' + tipo.nombre + '*\n';
@@ -418,6 +423,30 @@
       msg += '\n🔍 *Panel profesional:*\n' + lecturaUrl;
       window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
     };
+    document.querySelectorAll('[data-accion="proceso"]').forEach(b => { b.onclick = solicitarProceso; });
+
+    // Link al cuestionario de datos personales, con mail y teléfono precargados
+    const cuesParams = new URLSearchParams();
+    if (userEmail)    cuesParams.set('email', userEmail);
+    if (userTelefono) cuesParams.set('tel', userTelefono);
+    const cuesUrl = 'cuestionario.html' + (cuesParams.toString() ? '?' + cuesParams.toString() : '');
+    document.querySelectorAll('[data-accion="cuestionario"]').forEach(a => { a.href = cuesUrl; });
+
+    // Ventana "¿Querés profundizar tu lectura?" al llegar al final de los resultados
+    const modal = document.getElementById('modal-profundizar');
+    const cerrarModal = function () { modal.classList.add('hidden'); };
+    document.getElementById('modal-prof-cerrar').onclick = cerrarModal;
+    document.getElementById('modal-prof-seguir').onclick = cerrarModal;
+    modal.onclick = function (e) { if (e.target === modal) cerrarModal(); };
+    if ('IntersectionObserver' in window) {
+      const obs = new IntersectionObserver(function (entries) {
+        if (entries.some(en => en.isIntersecting)) {
+          modal.classList.remove('hidden');
+          obs.disconnect();
+        }
+      });
+      obs.observe(document.getElementById('btn-guardar'));
+    }
 
     // Auto-generar PDF y enviar email (se dispara automáticamente al ver resultados)
     setTimeout(function () {

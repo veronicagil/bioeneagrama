@@ -945,6 +945,115 @@ textarea.campo:focus { border-color: var(--violet-l); }
   line-height: 1.6;
 }
 
+/* RESULTADOS — PROFUNDIZAR (cuestionario + consulta) */
+.res-profundizar {
+  background: var(--card);
+  border: 2px solid var(--fucsia-l);
+  border-radius: 20px;
+  padding: 24px 20px;
+  margin: 24px 0 0;
+  text-align: center;
+}
+
+.res-profundizar-titulo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--fucsia);
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+.res-profundizar-texto {
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.btn-profundizar {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #B5004F, #E91E8C);
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+}
+
+.btn-profundizar-alt {
+  background: linear-gradient(135deg, #4B0082, #7B2FBE);
+}
+
+.res-profundizar-nota {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: -2px 0 14px;
+}
+
+.res-profundizar-proceso {
+  font-size: 0.88rem;
+  color: var(--sub);
+  line-height: 1.6;
+  margin: 4px 0 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.res-profundizar-proceso strong { color: var(--violet); }
+
+/* Ventana emergente al finalizar */
+.modal-prof {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 10, 46, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1000;
+}
+
+.modal-prof.hidden { display: none; }
+
+.modal-prof-caja {
+  position: relative;
+  background: var(--card);
+  border-radius: 20px;
+  border-top: 6px solid var(--fucsia);
+  padding: 28px 20px 18px;
+  max-width: 420px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(75, 0, 130, 0.35);
+}
+
+.modal-prof-cerrar {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.modal-prof-seguir {
+  background: none;
+  border: none;
+  margin-top: 12px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /* RESULTADOS — CIERRE + REDES */
 .res-cierre {
   background: linear-gradient(135deg, #B5004F, #4B0082);

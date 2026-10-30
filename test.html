@@ -200,6 +200,16 @@
     <p style="text-align:center;font-size:0.75rem;color:var(--muted);margin-top:6px">Se abre WhatsApp — mandátelo a vos mismo o a quien quieras.</p>
   </div>
 
+  <!-- PROFUNDIZAR: cuestionario + consulta personalizada -->
+  <div class="res-profundizar">
+    <p class="res-profundizar-titulo">¿Querés profundizar tu lectura?</p>
+    <p class="res-profundizar-texto">Este test es una primera foto. Si querés profundizar tu lectura, <strong>solicitá una consulta personalizada</strong>.</p>
+    <a class="btn btn-profundizar" data-accion="cuestionario" href="cuestionario.html">💬 Profundizar mi lectura en consulta individual</a>
+    <p class="res-profundizar-nota">Vas a completar un breve cuestionario con tus datos personales: con esa información preparo tu lectura personalizada.</p>
+    <p class="res-profundizar-proceso">También podés elegir un <strong>acompañamiento personalizado en formato proceso</strong>: encuentros periódicos para trabajar tus energías, sostener los cambios en el tiempo y transformar tus crisis en oportunidades.</p>
+    <button class="btn btn-profundizar btn-profundizar-alt" data-accion="proceso">🌀 Quiero hacer un proceso a partir del Eneagrama</button>
+  </div>
+
   <!-- 5. CIERRE + REDES -->
   <div class="res-cierre">
     <p class="res-cierre-titulo">¿Querés saber más de vos?</p>
@@ -217,8 +227,11 @@
       <div class="res-social-link res-social-dest">
         🌀 Taller de Bio Eneagrama
       </div>
-      <button id="btn-consulta" class="res-social-link res-social-dest">
-        💬 Consulta individual
+      <a href="cuestionario.html" data-accion="cuestionario" class="res-social-link res-social-dest">
+        💬 Profundizar mi lectura en consulta individual
+      </a>
+      <button data-accion="proceso" class="res-social-link res-social-dest">
+        🌀 Quiero hacer un proceso a partir del Eneagrama
       </button>
     </div>
   </div>
@@ -227,6 +240,20 @@
 
   <div class="footer">Bio Eneagrama · VG · Vero Gil</div>
 
+</div>
+
+<!-- VENTANA AL FINALIZAR: invitación a profundizar -->
+<div id="modal-profundizar" class="modal-prof hidden" role="dialog" aria-modal="true" aria-labelledby="modal-prof-titulo">
+  <div class="modal-prof-caja">
+    <button class="modal-prof-cerrar" id="modal-prof-cerrar" aria-label="Cerrar">×</button>
+    <p class="res-profundizar-titulo" id="modal-prof-titulo">¿Querés profundizar tu lectura?</p>
+    <p class="res-profundizar-texto">Si querés profundizar tu lectura, <strong>solicitá una consulta personalizada</strong>.</p>
+    <a class="btn btn-profundizar" data-accion="cuestionario" href="cuestionario.html">💬 Profundizar mi lectura en consulta individual</a>
+    <p class="res-profundizar-nota">Vas a completar un breve cuestionario con tus datos personales: con esa información preparo tu lectura personalizada.</p>
+    <p class="res-profundizar-proceso">También podés elegir un <strong>acompañamiento personalizado en formato proceso</strong>, para trabajar tus energías y sostener los cambios en el tiempo.</p>
+    <button class="btn btn-profundizar btn-profundizar-alt" data-accion="proceso">🌀 Quiero hacer un proceso a partir del Eneagrama</button>
+    <button class="modal-prof-seguir" id="modal-prof-seguir">Seguir viendo mi resultado</button>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>

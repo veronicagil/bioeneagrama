@@ -117,14 +117,10 @@ const REACCION_TRIADA = {
 };
 
 const DEVOLUCION_BASE = [
-  "<strong>Eneagrama significa nueve.</strong> Es un <strong>método de autoconocimiento y de transformación personal y vincular</strong> que conduce a la evolución del ser sano y ecológico. Es un <strong>mapa que nos ayuda a ubicarnos en el territorio</strong>: describe nueve miradas diferentes de ver la vida, nueve formas de pensar, sentir y actuar. Cada una es una manifestación <strong>parcial</strong> del ser <strong>total</strong> que somos.",
-  "Cada tipología funciona como un <strong>«anteojo»</strong> con el que miramos la llamada realidad: nadie la percibe tal cual es. Conocernos en el Eneagrama nos permite liberarnos de las <strong>reacciones automáticas</strong> que nos arrastran hacia modos conocidos e ineficientes de relacionarnos, y elegir con plena conciencia cómo <strong>responder</strong>. Por eso <strong>el Eneagrama es un puente entre la psicología y la espiritualidad</strong>.",
-  "La <strong>ESENCIA</strong> es la energía que traemos al nacer en su estado más puro: nuestra verdadera naturaleza, los pies desde donde nos paramos en la vida, <strong>la energía que nos arrastra</strong>. La esencia <strong>no cambia</strong>. Pero desde que nacemos necesitamos adaptarnos a la familia, al entorno y al modo en que nos educaron —en la lógica biológica, quien no se adapta no sobrevive— y así vamos construyendo una <strong>PERSONALIDAD ADAPTATIVA</strong>, que <strong>sí cambia y fluctúa</strong> según el contexto.",
-  "Por eso este test es <strong>«una foto» sacada en este momento de tu vida</strong>: un espejo que muestra desde qué energías te estás moviendo <strong>HOY</strong>. Es una información <strong>variable</strong>, que puede cambiar según el momento o la situación que estés atravesando. Descubrir la propia esencia lleva tiempo y no puede hacerse en un test ni en una sola lectura: tu tipo dominante de hoy no necesariamente es tu esencia.",
-  "Todas las tipologías tienen <strong>luz y sombra</strong> en partes iguales. No hay tipologías mejores que otras: en la luz nos iluminan y nos llevan hacia nuestra evolución; en la sombra muestran los aspectos que nos anclan. Conocerlas nos permite aceptarlas, integrarlas y trascenderlas, en lugar de negarlas.",
-  "La clave de este camino es la <strong>AUTOOBSERVACIÓN</strong> constante: los hábitos de la personalidad solo pueden modificarse si los vemos en el momento en que ocurren. Observarnos con conciencia nos permite ir llevando cada energía hacia su luz y reconocernos como un <strong>ser completo</strong>, en movimiento evolutivo permanente.",
-  "Para leer tus resultados, la referencia es tu <strong>MEDIA</strong>: tu puntaje más alto más tu puntaje más bajo, dividido 2. Es el parámetro para observarte y observar tu modo de vincularte con el entorno. Es favorable que haya más tipologías por arriba de la media; las que quedan por debajo muestran <strong>por dónde empezar a trabajar</strong>.",
-  "<em>El Eneagrama honra la individualidad y la diversidad que somos.</em>"
+  "<strong>El Eneagrama no nos encasilla</strong>: nos muestra la energía desde la que estamos actuando <strong>HOY</strong>. Es un mapa de autoconocimiento que describe nueve formas de pensar, sentir y actuar.",
+  "Todos traemos al nacer una energía de base llamada <strong>ESENCIA</strong>, y las <strong>8 tipologías restantes forman nuestra personalidad</strong>. La esencia <strong>no cambia</strong>: es la energía que nos arrastra. La personalidad es <strong>adaptativa</strong> y se va modificando a lo largo de la vida, según nuestras vivencias, circunstancias personales y crisis vitales.",
+  "Por eso este test es <strong>una foto de tu momento actual</strong>: una información variable, que puede cambiar según lo que estés atravesando. Tu tipología más alta de hoy no necesariamente es tu esencia. Cada energía tiene <strong>luz y sombra</strong>, y ninguna es mejor que otra.",
+  "La clave es la <strong>AUTOOBSERVACIÓN</strong>: darnos cuenta de cuándo actuamos en automático nos permite elegir con conciencia cómo responder."
 ];
 
 function construirDevolucion(scores) {
@@ -138,7 +134,6 @@ function construirDevolucion(scores) {
   const altos = tipos.filter(sobre).sort((a, b) => tot(b) - tot(a));
   const bajos = tipos.filter(t => !sobre(t)).sort((a, b) => tot(a) - tot(b));
   const dom = altos[0];
-  const tipo = TIPOS[dom];
   const s = scores[dom];
   const e = ENERGIAS[dom];
 
@@ -168,31 +163,13 @@ function construirDevolucion(scores) {
     sintesis.push('Mirando los tres centros operativos, hoy te movés principalmente desde el <strong>' + centros[0].c.nombre + '</strong>, cuyo miedo de base es a ' + centros[0].c.miedo + '. Darte cuenta de cuándo ese miedo te domina es un buen indicador para volver a tu observador interno. El centro que hoy pide más atención es el <strong>' + centros[2].c.nombre + '</strong>.');
   }
 
-  const alaD = tipo.ala_desarrolla, alaC = tipo.ala_cuesta;
-  let alas = 'Las <strong>alas</strong> son las tipologías vecinas que equilibran a tu energía dominante: el ' + nom(alaD) + ' y el ' + nom(alaC) + '. ';
-  if (sobre(alaD) && sobre(alaC))        alas += 'Las dos están por encima de tu media: son energías activas y conocidas que te equilibran.';
-  else if (!sobre(alaD) && !sobre(alaC)) alas += 'Las dos están por debajo de tu media: puede costarte «levantar vuelo». Trabajar aspectos de esas energías te va a ayudar a equilibrarte.';
-  else {
-    const activa = sobre(alaD) ? alaD : alaC, dormida = sobre(alaD) ? alaC : alaD;
-    alas += 'El ' + nom(activa) + ' está activo, mientras que el ' + nom(dormida) + ' está por debajo de tu media: ahí hay una energía para conocer y desarrollar.';
-  }
-  sintesis.push(alas);
+  // Alas, brazos, tríada y ejes quedan para la lectura personalizada
+  sintesis.push('Tu mapa tiene mucho más para mostrarte: tus <strong>alas</strong>, tus <strong>brazos</strong> de integración, tus <strong>ejes de equilibrio</strong> y tu modo de reaccionar ante los conflictos. Esa lectura se hace de manera <strong>personalizada</strong>, mirando tu historia y tu momento de vida.');
 
-  const tr = REACCION_TRIADA[tipo.triada];
-  sintesis.push('Ante los conflictos, la energía del ' + nom(dom) + ' tiende a <strong>' + tr.accion + '</strong>. Esta reacción se vincula con una herida primaria: ' + tr.herida + '. La clave evolutiva es <strong>' + tr.clave + '</strong>.');
-
-  const int = tipo.integracion, des = tipo.desintegracion;
-  let brazos = 'Su camino de transformación va <strong>' + tipo.transformacion.toLowerCase() + '</strong>, a través de los <strong>brazos</strong> que la unen al ' + nom(int) + ' (integración) y al ' + nom(des) + '. ';
-  if (sobre(int) && sobre(des))        brazos += 'Los dos están por encima de tu media: estás tomando el tesoro y vas bien en tu camino de integración.';
-  else if (!sobre(int) && !sobre(des)) brazos += 'Los dos están por debajo de tu media, como «brazos caídos»: es momento de activar tu camino de crecimiento.';
-  else if (sobre(int))                 brazos += 'El brazo de integración está activo, pero el otro está por debajo de tu media: cuidado con quedarte en la forma y no ir al fondo.';
-  else                                 brazos += 'El brazo de integración está por debajo de tu media: observá cuándo actuás desde la sombra para volver cada vez más rápido a tu centro.';
-  sintesis.push(brazos);
-
-  // 2. Energías para despertar: los miedos circunstanciales de las más bajas
-  const despertar = bajos.slice(0, 3).map(t =>
-    '<strong>' + nom(t) + ' (' + tot(t) + ' puntos)</strong> — Es la energía de ' + ENERGIAS[t].cualidades + '. ' + ENERGIAS[t].baja + ' <em>Sugerencia:</em> ' + ENERGIAS[t].sugerencia
-  );
+  // 2. Energías para despertar: reflexión general sobre los miedos circunstanciales
+  const despertar = bajos.length
+    ? ['Hoy las energías menos activas en vos son: ' + enLista(bajos.slice(0, 3).map(t => '<strong>' + nom(t) + '</strong>')) + '. Preguntate qué te cuesta poner en juego de cada una y qué situación de tu vida actual puede estar frenándola.']
+    : [];
 
   // 3. Para llevarte de aquí en adelante
   const foco = bajos[0] || dom;
@@ -206,8 +183,8 @@ function construirDevolucion(scores) {
   if (despertar.length) {
     secciones.push({
       titulo: 'Energías para despertar',
-      intro: 'Las tipologías menos marcadas hablan de lo que tememos en este momento de la vida: son <strong>miedos circunstanciales</strong>, no defectos. Estos valores cambian en cuanto ponemos conciencia en nuestras acciones, pensamientos y sentimientos, y dejamos de actuar en automático.',
-      items: despertar
+      intro: 'Las tipologías que quedan por debajo de la media hablan de lo que tememos en este momento de la vida: son <strong>miedos circunstanciales</strong>, no defectos. Aparecen por lo que estamos atravesando y cambian en cuanto ponemos conciencia en lo que hacemos, pensamos y sentimos.',
+      parrafos: despertar
     });
   }
   secciones.push({ titulo: 'Para llevarte de aquí en adelante', parrafos: llevarte });

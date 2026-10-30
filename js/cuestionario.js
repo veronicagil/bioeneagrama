@@ -36,16 +36,6 @@
     });
   }
 
-  function buildMessage() {
-    let msg = '🌀 *Cuestionario Bio Eneagrama — Vero Gil*\n\n';
-    PREGUNTAS.forEach((texto, i) => {
-      const val = (document.getElementById('p' + (i + 1)) || {}).value || '(sin respuesta)';
-      msg += `*${i + 1}. ${texto}*\n${val.trim()}\n\n`;
-    });
-    msg += 'Por favor reenvía estas respuestas para una mejor interpretación. ¡Muchas gracias! — Vero Gil';
-    return msg;
-  }
-
   document.addEventListener('DOMContentLoaded', function () {
     buildForm();
 
@@ -66,16 +56,23 @@
       }
       const nombre = respuestas[0] || ''; // La primera pregunta es el nombre completo
 
-      // Guardar en Google Sheets (en paralelo, no bloquea el flujo)
+      // Enviar las respuestas al mail de Vero y guardarlas en Google Sheets
       fetch('/api/save-cuestionario', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ nombre, email, telefono, respuestas })
+        body:    JSON.stringify({ nombre, email, telefono, respuestas, preguntas: PREGUNTAS })
       }).catch(function () {});
 
-      // Abrir WhatsApp (comportamiento original)
-      const msg = buildMessage();
+      // Aviso por WhatsApp: cuestionario enviado + solicitud de consulta
+      let msg = '🌀 *Bio Eneagrama — Solicitud de consulta*\n\n';
+      msg += 'Hola Vero, te envié el cuestionario por mail y quiero solicitar una consulta personalizada.\n\n';
+      if (nombre.trim()) msg += '👤 ' + nombre.trim().split('\n')[0] + '\n';
+      if (email.trim())  msg += '📧 ' + email.trim() + '\n';
       window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
+
+      const btn = document.getElementById('btn-enviar');
+      btn.textContent = '✓ Cuestionario enviado';
+      btn.disabled = true;
     });
   });
 })();

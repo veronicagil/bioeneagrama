@@ -478,11 +478,26 @@
     return div;
   }
 
+  // Botón de prueba: completa puntajes de ejemplo y salta a los resultados (solo con ?prueba)
+  window.autocompletar = function () {
+    const sim = { 1:7, 2:15, 3:5, 4:8, 5:4, 6:10, 7:6, 8:3, 9:7 };
+    for (let t = 1; t <= 9; t++) {
+      const luz    = Math.round(sim[t] * 0.55);
+      const sombra = sim[t] - luz;
+      scores[t] = { luz, sombra, total: sim[t] };
+    }
+    currentQ = questions.length;
+    startLoading();
+  };
+
   // ──────────────────────────────────────────────
   // INIT
   // ──────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function () {
     questions = buildQuestions();
+    if (new URLSearchParams(window.location.search).has('prueba')) {
+      document.getElementById('prueba-wrap').classList.remove('hidden');
+    }
     renderQuestion();
     setupEmailForm();
 

@@ -9,16 +9,19 @@
   let questions  = [];
   let answerHistory = [];
 
-  let userName     = '';
-  let userApellido = '';
-  let userEmail    = '';
-  let userTelefono = '';
-  let userOrigen   = '';
+  let userName         = '';
+  let userApellido     = '';
+  let userEmail        = '';
+  let userTelefono     = '';
+  let userEdad         = '';
+  let userConsentimiento = false;
+  let userOrigen       = '';
 
   // Guardamos el dominante y la media para usarlos al generar el PDF
   let resultDominante = 1;
   let resultMedia     = 0;
   let pdfGenerado     = null; // data URI del PDF ya generado
+  let resultDevolucion = null; // devolución escrita, se manda también por mail
 
   // ──────────────────────────────────────────────
   // CONSTRUCCIÓN DE PREGUNTAS
@@ -46,10 +49,10 @@
   // ──────────────────────────────────────────────
   function renderQuestion() {
     const q   = questions[currentQ];
-    const step5 = Math.floor(currentQ / 5) * 5;
-    const pct   = (step5 / questions.length) * 100;
+    const pct = Math.min(100, Math.round((currentQ / questions.length) * 100));
 
     document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-label').textContent = pct + '%';
 
     document.getElementById('q-num').innerHTML =
       '<span class="question-firma">VG · Vero Gil</span>';
@@ -137,6 +140,42 @@
   // ──────────────────────────────────────────────
   // PDF: AUTO-GENERAR + ENVIAR POR EMAIL
   // ──────────────────────────────────────────────
+  function blobToBase64(blob) {
+    return new Promise(function (resolve, reject) {
+      const reader = new FileReader();
+      reader.onloadend = function () { resolve(reader.result); };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  // Convierte el símbolo de resultados (SVG) a PNG para poder mostrarlo dentro del mail
+  function eneaToPng() {
+    return new Promise(function (resolve) {
+      const svg = document.querySelector('#enea-results svg');
+      if (!svg) return resolve(null);
+      const ANCHO = 930, ALTO = 678; // proporción del viewBox 310 x 226
+      const clon = svg.cloneNode(true);
+      clon.setAttribute('width', ANCHO);
+      clon.setAttribute('height', ALTO);
+      const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clon)], { type: 'image/svg+xml;charset=utf-8' }));
+      const img = new Image();
+      img.onload = function () {
+        const canvas = document.createElement('canvas');
+        canvas.width = ANCHO;
+        canvas.height = ALTO;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, ANCHO, ALTO);
+        ctx.drawImage(img, 0, 0, ANCHO, ALTO);
+        URL.revokeObjectURL(url);
+        try { resolve(canvas.toDataURL('image/png')); } catch (e) { resolve(null); }
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); resolve(null); };
+      img.src = url;
+    });
+  }
+
   function iniciarGeneracionPDF(dominante, media) {
     const btn    = document.getElementById('btn-pdf');
     const banner = document.getElementById('pdf-banner');
@@ -156,14 +195,18 @@
       margin:      [8, 8, 8, 8],
       filename:    filename,
       image:       { type: 'jpeg', quality: 0.92 },
-      html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollY: 0 },
-      jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollY: 0, windowWidth: 640 },
+      jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      // Evita que un bloque quede partido entre dos páginas del PDF
+      pagebreak:   { mode: ['css', 'legacy'], avoid: ['.card', '.tipo-card', '.media-box', '.dev-hero','.res-cierre', '.res-foto-hoy', '.result-note', '.grupo-titulo', '.enea-wrap', '.devolucion-seccion', '.devolucion li', '.res-filosofia p'] }
     };
 
-    html2pdf().set(opciones).from(elemento).outputPdf('datauristring')
+    html2pdf().set(opciones).from(elemento).outputPdf('blob')
+      .then(function (blob) {
+        pdfGenerado = URL.createObjectURL(blob);
+        return blobToBase64(blob);
+      })
       .then(function (uri) {
-        pdfGenerado = uri;
-
         // Restaurar controles
         if (banner) banner.style.display = '';
         if (btnG)   btnG.style.display   = '';
@@ -180,26 +223,30 @@
             scoresData['T' + t] = { luz: scores[t].luz, sombra: scores[t].sombra, total: scores[t].total };
           });
 
-          fetch('/api/send-email', {
+          eneaToPng().then(function (eneaPng) { return fetch('/api/send-email', {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              toName:      userName,
-              toApellido:  userApellido,
-              toEmail:     userEmail,
-              toTelefono:  userTelefono,
-              toOrigen:    userOrigen,
-              tipoNum:     'Tipo ' + dominante,
-              tipoNombre:  tipo.nombre,
-              centro:      tipo.centro,
-              sintesis:    tipo.sintesis,
-              puntajes:    puntajes,
-              media:       media.toFixed(1),
-              scoresData:  scoresData,
-              pdfBase64:   uri,
-              pdfFilename: filename
+              eneaPng:       eneaPng,
+              devolucion:    resultDevolucion,
+              toName:        userName,
+              toApellido:    userApellido,
+              toEmail:       userEmail,
+              toTelefono:    userTelefono,
+              edad:          userEdad,
+              consentimiento: userConsentimiento ? 'Sí' : 'No',
+              toOrigen:      userOrigen,
+              tipoNum:       'Tipo ' + dominante,
+              tipoNombre:    tipo.nombre,
+              centro:        tipo.centro,
+              sintesis:      tipo.sintesis,
+              puntajes:      puntajes,
+              media:         media.toFixed(1),
+              scoresData:    scoresData,
+              pdfBase64:     uri,
+              pdfFilename:   filename
             })
-          }).catch(function () {});
+          }); }).catch(function () {});
         }
       })
       .catch(function () {
@@ -229,23 +276,27 @@
     const errorEl = document.getElementById('email-error');
 
     function intentarComenzar() {
-      const nombre   = document.getElementById('input-nombre').value.trim();
-      const apellido = document.getElementById('input-apellido').value.trim();
-      const email    = document.getElementById('input-email').value.trim();
-      const tel      = document.getElementById('input-telefono').value.trim();
-      const origen   = document.getElementById('input-origen').value;
-      const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      const nombre        = document.getElementById('input-nombre').value.trim();
+      const apellido      = document.getElementById('input-apellido').value.trim();
+      const email         = document.getElementById('input-email').value.trim();
+      const tel           = document.getElementById('input-telefono').value.trim();
+      const edad          = document.getElementById('input-edad').value.trim();
+      const consentimiento = document.getElementById('input-consentimiento').checked;
+      const origen        = document.getElementById('input-origen').value;
+      const emailValido   = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
       if (!nombre || !apellido || !emailValido) {
         errorEl.classList.remove('hidden');
         return;
       }
       errorEl.classList.add('hidden');
-      userName     = nombre;
-      userApellido = apellido;
-      userEmail    = email;
-      userTelefono = tel;
-      userOrigen   = origen;
+      userName         = nombre;
+      userApellido     = apellido;
+      userEmail        = email;
+      userTelefono     = tel;
+      userEdad         = edad;
+      userConsentimiento = consentimiento;
+      userOrigen       = origen;
 
       document.getElementById('email-section').classList.add('hidden');
       document.getElementById('progress-wrap').classList.remove('hidden');
@@ -290,8 +341,20 @@
     document.getElementById('res-tipo-nombre').textContent = tipo.nombre;
     document.getElementById('res-tipo-centro').textContent = tipo.centro;
     document.getElementById('res-sintesis').textContent   = tipo.sintesis;
-    document.getElementById('media-display').textContent  = media.toFixed(1);
+    const totales = tipos.map(t => scores[t].total);
+    const masAlto = Math.max(...totales);
+    const masBajo = Math.min(...totales);
+    document.getElementById('media-display').textContent  = fmtMedia(media);
+    document.getElementById('media-calc').innerHTML =
+      'En tu caso: (' + masAlto + ' + ' + masBajo + ') ÷ 2 = <strong>' + fmtMedia(media) + '</strong>';
+    document.getElementById('grupo-altos-media').textContent = '(puntaje ' + fmtMedia(media) + ' o más)';
+    document.getElementById('grupo-bajos-media').textContent = '(puntaje menor a ' + fmtMedia(media) + ')';
     renderEnea('enea-results', scores, media, true);
+
+    // Devolución escrita (base teórica + síntesis interpretativa)
+    resultDevolucion = construirDevolucion(scores);
+    renderDevolucionBase('devolucion-base', resultDevolucion);
+    renderDevolucionLectura('devolucion-lectura', resultDevolucion);
 
     // Cards de tipos
     const altosEl = document.getElementById('grupo-altos');
@@ -311,7 +374,8 @@
         const s = scores[t];
         msg += 'T' + t + ' ' + TIPOS[t].nombre + ': ' + s.total + (t === dominante ? ' ★' : '') + '\n';
       }
-      msg += '\n📐 Media: ' + media.toFixed(1);
+      msg += '\n📐 Media: ' + fmtMedia(media) + ' = (puntaje más alto ' + masAlto + ' + más bajo ' + masBajo + ') ÷ 2';
+      msg += '\n_La media es tu valor de referencia: los tipos con puntaje igual o mayor son tus energías más activas hoy._';
       msg += '\n\n_Bio Eneagrama · Vero Gil_\nbioeneagrama.vercel.app';
       window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
     };
@@ -384,20 +448,6 @@
       '<p class="tipo-resena">' + TIPOS[t].resena + '</p>';
     return div;
   }
-
-  // ──────────────────────────────────────────────
-  // AUTOFILL PARA TESTING
-  // ──────────────────────────────────────────────
-  window.autocompletar = function () {
-    const sim = { 1:7, 2:15, 3:5, 4:8, 5:4, 6:10, 7:6, 8:3, 9:7 };
-    for (let t = 1; t <= 9; t++) {
-      const luz    = Math.round(sim[t] * 0.55);
-      const sombra = sim[t] - luz;
-      scores[t] = { luz, sombra, total: sim[t] };
-    }
-    currentQ = questions.length;
-    startLoading();
-  };
 
   // ──────────────────────────────────────────────
   // INIT

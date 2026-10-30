@@ -11,7 +11,7 @@ Herramienta web de autoconocimiento basada en el Eneagrama.
 | `cuestionario.html` | Cuestionario de 15 preguntas |
 | `lectura.html` | Panel profesional (acceso por PIN) |
 
-## Deploy en GitHub + Vercel
+## Deploy en Vercel
 
 ### 1. Crear repositorio en GitHub
 1. Ir a github.com → New repository
@@ -31,10 +31,21 @@ git push -u origin main
 ### 3. Conectar Vercel
 1. Ir a vercel.com → New Project
 2. Importar el repositorio de GitHub
-3. Framework: Other (sin build)
-4. Click Deploy
+3. En la configuración del proyecto, seleccionar la carpeta raíz del repo
+4. Framework: Other (sin build)
+5. Click Deploy
 
-La URL pública quedará: `https://bioeneagrama.vercel.app` (o similar)
+### 4. Configurar variables de entorno
+En Vercel → Settings → Environment Variables, agrega estas variables:
+- `GMAIL_USER`
+- `GMAIL_PASS`
+- `SHEET_URL`
+
+### 5. Enlace al test
+Una vez desplegado, el test estará disponible en:
+`https://<nombre-proyecto>.vercel.app/test.html`
+
+> Nota: el enlace exacto depende del nombre del proyecto en Vercel. Si usas `bioeneagrama` como nombre de proyecto, será `https://bioeneagrama.vercel.app/test.html`.
 
 ## Cambiar PIN de lectura profunda
 

@@ -89,36 +89,201 @@ h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; }
   font-weight: 500;
 }
 
-/* PROGRESS BAR */
-.progress-bar-wrap {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: var(--bg2);
-  padding: 8px 16px;
-  border-bottom: 1px solid var(--border);
+.hero-note {
+  font-size: 0.95rem;
+  color: var(--muted);
+  max-width: 420px;
+  margin: 0 auto 26px;
+  line-height: 1.75;
 }
-
 .progress-bar-track {
-  height: 6px;
-  background: var(--border);
-  border-radius: 3px;
+  height: 14px;
+  background: rgba(75,0,130,0.12);
+  border-radius: 999px;
   overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.22);
 }
 
 .progress-bar-fill {
   height: 100%;
   background: linear-gradient(90deg, #B5004F, #7B2FBE);
-  border-radius: 3px;
-  transition: width 0.3s ease;
+  border-radius: 999px;
+  transition: width 0.35s ease;
   width: 0%;
+  box-shadow: 0 0 18px rgba(181,0,79,0.18);
 }
 
 .progress-label {
-  font-size: 0.72rem;
-  color: var(--muted);
+  font-size: 0.95rem;
+  color: var(--dark);
   text-align: right;
+  margin-top: 10px;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+
+.email-note {
+  margin: 14px 0 12px;
+  font-size: 0.95rem;
+  color: var(--sub);
+  line-height: 1.6;
+}
+
+.checkbox-wrap {
+  margin-bottom: 16px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.92rem;
+  color: var(--muted);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.checkbox-label input {
   margin-top: 3px;
+  width: 18px;
+  height: 18px;
+}
+
+.result-note {
+  background: rgba(181,0,79,0.06);
+  border: 1px solid rgba(181,0,79,0.18);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin: 18px 0 0;
+  color: var(--dark);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+/* MEDIA: definición destacada en resultados */
+.media-box {
+  border: 2px solid var(--fucsia);
+  background: var(--fucsia-bg);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+.media-box-titulo {
+  margin: 0 0 8px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--fucsia);
+}
+
+.media-box-def {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.media-box-calc {
+  display: inline-block;
+  background: #fff;
+  border-radius: 10px;
+  padding: 8px 16px;
+  margin-bottom: 10px;
+  font-size: 1.05rem;
+  color: var(--violet);
+}
+
+.media-box-uso {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--sub);
+}
+
+.enea-res-titulo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem;
+  color: var(--violet);
+  margin: 0 0 2px;
+}
+
+.enea-res-sub {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.enea-wrap-lg .enea-svg-box { width: 100%; max-width: 420px; }
+.enea-wrap-lg svg { max-width: 420px; height: auto; }
+
+.enea-leyenda {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.enea-leyenda i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+/* DEVOLUCIÓN ESCRITA */
+.devolucion {
+  background: var(--card);
+  border: 2px solid var(--violet-l);
+  border-radius: 16px;
+  padding: 22px 20px;
+  margin: 16px 0;
+}
+
+.devolucion-titulo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--fucsia);
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.devolucion-seccion { margin-top: 18px; }
+.devolucion-seccion:first-of-type { margin-top: 0; }
+
+.devolucion-subtitulo {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--violet);
+  border-bottom: 2px solid var(--fucsia-bg);
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.devolucion p,
+.devolucion li {
+  font-size: 0.97rem;
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.devolucion ul { padding-left: 18px; }
+.devolucion strong { color: var(--violet); }
+.devolucion em { color: var(--fucsia); font-style: normal; font-weight: 600; }
+
+.grupo-media {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--muted);
 }
 
 /* CARDS */
@@ -193,19 +358,19 @@ h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; }
 }
 
 .btn-si {
-  background: #E6F9ED;
-  border-color: #1B7A3E;
-  color: #1B7A3E;
+  background: var(--fucsia-bg);
+  border-color: var(--fucsia);
+  color: var(--fucsia);
 }
 
 .btn-no {
-  background: #FDECEA;
-  border-color: #C62828;
-  color: #C62828;
+  background: var(--violet-bg);
+  border-color: var(--violet);
+  color: var(--violet);
 }
 
-.btn-si.selected { background: #1B7A3E; color: #fff; }
-.btn-no.selected { background: #C62828; color: #fff; }
+.btn-si.selected { background: var(--fucsia); color: #fff; }
+.btn-no.selected { background: var(--violet); color: #fff; }
 .btn-si:active, .btn-no:active { transform: scale(0.96); }
 
 /* QUESTION */
@@ -327,30 +492,33 @@ h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; }
   background: linear-gradient(135deg, #4B0082, #7B2FBE);
 }
 
+.tipo-card.alto .tipo-nombre { color: var(--fucsia); }
+.tipo-card.bajo .tipo-nombre { color: var(--violet); }
+
 .tipo-score {
-  font-size: 0.82rem;
-  color: var(--muted);
-  margin-top: 3px;
+  font-size: 0.9rem;
+  color: var(--sub);
+  margin-top: 4px;
 }
 
 .mini-bars {
   display: flex;
   gap: 3px;
   margin-top: 8px;
-  height: 5px;
+  height: 7px;
   border-radius: 3px;
   overflow: hidden;
 }
 
 .mini-bar-luz {
-  background: linear-gradient(90deg, #1B7A3E, #4CAF50);
+  background: linear-gradient(90deg, #B5004F, #E91E8C);
   height: 100%;
   border-radius: 3px 0 0 3px;
   transition: flex 0.3s;
 }
 
 .mini-bar-sombra {
-  background: linear-gradient(90deg, #C62828, #EF5350);
+  background: linear-gradient(90deg, #4B0082, #7B2FBE);
   height: 100%;
   border-radius: 0 3px 3px 0;
   transition: flex 0.3s;
@@ -729,9 +897,9 @@ textarea.campo:focus { border-color: var(--violet-l); }
 }
 
 .res-filosofia p {
-  font-size: 0.9rem;
-  color: var(--sub);
-  line-height: 1.65;
+  font-size: 0.97rem;
+  color: var(--text);
+  line-height: 1.7;
   margin-bottom: 10px;
 }
 
@@ -750,8 +918,8 @@ textarea.campo:focus { border-color: var(--violet-l); }
   margin-bottom: 10px;
 }
 
-.res-luz-titulo { color: var(--verde); }
-.res-sombra-titulo { color: var(--rojo); }
+.res-luz-titulo { color: var(--fucsia); }
+.res-sombra-titulo { color: var(--violet); }
 
 .res-hl-list {
   list-style: none;
@@ -771,11 +939,10 @@ textarea.campo:focus { border-color: var(--violet-l); }
 
 /* RESULTADOS — RESEÑA EN TARJETA DE TIPO */
 .tipo-resena {
-  font-size: 0.82rem;
-  color: var(--sub);
+  font-size: 0.92rem;
+  color: var(--text);
   margin-top: 8px;
-  line-height: 1.5;
-  font-style: italic;
+  line-height: 1.6;
 }
 
 /* RESULTADOS — CIERRE + REDES */
@@ -796,9 +963,9 @@ textarea.campo:focus { border-color: var(--violet-l); }
 }
 
 .res-cierre-texto {
-  font-size: 0.9rem;
-  color: rgba(255,255,255,0.85);
-  line-height: 1.65;
+  font-size: 0.95rem;
+  color: #fff;
+  line-height: 1.7;
   margin-bottom: 20px;
 }
 
@@ -823,7 +990,7 @@ textarea.campo:focus { border-color: var(--violet-l); }
 .res-social-link:active { background: rgba(255,255,255,0.2); }
 
 .res-social-dim {
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
 .res-social-dest {
@@ -1014,8 +1181,8 @@ textarea.campo:focus { border-color: var(--violet-l); }
 }
 
 .dev-num {
-  font-size: 0.82rem;
-  color: rgba(255,255,255,0.65);
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.9);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   margin-bottom: 10px;
@@ -1037,14 +1204,15 @@ textarea.campo:focus { border-color: var(--violet-l); }
   border: 1px solid rgba(255,255,255,0.3);
   border-radius: 20px;
   padding: 5px 18px;
-  font-size: 0.82rem;
-  color: rgba(255,255,255,0.88);
+  font-size: 0.88rem;
+  color: #fff;
   letter-spacing: 0.04em;
 }
 
 .dev-texto {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.28rem;
+  font-size: 1.32rem;
+  font-weight: 600;
   line-height: 1.75;
   color: var(--text);
   font-style: italic;

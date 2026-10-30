@@ -6,10 +6,13 @@ module.exports = async function (req, res) {
 
   try {
     const data = req.body || {};
+    const now = new Date();
+    const fecha = now.toISOString().slice(0, 10);
+    const hora = now.toISOString().slice(11, 16);
     await fetch(SHEETS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ source: 'cuestionario', ...data }),
+      body: JSON.stringify({ source: 'cuestionario', fecha: fecha, hora: hora, timestamp: now.toISOString(), ...data }),
       redirect: 'follow'
     });
     res.status(200).json({ ok: true });

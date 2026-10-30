@@ -96,6 +96,9 @@
     // SVG
     renderEnea('enea-lectura', scores, media, true);
 
+    // H: Devolución escrita (la misma que recibe la persona)
+    renderDevolucionLectura('sec-devolucion', construirDevolucion(scores));
+
     // B: Alas
     const tipo = TIPOS[dominante];
     const alaD = tipo.ala_desarrolla;
@@ -117,7 +120,7 @@
     for (const eje of EJES) {
       const [t1, t2] = eje.tipos;
       const diff = Math.abs(scores[t1].total - scores[t2].total);
-      const seForma = diff <= 1;
+      const seForma = diff <= 2; // se forma eje con igual valor o hasta dos puntos de diferencia
       if (seForma) ningunEje = false;
       const ambos = scores[t1].total + scores[t2].total;
       ejesHtml += `<div class="lectura-item">

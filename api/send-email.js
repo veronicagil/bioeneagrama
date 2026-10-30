@@ -139,7 +139,7 @@ function buildDevolucionHtml(dev) {
     '</div>';
 
   var lectura = '<div style="padding:24px 30px;border-bottom:2px solid #ede8f5">' +
-    '<p style="margin:0 0 6px;text-align:center;font-size:24px;font-weight:bold;color:#B5004F;font-family:Georgia,serif">Tu devolución</p>' +
+    '<p style="margin:0 0 14px;padding-bottom:10px;border-bottom:2px solid #F9D6E8;text-align:center;font-size:28px;line-height:1.2;font-weight:bold;color:#B5004F;font-family:Georgia,serif">Tu lectura de Eneagrama</p>' +
     dev.secciones.map(function (sec) {
       return '<p style="' + SUB + '">' + sec.titulo + '</p>' +
         (sec.intro ? '<p style="' + P + '">' + estilizar(sec.intro) + '</p>' : '') +

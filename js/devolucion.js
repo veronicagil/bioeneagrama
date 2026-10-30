@@ -137,25 +137,28 @@ function construirDevolucion(scores) {
   const s = scores[dom];
   const e = ENERGIAS[dom];
 
-  const enLista = arr => arr.length > 1 ? arr.slice(0, -1).join(', ') + ' y ' + arr[arr.length - 1] : arr.join('');
+  // 1. Tipologías respecto de la MEDIA: primero las más marcadas, luego las menos (de mayor a menor)
+  const linea = t => nom(t) + ' — <strong>' + tot(t) + '</strong> puntos';
+  const bajosDesc = bajos.slice().reverse();
+  const respectoMedia = [
+    '<strong>Tipologías más marcadas</strong> (por encima de la media):<br>' + altos.map(linea).join('<br>')
+  ];
+  if (bajosDesc.length) {
+    respectoMedia.push('<strong>Tipologías menos marcadas</strong> (por debajo de la media):<br>' + bajosDesc.map(linea).join('<br>'));
+  }
+  respectoMedia.push(altos.length >= bajos.length
+    ? 'Es favorable que haya más energías por arriba de la media: tenés recursos activos en los que apoyarte.'
+    : 'Hoy hay más energías por debajo de la media: es una invitación a despertar recursos que ya están en vos.');
 
-  // 1. Síntesis de hoy
+  // 2. Síntesis de hoy
   const sintesis = [];
-  sintesis.push('Tu media es <strong>' + fmtMedia(media) + '</strong>. Hoy la energía que más se activa en vos es la del <strong>' + nom(dom) + '</strong> (' + tot(dom) + ' puntos), que se identifica con <strong>' + e.identidad + '</strong>. Esto no significa que sea tu esencia: es la energía desde la que más te estás moviendo en este momento de tu vida.');
+  sintesis.push('Hoy la energía que más se activa en vos es la del <strong>' + nom(dom) + '</strong> (' + tot(dom) + ' puntos), que se identifica con <strong>' + e.identidad + '</strong>. Esto no significa que sea tu esencia: es la energía desde la que más te estás moviendo en este momento de tu vida.');
 
   let luzSombra = 'En la luz, esta energía es ' + e.luz + '; en la sombra, ' + e.sombra + '. ';
   if (s.luz > s.sombra)      luzSombra += 'Hoy la estás viviendo más desde su <strong>luz</strong> (' + s.luz + ' respuestas de luz y ' + s.sombra + ' de sombra).';
   else if (s.sombra > s.luz) luzSombra += 'Hoy aparece con más fuerza su <strong>sombra</strong> (' + s.sombra + ' respuestas de sombra y ' + s.luz + ' de luz): es una invitación a poner conciencia para llevarla hacia la luz.';
   else                       luzSombra += 'Hoy su luz y su sombra aparecen en equilibrio (' + s.luz + ' respuestas de cada una).';
   sintesis.push(luzSombra + ' Recordá: <em>aquello que es tu don puede ser también tu trampa.</em>');
-
-  const otrosAltos = altos.slice(1);
-  let balance = 'Tenés <strong>' + altos.length + '</strong> tipologías sobre la media y <strong>' + bajos.length + '</strong> por debajo. ';
-  if (otrosAltos.length) balance += 'Además de tu energía dominante, están activas ' + enLista(otrosAltos.map(nom)) + '. ';
-  balance += altos.length >= bajos.length
-    ? 'Es favorable que haya más energías por arriba de la media: tenés recursos activos en los que apoyarte.'
-    : 'Hoy hay más energías por debajo de la media: es una invitación a despertar recursos que ya están en vos.';
-  sintesis.push(balance);
 
   const centros = CENTROS_INTELIGENCIA.map(c => ({ c: c, suma: c.tipos.reduce((acc, t) => acc + tot(t), 0) }))
     .sort((a, b) => b.suma - a.suma);
@@ -166,12 +169,12 @@ function construirDevolucion(scores) {
   // Alas, brazos, tríada y ejes quedan para la lectura personalizada
   sintesis.push('Tu mapa tiene mucho más para mostrarte: tus <strong>alas</strong>, tus <strong>brazos</strong> de integración, tus <strong>ejes de equilibrio</strong> y tu modo de reaccionar ante los conflictos. Esa lectura se hace de manera <strong>personalizada</strong>, mirando tu historia y tu momento de vida.');
 
-  // 2. Energías para despertar: reflexión general sobre los miedos circunstanciales
+  // 3. Energías para despertar: reflexión general sobre los miedos circunstanciales
   const despertar = bajos.length
-    ? ['Hoy las energías menos activas en vos son: ' + enLista(bajos.slice(0, 3).map(t => '<strong>' + nom(t) + '</strong>')) + '. Preguntate qué te cuesta poner en juego de cada una y qué situación de tu vida actual puede estar frenándola.']
+    ? ['Mirá tus tipologías menos marcadas y preguntate qué te cuesta poner en juego de cada una, y qué situación de tu vida actual puede estar frenándolas.']
     : [];
 
-  // 3. Para llevarte de aquí en adelante
+  // 4. Para llevarte de aquí en adelante
   const foco = bajos[0] || dom;
   const llevarte = [
     'Elegí una sola práctica para las próximas semanas: <strong>' + ENERGIAS[foco].practica + '</strong>',
@@ -179,7 +182,14 @@ function construirDevolucion(scores) {
     'Volvé a hacer el test dentro de unos meses: comparar las fotos te va a mostrar cómo se van moviendo tus energías. Y preguntate, en cada situación: <strong>¿fluyo o empujo?</strong>'
   ];
 
-  const secciones = [{ titulo: 'Tu síntesis de hoy', parrafos: sintesis }];
+  const secciones = [
+    {
+      titulo: 'Tus tipologías respecto de la MEDIA',
+      intro: 'Tu <strong>MEDIA</strong> es <strong>' + fmtMedia(media) + '</strong>. Es tu <strong>valor de referencia</strong>: se calcula sumando tu puntaje más alto (' + max + ') y tu puntaje más bajo (' + min + '), y dividiendo por 2. Las tipologías por encima de la media son las más marcadas hoy; las que quedan por debajo, las menos marcadas.',
+      parrafos: respectoMedia
+    },
+    { titulo: 'Tu síntesis de hoy', parrafos: sintesis }
+  ];
   if (despertar.length) {
     secciones.push({
       titulo: 'Energías para despertar',
@@ -202,7 +212,7 @@ function renderDevolucionBase(containerId, dev) {
 function renderDevolucionLectura(containerId, dev) {
   const el = document.getElementById(containerId);
   if (!el) return;
-  el.innerHTML = '<p class="devolucion-titulo">Tu devolución</p>' +
+  el.innerHTML = '<h2 class="devolucion-titulo">Tu lectura de Eneagrama</h2>' +
     dev.secciones.map(sec =>
       '<div class="devolucion-seccion">' +
         '<p class="devolucion-subtitulo">' + sec.titulo + '</p>' +

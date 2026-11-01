@@ -96,8 +96,8 @@
     // SVG
     renderEnea('enea-lectura', scores, media, true);
 
-    // H: Devolución escrita (la misma que recibe la persona)
-    renderDevolucionLectura('sec-devolucion', construirDevolucion(scores));
+    // H: Lectura completa (la persona recibe solo la síntesis)
+    renderLecturaCompleta('sec-devolucion', construirLecturaCompleta(scores));
 
     // B: Alas
     const tipo = TIPOS[dominante];

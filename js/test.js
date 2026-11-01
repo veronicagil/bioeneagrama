@@ -21,7 +21,8 @@
   let resultDominante = 1;
   let resultMedia     = 0;
   let pdfGenerado     = null; // data URI del PDF ya generado
-  let resultDevolucion = null; // devolución escrita, se manda también por mail
+  let resultDevolucion = null; // síntesis para la persona (página, PDF y mail)
+  let resultLectura    = null; // lectura completa, solo para el mail a Vero
 
   // ──────────────────────────────────────────────
   // CONSTRUCCIÓN DE PREGUNTAS
@@ -210,7 +211,7 @@
       restaurarSimbolo();
       if (banner) banner.style.display = '';
       if (btnG)   btnG.style.display   = '';
-      if (btn)  { btn.textContent = '📄 Descargar mi resultado en PDF'; btn.disabled = false; }
+      if (btn)  { btn.textContent = '📄 Descargar PDF'; btn.disabled = false; }
     }
 
     eneaToPng()
@@ -237,8 +238,8 @@
           // Sin windowWidth: con una ventana simulada más angosta que la hoja, el contenido salía corrido a la izquierda
           html2canvas: { scale: escala, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0 },
           jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
-          // Ningún párrafo, título o tarjeta queda partido entre dos páginas; la lectura empieza en página nueva
-          pagebreak:   { mode: ['avoid-all', 'css', 'legacy'], before: '#devolucion-lectura' }
+          // Ningún párrafo, título o bloque queda partido entre dos páginas
+          pagebreak:   { mode: ['avoid-all', 'css', 'legacy'] }
         };
 
         return html2pdf().set(opciones).from(elemento).outputPdf('blob');
@@ -267,6 +268,7 @@
             body: JSON.stringify({
               eneaPng:       eneaPng,
               devolucion:    resultDevolucion,
+              lecturaCompleta: resultLectura,
               toName:        userName,
               toApellido:    userApellido,
               toEmail:       userEmail,
@@ -363,7 +365,6 @@
     const media = calcMedia();
     const tipos  = Array.from({ length: 9 }, (_, i) => i + 1);
     const altos  = tipos.filter(t => scores[t].total >= media).sort((a, b) => scores[b].total - scores[a].total);
-    const bajos  = tipos.filter(t => scores[t].total  < media).sort((a, b) => scores[a].total - scores[b].total);
     const dominante = altos[0] || 1;
     const tipo = TIPOS[dominante];
 
@@ -371,45 +372,26 @@
     resultDominante = dominante;
     resultMedia     = media;
 
-    document.getElementById('res-tipo-num').textContent   = 'Tipo ' + dominante + ' · Tu tipo dominante';
-    document.getElementById('res-tipo-nombre').textContent = tipo.nombre;
-    document.getElementById('res-tipo-centro').textContent = tipo.centro;
-    document.getElementById('res-sintesis').textContent   = tipo.sintesis;
     const totales = tipos.map(t => scores[t].total);
     const masAlto = Math.max(...totales);
     const masBajo = Math.min(...totales);
-    document.getElementById('media-display').textContent  = fmtMedia(media);
-    document.getElementById('media-calc').innerHTML =
-      'En tu caso: (' + masAlto + ' + ' + masBajo + ') ÷ 2 = <strong>' + fmtMedia(media) + '</strong>';
-    document.getElementById('grupo-altos-media').textContent = '(puntaje ' + fmtMedia(media) + ' o más)';
-    document.getElementById('grupo-bajos-media').textContent = '(puntaje menor a ' + fmtMedia(media) + ')';
+
+    // Síntesis para la persona; la lectura completa viaja solo en el mail a Vero
+    resultDevolucion = construirSintesis(scores);
+    resultLectura    = construirLecturaCompleta(scores);
+    renderSintesis(scores, resultDevolucion);
     renderEnea('enea-results', scores, media, true);
-
-    // Devolución escrita (base teórica + síntesis interpretativa)
-    resultDevolucion = construirDevolucion(scores);
-    renderDevolucionBase('devolucion-base', resultDevolucion);
-    renderDevolucionLectura('devolucion-lectura', resultDevolucion);
-
-    // Cards de tipos
-    const altosEl = document.getElementById('grupo-altos');
-    altosEl.innerHTML = '';
-    altos.forEach((t, i) => altosEl.appendChild(makeTipoCard(t, i === 0 ? '★' : String(i + 1), 'alto')));
-
-    const bajosEl = document.getElementById('grupo-bajos');
-    bajosEl.innerHTML = '';
-    bajos.forEach((t, i) => bajosEl.appendChild(makeTipoCard(t, i === 0 ? '▾' : '', 'bajo')));
 
     // Botón WhatsApp guardar
     document.getElementById('btn-guardar').onclick = function () {
       let msg = '🌀 *Bio Eneagrama · ' + (userName || 'Mis resultados') + '*\n\n';
-      msg += '★ *Tipo dominante: ' + tipo.nombre + '*\n' + tipo.centro + '\n\n' + tipo.sintesis + '\n\n';
-      msg += '📊 *Puntajes:*\n';
-      for (let t = 1; t <= 9; t++) {
-        const s = scores[t];
-        msg += 'T' + t + ' ' + TIPOS[t].nombre + ': ' + s.total + (t === dominante ? ' ★' : '') + '\n';
-      }
-      msg += '\n📐 Media: ' + fmtMedia(media) + ' = (puntaje más alto ' + masAlto + ' + más bajo ' + masBajo + ') ÷ 2';
-      msg += '\n_La media es tu valor de referencia: los tipos con puntaje igual o mayor son tus energías más activas hoy._';
+      msg += '★ *Energía más presente hoy: ' + tipo.nombre + '*\n\n';
+      msg += '📊 *Mis puntajes:*\n';
+      tipos.slice().sort((a, b) => scores[b].total - scores[a].total).forEach(t => {
+        msg += 'T' + t + ' ' + TIPOS[t].nombre + ': ' + scores[t].total + '\n';
+      });
+      msg += '\n📐 Referencia: ' + fmtMedia(media) + ' = (puntaje más alto ' + masAlto + ' + más bajo ' + masBajo + ') ÷ 2';
+      msg += '\n_Es una foto de hoy, no una etiqueta._';
       msg += '\n\n_Bio Eneagrama · Vero Gil_\nbioeneagrama.vercel.app';
       window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
     };
@@ -481,30 +463,6 @@
     setTimeout(function () {
       iniciarGeneracionPDF(dominante, media);
     }, 800);
-  }
-
-  // ──────────────────────────────────────────────
-  // CARDS DE TIPOS
-  // ──────────────────────────────────────────────
-  function makeTipoCard(t, badge, grupo) {
-    const div = document.createElement('div');
-    div.className = 'tipo-card ' + grupo;
-    const s = scores[t];
-    const emptyFlex  = 20 - s.total;
-    const badgeClass = grupo === 'bajo' ? 'tipo-badge bajo-badge' : 'tipo-badge';
-    div.innerHTML =
-      '<div class="tipo-nombre">' +
-        '<span class="' + badgeClass + '">' + badge + '</span>' +
-        '<span>T' + t + ' · ' + TIPOS[t].nombre + '</span>' +
-      '</div>' +
-      '<div class="tipo-score">Total: ' + s.total + ' &nbsp;|&nbsp; ☀️ Luz: ' + s.luz + ' &nbsp;|&nbsp; 🌑 Sombra: ' + s.sombra + '</div>' +
-      '<div class="mini-bars">' +
-        '<div class="mini-bar-luz" style="flex:' + s.luz + '"></div>' +
-        '<div class="mini-bar-sombra" style="flex:' + s.sombra + '"></div>' +
-        (emptyFlex > 0 ? '<div style="flex:' + emptyFlex + ';height:5px;background:var(--border)"></div>' : '') +
-      '</div>' +
-      '<p class="tipo-resena">' + TIPOS[t].resena + '</p>';
-    return div;
   }
 
   // Botón de prueba: completa puntajes de ejemplo y salta a los resultados (solo con ?prueba)

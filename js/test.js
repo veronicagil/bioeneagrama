@@ -17,13 +17,6 @@
   let userConsentimiento = false;
   let userOrigen       = '';
 
-  // Guardamos el dominante y la media para usarlos al generar el PDF
-  let resultDominante = 1;
-  let resultMedia     = 0;
-  let pdfGenerado     = null; // data URI del PDF ya generado
-  let resultDevolucion = null; // síntesis para la persona (página, PDF y mail)
-  let resultLectura    = null; // lectura completa, solo para el mail a Vero
-
   // ──────────────────────────────────────────────
   // CONSTRUCCIÓN DE PREGUNTAS
   // ──────────────────────────────────────────────
@@ -109,48 +102,9 @@
   }
 
   // ──────────────────────────────────────────────
-  // AFIRMACIONES RESPONDIDAS SÍ DEL TIPO DOMINANTE
+  // ENVÍO DEL RESULTADO POR MAIL (la persona solo ve el aviso en pantalla)
   // ──────────────────────────────────────────────
-  function getAfirmacionesDominante(dominante) {
-    const luz = [], sombra = [];
-    for (const h of answerHistory) {
-      if (h.tipo === dominante && h.resp === 'si') {
-        if (h.seccion === 'luz'    && luz.length    < 3) luz.push(AFIRMACIONES[dominante].luz[h.ronda]);
-        if (h.seccion === 'sombra' && sombra.length < 3) sombra.push(AFIRMACIONES[dominante].sombra[h.ronda]);
-      }
-    }
-    return { luz, sombra };
-  }
-
-  // ──────────────────────────────────────────────
-  // TEXTO DE PUNTAJES PARA EL EMAIL
-  // ──────────────────────────────────────────────
-  function buildPuntajesTexto(dominante, media) {
-    const ordenados = Array.from({ length: 9 }, (_, i) => i + 1)
-      .sort((a, b) => scores[b].total - scores[a].total);
-    let txt = '';
-    ordenados.forEach(t => {
-      const s = scores[t];
-      txt += 'T' + t + ' ' + TIPOS[t].nombre + ': ' + s.total +
-        (t === dominante ? ' ★' : '') +
-        '  (☀️ ' + s.luz + ' / 🌑 ' + s.sombra + ')\n';
-    });
-    return txt;
-  }
-
-  // ──────────────────────────────────────────────
-  // PDF: AUTO-GENERAR + ENVIAR POR EMAIL
-  // ──────────────────────────────────────────────
-  function blobToBase64(blob) {
-    return new Promise(function (resolve, reject) {
-      const reader = new FileReader();
-      reader.onloadend = function () { resolve(reader.result); };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  }
-
-  // Convierte el símbolo de resultados (SVG) a PNG para poder mostrarlo dentro del mail
+  // Convierte el símbolo (dibujado fuera de pantalla) a PNG para mostrarlo dentro del mail
   function eneaToPng() {
     return new Promise(function (resolve) {
       const svg = document.querySelector('#enea-results svg');
@@ -177,133 +131,44 @@
     });
   }
 
-  // El símbolo SVG sale vacío en el PDF: durante la generación se reemplaza por su versión PNG
-  function ponerSimboloComoImagen(png) {
-    const box = document.getElementById('enea-results');
-    const svg = box && box.querySelector('svg');
-    if (!png || !svg) return Promise.resolve(function () {});
-    const img = new Image();
-    img.style.cssText = 'display:block;width:100%;max-width:420px;height:auto;margin:0 auto';
-    const listo = new Promise(function (resolve) { img.onload = resolve; img.onerror = resolve; });
-    img.src = png;
-    svg.style.display = 'none';
-    box.appendChild(img);
-    return listo.then(function () {
-      return function restaurar() { img.remove(); svg.style.display = ''; };
+  function enviarResultado() {
+    const media = calcMedia();
+    const tipos = Array.from({ length: 9 }, (_, i) => i + 1);
+    const dominante = tipos.slice().sort((a, b) => scores[b].total - scores[a].total || a - b)[0];
+
+    const scoresData = {};
+    tipos.forEach(t => { scoresData['T' + t] = { luz: scores[t].luz, sombra: scores[t].sombra, total: scores[t].total }; });
+
+    // Link al panel de Vero con los puntajes cargados
+    const hash = tipos.map(t => t + '=' + scores[t].luz + ',' + scores[t].sombra).join('|');
+    const panelUrl = window.location.origin + window.location.pathname.replace(/test\.html$/, '') + 'lectura.html#' + encodeURIComponent(hash);
+
+    renderEnea('enea-results', scores, media, true);
+
+    return eneaToPng().then(function (eneaPng) {
+      return fetch('/api/send-email', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          eneaPng:         eneaPng,
+          devolucion:      construirSintesis(scores),
+          lecturaCompleta: construirLecturaCompleta(scores),
+          panelUrl:        panelUrl,
+          toName:          userName,
+          toApellido:      userApellido,
+          toEmail:         userEmail,
+          toTelefono:      userTelefono,
+          edad:            userEdad,
+          consentimiento:  userConsentimiento ? 'Sí' : 'No',
+          toOrigen:        userOrigen,
+          tipoNum:         'Tipo ' + dominante,
+          tipoNombre:      TIPOS[dominante].nombre,
+          media:           media.toFixed(1),
+          scoresData:      scoresData
+        })
+      });
     });
   }
-
-  function iniciarGeneracionPDF(dominante, media) {
-    const btn    = document.getElementById('btn-pdf');
-    const banner = document.getElementById('pdf-banner');
-    const btnG   = document.getElementById('btn-guardar');
-
-    if (btn) { btn.textContent = '⏳ Preparando tu resultado...'; btn.disabled = true; }
-
-    const elemento = document.getElementById('results-section');
-    const nombre   = userName.replace(/\s+/g, '-') || 'resultado';
-    const filename = 'BioEneagrama-' + nombre + '.pdf';
-
-    let eneaPng  = null;
-    let restaurarSimbolo = function () {};
-
-    function restaurarPantalla() {
-      restaurarSimbolo();
-      if (banner) banner.style.display = '';
-      if (btnG)   btnG.style.display   = '';
-      if (btn)  { btn.textContent = '📄 Descargar PDF'; btn.disabled = false; }
-    }
-
-    eneaToPng()
-      .then(function (png) {
-        eneaPng = png;
-        return ponerSimboloComoImagen(png);
-      })
-      .then(function (restaurar) {
-        restaurarSimbolo = restaurar;
-
-        // Ocultar controles que no deben ir en el PDF
-        if (banner) banner.style.display = 'none';
-        if (btnG)   btnG.style.display   = 'none';
-
-        // Los celulares tienen un límite de tamaño de imagen (canvas): si el resultado es muy largo
-        // y la escala es alta, la imagen se corta. Se ajusta la escala al largo del contenido.
-        const altoAprox = elemento.scrollHeight * (elemento.offsetWidth / 730 || 1);
-        const escala = Math.max(1, Math.min(2, Math.sqrt(12000000 / (730 * Math.max(altoAprox, 1)))));
-
-        const opciones = {
-          margin:      [10, 8, 10, 8],
-          filename:    filename,
-          image:       { type: 'jpeg', quality: 0.92 },
-          // Sin windowWidth: con una ventana simulada más angosta que la hoja, el contenido salía corrido a la izquierda
-          html2canvas: { scale: escala, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0 },
-          jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
-          // Ningún párrafo, título o bloque queda partido entre dos páginas
-          pagebreak:   { mode: ['avoid-all', 'css', 'legacy'] }
-        };
-
-        return html2pdf().set(opciones).from(elemento).outputPdf('blob');
-      })
-      .then(function (blob) {
-        pdfGenerado = URL.createObjectURL(blob);
-        return blobToBase64(blob);
-      })
-      .then(function (uri) {
-        restaurarPantalla();
-
-        // Enviar email con PDF adjunto
-        if (userEmail) {
-          const tipo = TIPOS[dominante];
-          const puntajes = buildPuntajesTexto(dominante, media);
-
-          // Serializar puntajes como objeto estructurado para la base de datos
-          var scoresData = {};
-          Object.keys(scores).forEach(function(t) {
-            scoresData['T' + t] = { luz: scores[t].luz, sombra: scores[t].sombra, total: scores[t].total };
-          });
-
-          fetch('/api/send-email', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              eneaPng:       eneaPng,
-              devolucion:    resultDevolucion,
-              lecturaCompleta: resultLectura,
-              toName:        userName,
-              toApellido:    userApellido,
-              toEmail:       userEmail,
-              toTelefono:    userTelefono,
-              edad:          userEdad,
-              consentimiento: userConsentimiento ? 'Sí' : 'No',
-              toOrigen:      userOrigen,
-              tipoNum:       'Tipo ' + dominante,
-              tipoNombre:    tipo.nombre,
-              centro:        tipo.centro,
-              sintesis:      tipo.sintesis,
-              puntajes:      puntajes,
-              media:         media.toFixed(1),
-              scoresData:    scoresData,
-              pdfBase64:     uri,
-              pdfFilename:   filename
-            })
-          }).catch(function () {});
-        }
-      })
-      .catch(restaurarPantalla);
-  }
-
-  // Botón de descarga — usa el PDF ya generado
-  window.generarPDF = function () {
-    if (!pdfGenerado) return;
-    const nombre   = userName.replace(/\s+/g, '-') || 'resultado';
-    const filename = 'BioEneagrama-' + nombre + '.pdf';
-    const link = document.createElement('a');
-    link.href     = pdfGenerado;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   // ──────────────────────────────────────────────
   // FORMULARIO INICIAL (nombre + email)
@@ -361,108 +226,7 @@
   function showResults() {
     document.getElementById('results-section').classList.remove('hidden');
     window.scrollTo(0, 0);
-
-    const media = calcMedia();
-    const tipos  = Array.from({ length: 9 }, (_, i) => i + 1);
-    const altos  = tipos.filter(t => scores[t].total >= media).sort((a, b) => scores[b].total - scores[a].total);
-    const dominante = altos[0] || 1;
-    const tipo = TIPOS[dominante];
-
-    // Guardar para usar en el PDF
-    resultDominante = dominante;
-    resultMedia     = media;
-
-    const totales = tipos.map(t => scores[t].total);
-    const masAlto = Math.max(...totales);
-    const masBajo = Math.min(...totales);
-
-    // Síntesis para la persona; la lectura completa viaja solo en el mail a Vero
-    resultDevolucion = construirSintesis(scores);
-    resultLectura    = construirLecturaCompleta(scores);
-    renderSintesis(scores, resultDevolucion);
-    renderEnea('enea-results', scores, media, true);
-
-    // Botón WhatsApp guardar
-    document.getElementById('btn-guardar').onclick = function () {
-      let msg = '🌀 *Bio Eneagrama · ' + (userName || 'Mis resultados') + '*\n\n';
-      msg += '★ *Energía más presente hoy: ' + tipo.nombre + '*\n\n';
-      msg += '📊 *Mis puntajes:*\n';
-      tipos.slice().sort((a, b) => scores[b].total - scores[a].total).forEach(t => {
-        msg += 'T' + t + ' ' + TIPOS[t].nombre + ': ' + scores[t].total + '\n';
-      });
-      msg += '\n📐 Referencia: ' + fmtMedia(media) + ' = (puntaje más alto ' + masAlto + ' + más bajo ' + masBajo + ') ÷ 2';
-      msg += '\n_Es una foto de hoy, no una etiqueta._';
-      msg += '\n\n_Bio Eneagrama · Vero Gil_\nbioeneagrama.vercel.app';
-      window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
-    };
-
-    // Botón WhatsApp "Quiero hacer un proceso": le llegan a Vero los puntajes y el link al panel
-    const solicitarProceso = function () {
-      const hash = Object.entries(scores)
-        .map(e => e[0] + '=' + e[1].luz + ',' + e[1].sombra).join('|');
-      const baseUrl = window.location.origin + window.location.pathname.replace('test.html', '');
-      const lecturaUrl = baseUrl + 'lectura.html#' + encodeURIComponent(hash);
-      const triada = TRIADAS[tipo.triada];
-
-      const ordenados = Array.from({ length: 9 }, (_, i) => i + 1)
-        .sort((a, b) => scores[b].total - scores[a].total);
-      const sobMedia = ordenados.filter(t => scores[t].total >= media);
-      const bajMedia = ordenados.filter(t => scores[t].total  < media);
-
-      let msg = '🌀 *BIO ENEAGRAMA — Quiero hacer un proceso a partir del Eneagrama*\n━━━━━━━━━━━━━━━━━━━━\n';
-      if (userName)  msg += '👤 *' + userName  + '*\n';
-      if (userEmail) msg += '📧 ' + userEmail + '\n';
-      msg += '\n★ *TIPO DOMINANTE: T' + dominante + ' — ' + tipo.nombre + '*\n';
-      msg += '• Centro: ' + tipo.centro + '\n';
-      msg += '• Transformación: ' + tipo.transformacion + '\n';
-      msg += '• Ala que desarrolla: T' + tipo.ala_desarrolla + ' — ' + TIPOS[tipo.ala_desarrolla].nombre + '\n';
-      msg += '• Ala que le cuesta: T' + tipo.ala_cuesta + ' — ' + TIPOS[tipo.ala_cuesta].nombre + '\n';
-      msg += '• Integración → T' + tipo.integracion + ' — ' + TIPOS[tipo.integracion].nombre + '\n';
-      msg += '• Desintegración → T' + tipo.desintegracion + ' — ' + TIPOS[tipo.desintegracion].nombre + '\n';
-      msg += '• ' + triada.nombre + ' (herida: ' + triada.herida + ')\n';
-      msg += '• Luz: ' + scores[dominante].luz + ' / Sombra: ' + scores[dominante].sombra + '\n\n';
-      msg += '📊 *PUNTAJES* — Media: ' + media.toFixed(1) + '\n\n▲ Sobre la media:\n';
-      sobMedia.forEach(t => {
-        const s = scores[t];
-        msg += 'T' + t + ' ' + TIPOS[t].nombre + ': *' + s.total + '* (☀️' + s.luz + ' 🌑' + s.sombra + ')\n';
-      });
-      msg += '\n▽ Bajo la media:\n';
-      bajMedia.forEach(t => {
-        const s = scores[t];
-        msg += 'T' + t + ' ' + TIPOS[t].nombre + ': ' + s.total + ' (☀️' + s.luz + ' 🌑' + s.sombra + ')\n';
-      });
-      msg += '\n🔍 *Panel profesional:*\n' + lecturaUrl;
-      window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
-    };
-    document.querySelectorAll('[data-accion="proceso"]').forEach(b => { b.onclick = solicitarProceso; });
-
-    // Link al cuestionario de datos personales, con mail y teléfono precargados
-    const cuesParams = new URLSearchParams();
-    if (userEmail)    cuesParams.set('email', userEmail);
-    if (userTelefono) cuesParams.set('tel', userTelefono);
-    const cuesUrl = 'cuestionario.html' + (cuesParams.toString() ? '?' + cuesParams.toString() : '');
-    document.querySelectorAll('[data-accion="cuestionario"]').forEach(a => { a.href = cuesUrl; });
-
-    // Ventana "¿Querés profundizar tu lectura?" al llegar al final de los resultados
-    const modal = document.getElementById('modal-profundizar');
-    const cerrarModal = function () { modal.classList.add('hidden'); };
-    document.getElementById('modal-prof-cerrar').onclick = cerrarModal;
-    document.getElementById('modal-prof-seguir').onclick = cerrarModal;
-    modal.onclick = function (e) { if (e.target === modal) cerrarModal(); };
-    if ('IntersectionObserver' in window) {
-      const obs = new IntersectionObserver(function (entries) {
-        if (entries.some(en => en.isIntersecting)) {
-          modal.classList.remove('hidden');
-          obs.disconnect();
-        }
-      });
-      obs.observe(document.getElementById('btn-guardar'));
-    }
-
-    // Auto-generar PDF y enviar email (se dispara automáticamente al ver resultados)
-    setTimeout(function () {
-      iniciarGeneracionPDF(dominante, media);
-    }, 800);
+    enviarResultado().catch(function () {});
   }
 
   // Botón de prueba: completa puntajes de ejemplo y salta a los resultados (solo con ?prueba)

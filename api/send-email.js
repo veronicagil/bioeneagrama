@@ -10,12 +10,13 @@ module.exports = async function (req, res) {
     return res.status(503).json({ error: 'Email no configurado' });
   }
 
-  const { toName, toApellido, toEmail, toTelefono, edad, consentimiento, toOrigen, tipoNum, tipoNombre, centro, sintesis, puntajes, media, scoresData, pdfBase64, pdfFilename, eneaPng, devolucion, lecturaCompleta } = req.body || {};
+  const { toName, toApellido, toEmail, toTelefono, edad, consentimiento, toOrigen, tipoNum, tipoNombre, media, scoresData, eneaPng, devolucion, lecturaCompleta, panelUrl } = req.body || {};
 
   if (!toEmail || !toName) {
     return res.status(400).json({ error: 'Faltan datos del destinatario' });
   }
 
+  const consiente = consentimiento === true || consentimiento === 'Sí';
   const nombreCompleto = toApellido ? toName + ' ' + toApellido : toName;
   const ahora = new Date();
   const fecha = ahora.toISOString().slice(0, 10);
@@ -27,12 +28,8 @@ module.exports = async function (req, res) {
       auth: { user: GMAIL_USER, pass: GMAIL_PASS }
     });
 
-    // Puntaje más alto y más bajo, para explicar cómo se calcula la media
-    const totales = Object.values(scoresData || {}).map(function (s) { return Number(s.total) || 0; });
-    const extremos = totales.length ? { alto: Math.max.apply(null, totales), bajo: Math.min.apply(null, totales) } : null;
-
     const conSimbolo = typeof eneaPng === 'string' && eneaPng.indexOf('base64,') !== -1 && eneaPng.length < 1500000;
-    const emailHtml = buildClienteEmail(toName, devolucion, scoresData, extremos, conSimbolo);
+    const emailHtml = buildClienteEmail(toName, devolucion, scoresData, conSimbolo);
 
     const attachments = [];
     if (conSimbolo) {
@@ -44,21 +41,12 @@ module.exports = async function (req, res) {
         cid: 'eneagrama-resultado'
       });
     }
-    if (pdfBase64 && pdfBase64.length < 5000000) {
-      const data = pdfBase64.includes('base64,') ? pdfBase64.split('base64,')[1] : pdfBase64;
-      attachments.push({
-        filename: pdfFilename || ('BioEneagrama-' + toName + '.pdf'),
-        content: data,
-        encoding: 'base64',
-        contentType: 'application/pdf'
-      });
-    }
 
     // Email al cliente
     await transporter.sendMail({
       from: '"Vero Gil · Bio Eneagrama" <' + GMAIL_USER + '>',
       to: toEmail,
-      subject: 'Tu resultado · Bio Eneagrama · Vero Gil',
+      subject: 'Tu lectura de Eneagrama · Bio Eneagrama · Vero Gil',
       html: emailHtml,
       attachments: attachments
     });
@@ -72,7 +60,7 @@ module.exports = async function (req, res) {
       (toTelefono ? '<p style="margin:2px 0">📱 ' + toTelefono + '</p>' : '') +
       (edad ? '<p style="margin:2px 0">🎂 Edad: ' + edad + '</p>' : '') +
       '<p style="margin:2px 0">🕒 Fecha: ' + fecha + ' · ' + hora + '</p>' +
-      (consentimiento ? '<p style="margin:2px 0">✅ Consentimiento: desea recibir novedades y propuestas</p>' : '<p style="margin:2px 0">⚪ Consentimiento: no desea recibir novedades</p>') +
+      (consiente ? '<p style="margin:2px 0">✅ Consentimiento: desea recibir novedades y propuestas</p>' : '<p style="margin:2px 0">⚪ Consentimiento: no desea recibir novedades</p>') +
       (toOrigen   ? '<p style="margin:2px 0">🔍 Llegó por: ' + toOrigen + '</p>' : '') +
       '</div>';
 
@@ -80,7 +68,7 @@ module.exports = async function (req, res) {
       from: '"Bio Eneagrama" <' + GMAIL_USER + '>',
       to: GMAIL_USER,
       subject: '🌀 ' + nombreCompleto + ' · ' + tipoNum + ' ' + tipoNombre,
-      html: buildVeroEmail(datosCliente, nombreCompleto, lecturaCompleta, scoresData, extremos, conSimbolo),
+      html: buildVeroEmail(datosCliente, nombreCompleto, devolucion, lecturaCompleta, scoresData, conSimbolo, panelUrl),
       attachments: attachments
     });
 
@@ -98,7 +86,7 @@ module.exports = async function (req, res) {
             email:        toEmail,
             telefono:     toTelefono || '',
             edad:         edad || '',
-            consentimiento: consentimiento ? 'Sí' : 'No',
+            consentimiento: consiente ? 'Sí' : 'No',
             origen:       toOrigen || '',
             tipoNum:      tipoNum || '',
             tipoNombre:   tipoNombre || '',
@@ -176,21 +164,8 @@ function mapaBarras(scoresData, ref) {
 
 function simbolo(conSimbolo) {
   return conSimbolo
-    ? '<img src="cid:eneagrama-resultado" alt="Tu símbolo del Eneagrama con tus puntajes" width="440" style="display:block;width:100%;max-width:440px;height:auto;margin:14px auto 4px">'
+    ? '<img src="cid:eneagrama-resultado" alt="Tu símbolo del Eneagrama con tu marcación" width="460" style="display:block;width:100%;max-width:460px;height:auto;margin:18px auto 6px">'
     : '';
-}
-
-function bloqueMapa(ref, extremos, scoresData, conSimbolo, textoRef) {
-  return '<div style="background:' + FONDO + ';border-radius:6px;padding:20px 22px;margin:0 0 6px">' +
-    '<table role="presentation" cellpadding="0" cellspacing="0"><tr>' +
-    '<td style="padding-right:14px;font-size:54px;line-height:1;color:' + FUCSIA + ';font-family:Georgia,serif;font-weight:bold;vertical-align:top">' + fmt(ref) + '</td>' +
-    '<td style="font-size:13px;line-height:1.55;color:' + TINTA2 + ';font-family:Helvetica,Arial,sans-serif;vertical-align:top"><strong style="color:' + TINTA + '">Tu referencia.</strong> ' +
-    (textoRef || (extremos ? 'Es el punto medio entre el puntaje más alto y el más bajo: (' + extremos.alto + ' + ' + extremos.bajo + ') ÷ 2 = ' + fmt(ref) + '.' : '')) + '</td>' +
-    '</tr></table>' +
-    simbolo(conSimbolo) +
-    mapaBarras(scoresData, ref) +
-    '<p style="margin:10px 0 0;font-size:12px;color:' + TINTA3 + ';font-family:Helvetica,Arial,sans-serif">Cada energía puede sumar hasta 20.</p>' +
-    '</div>';
 }
 
 function envolver(contenido) {
@@ -205,52 +180,79 @@ function envolver(contenido) {
 var CABECERA = '<div style="background:linear-gradient(135deg,#B5004F,#4B0082);background-color:#7A0F6A;padding:24px 30px">' +
   '<p style="margin:0;color:#fff;font-size:12px;letter-spacing:3px;text-transform:uppercase;font-family:Helvetica,Arial,sans-serif;font-weight:bold">Bio Eneagrama · Vero Gil</p></div>';
 
-// ── Mail a la persona: síntesis breve + invitación ──
-function buildClienteEmail(nombre, sint, scoresData, extremos, conSimbolo) {
+// ── Síntesis: lo que recibe la persona (y Vero, igual, al principio de su mail) ──
+function cuerpoSintesis(sint, scoresData, conSimbolo) {
   sint = sint || {};
-  var ref = sint.referencia ? Number(sint.referencia.valor) : (extremos ? (extremos.alto + extremos.bajo) / 2 : 0);
+  var m = sint.media || {};
+  var ref = Number(m.valor) || 0;
   var waProceso = 'https://wa.me/5491149169532?text=' + encodeURIComponent('Hola Vero, hice el test de Bio Eneagrama y quiero hacer un proceso a partir del Eneagrama.');
 
-  return envolver(
-    CABECERA +
-    '<div style="padding:30px 30px 10px">' +
-    '<p style="' + P + ';font-size:16px">Hola <strong style="color:' + VIOLETA + '">' + nombre + '</strong>, acá está tu lectura de hoy.</p>' +
+  return '<div style="padding:28px 30px 6px">' +
+    '<h1 style="' + H1 + '">Tu lectura de <em style="color:' + FUCSIA + '">Eneagrama</em></h1>' +
+    parrafos(sint.intro) +
 
-    '<h1 style="' + H1 + ';margin-top:18px">El Eneagrama, <em style="color:' + FUCSIA + '">¿qué es?</em></h1>' +
-    parrafos(sint.queEs) +
-
-    '<h1 style="' + H1 + ';margin-top:30px;padding-top:24px;border-top:1px solid #E6DDF0">Tu lectura de <em style="color:' + FUCSIA + '">Eneagrama</em></h1>' +
-    '<h2 style="' + H2 + ';margin-top:6px">Tu mapa de hoy</h2>' +
-    bloqueMapa(ref, extremos, scoresData, conSimbolo, sint.referencia && sint.referencia.texto) +
-
-    '<h2 style="' + H2 + '">Tu síntesis de hoy</h2>' +
-    parrafos(sint.sintesis) +
-    (sint.pregunta ? '<p style="margin:18px 0;padding-left:14px;border-left:2px solid ' + FUCSIA + ';font-size:21px;line-height:1.35;font-style:italic;color:' + VIOLETA + ';font-family:Georgia,serif">' + sint.pregunta + '</p>' : '') +
-    (sint.enPausa ? parrafos([sint.enPausa]) : '') +
+    // MEDIA: el concepto clave, destacado
+    '<div style="margin:22px 0 6px;background:' + FONDO + ';border-radius:6px;padding:22px 22px 18px">' +
+    '<table role="presentation" cellpadding="0" cellspacing="0" width="100%"><tr>' +
+    '<td style="width:96px;padding-right:16px;vertical-align:top;text-align:center">' +
+    '<p style="margin:0;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:bold;color:' + FUCSIA + ';font-family:Helvetica,Arial,sans-serif">Tu media</p>' +
+    '<p style="margin:2px 0 0;font-size:60px;line-height:1;color:' + FUCSIA + ';font-family:Georgia,serif;font-weight:bold">' + fmt(ref) + '</p></td>' +
+    '<td style="vertical-align:top"><p style="' + P + ';margin-bottom:8px">' + estilizar(m.texto) + '</p>' +
+    '<p style="' + P + ';margin:0;color:' + TINTA2 + '">' + estilizar(m.uso) + '</p></td>' +
+    '</tr></table>' +
+    simbolo(conSimbolo) +
+    (conSimbolo && sint.leyendaSimbolo ? '<p style="margin:0 0 6px;font-size:12px;line-height:1.5;color:' + TINTA3 + ';text-align:center;font-family:Helvetica,Arial,sans-serif">' + sint.leyendaSimbolo + '</p>' : '') +
+    mapaBarras(scoresData, ref) +
     '</div>' +
 
-    '<div style="margin:10px 30px 0;background:' + FONDO + ';border-top:3px solid ' + FUCSIA + ';border-radius:0 0 6px 6px;padding:22px 24px;text-align:center">' +
-    '<h2 style="' + H2 + ';margin-top:0">Esto es solo el comienzo</h2>' +
-    '<p style="' + P + '">Esta foto muestra una parte de tu mapa. En una <strong style="color:' + VIOLETA + '">lectura personalizada</strong> vemos:</p>' +
-    '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 18px;text-align:left">' +
-    (sint.teaser || []).map(function (t) {
-      return '<tr><td style="padding:3px 10px 3px 0;color:' + FUCSIA + ';font-size:12px;vertical-align:top">✦</td><td style="padding:3px 0;font-size:14px;line-height:1.55;color:' + TINTA2 + ';font-family:Helvetica,Arial,sans-serif">' + t + '</td></tr>';
-    }).join('') +
-    '</table>' +
+    '<h2 style="' + H2 + '">Tu energía más marcada</h2>' +
+    parrafos(sint.marcada) +
+
+    ((sint.bajas && sint.bajas.items && sint.bajas.items.length)
+      ? '<h2 style="' + H2 + '">Tus energías más bajas</h2>' +
+        parrafos([sint.bajas.intro]) +
+        '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 10px">' +
+        sint.bajas.items.map(function (i) {
+          return '<tr><td style="padding:4px 10px 4px 0;color:#8E5CC9;font-size:12px;vertical-align:top">◆</td><td style="padding:4px 0;font-size:15px;line-height:1.6;color:' + TINTA + ';font-family:Helvetica,Arial,sans-serif">' + estilizar(i) + '</td></tr>';
+        }).join('') + '</table>'
+      : '') +
+
+    '<h2 style="' + H2 + '">El camino: la autoobservación</h2>' +
+    parrafos([sint.autoobservacion]) +
+
+    // Una sola práctica, destacada
+    '<div style="margin:22px 0 8px;border-top:3px solid ' + FUCSIA + ';background:' + FONDO + ';border-radius:0 0 6px 6px;padding:20px 22px">' +
+    '<p style="' + ETQ + '">Para poner en práctica</p>' +
+    '<p style="margin:0 0 10px;font-size:18px;line-height:1.5;color:' + TINTA + ';font-family:Georgia,serif">' + (sint.practica || '') + '</p>' +
+    (sint.preguntaPractica ? '<p style="margin:0;font-size:17px;line-height:1.45;font-style:italic;color:' + VIOLETA + ';font-family:Georgia,serif">' + sint.preguntaPractica + '</p>' : '') +
+    '</div>' +
+
+    // Invitación breve
+    '<div style="text-align:center;padding:18px 0 4px">' +
+    '<h2 style="' + H2 + ';margin-top:10px">¿Querés profundizar tu lectura?</h2>' +
+    '<p style="' + P + '">Esta es una síntesis de tu momento actual. En una consulta individual vemos tu mapa completo, con tu historia y tu momento de vida.</p>' +
     '<a href="https://bioeneagrama.vercel.app/cuestionario.html" style="display:block;padding:14px 18px;background:' + FUCSIA + ';color:#fff;text-decoration:none;border-radius:999px;font-weight:bold;font-size:15px;font-family:Helvetica,Arial,sans-serif">Profundizar mi lectura en consulta individual</a>' +
     '<a href="' + waProceso + '" style="display:block;margin-top:10px;padding:12px 18px;border:1.5px solid ' + VIOLETA + ';color:' + VIOLETA + ';text-decoration:none;border-radius:999px;font-weight:bold;font-size:14px;font-family:Helvetica,Arial,sans-serif">Quiero hacer un proceso a partir del Eneagrama</a>' +
     '<p style="margin:14px 0 0;font-size:12px;line-height:1.5;color:' + TINTA3 + ';font-family:Helvetica,Arial,sans-serif">Al solicitar tu consulta vas a completar un cuestionario personal; tus respuestas me llegan a mverogil@gmail.com. La consulta es arancelada y se reserva con el 50% de seña.</p>' +
     '</div>' +
 
-    '<p style="margin:26px 30px 0;text-align:center;font-size:19px;line-height:1.4;color:' + TINTA2 + ';font-family:Georgia,serif">El Eneagrama no te define: te ayuda a comprenderte para vivir con mayor conciencia.</p>'
+    '<p style="margin:26px 0 0;text-align:center;font-size:19px;line-height:1.4;color:' + TINTA2 + ';font-family:Georgia,serif">El Eneagrama no te define: te ayuda a comprenderte para vivir con mayor conciencia.</p>' +
+    '</div>';
+}
+
+// ── Mail a la persona ──
+function buildClienteEmail(nombre, sint, scoresData, conSimbolo) {
+  return envolver(
+    CABECERA +
+    '<div style="padding:26px 30px 0"><p style="' + P + ';font-size:16px;margin:0">Hola <strong style="color:' + VIOLETA + '">' + nombre + '</strong>, gracias por completar el test. Esta es tu lectura de hoy.</p></div>' +
+    cuerpoSintesis(sint, scoresData, conSimbolo)
   );
 }
 
-// ── Mail a Vero: datos de contacto + lectura completa + datos técnicos ──
-function buildVeroEmail(datosCliente, nombre, lectura, scoresData, extremos, conSimbolo) {
-  var ref = extremos ? (extremos.alto + extremos.bajo) / 2 : 0;
+// ── Mail a Vero: datos + lo mismo que recibió la persona + ampliación teórica ──
+function buildVeroEmail(datosCliente, nombre, sint, lectura, scoresData, conSimbolo, panelUrl) {
   var secciones = (lectura && Array.isArray(lectura.secciones)) ? lectura.secciones : [];
-  var cuerpo = secciones.map(function (sec) {
+  var ampliacion = secciones.map(function (sec) {
     return '<h2 style="' + H2 + '">' + sec.titulo + '</h2>' +
       (sec.intro ? '<p style="' + P + ';color:' + TINTA2 + '">' + estilizar(sec.intro) + '</p>' : '') +
       parrafos(sec.parrafos) +
@@ -258,7 +260,6 @@ function buildVeroEmail(datosCliente, nombre, lectura, scoresData, extremos, con
         return '<tr><td style="padding:4px 12px 4px 0;vertical-align:top;white-space:nowrap"><p style="' + ETQ + ';margin:2px 0 0">' + f[0] + '</p></td><td style="padding:4px 0"><p style="' + P + ';margin:0">' + estilizar(f[1]) + '</p></td></tr>';
       }).join('') + '</table>' : '') +
       (sec.pregunta ? '<p style="margin:14px 0;padding-left:14px;border-left:2px solid ' + FUCSIA + ';font-size:19px;font-style:italic;color:' + VIOLETA + ';font-family:Georgia,serif">' + sec.pregunta + '</p>' : '') +
-      parrafos(sec.parrafos2) +
       (sec.cita ? '<p style="margin:18px 0 6px;text-align:center;font-size:20px;color:' + TINTA + ';font-family:Georgia,serif">' + sec.cita + '</p><p style="' + P + ';text-align:center">' + estilizar(sec.citaTexto) + '</p>' : '') +
       (sec.items ? '<ul style="margin:0 0 12px;padding-left:18px">' + sec.items.map(function (i) { return '<li style="' + P + ';margin-bottom:6px">' + estilizar(i) + '</li>'; }).join('') + '</ul>' : '') +
       parrafos(sec.cierre);
@@ -266,12 +267,15 @@ function buildVeroEmail(datosCliente, nombre, lectura, scoresData, extremos, con
 
   return envolver(
     CABECERA +
-    '<div style="padding:24px 30px 10px">' +
-    datosCliente +
-    '<h1 style="' + H1 + '">Lectura completa · ' + nombre + '</h1>' +
-    '<p style="' + P + ';color:' + TINTA2 + '">La persona recibió solo la síntesis breve. Esta lectura es para preparar la consulta: lo calculado está indicado como tal; lo demás son hipótesis para explorar.</p>' +
-    bloqueMapa(ref, extremos, scoresData, conSimbolo) +
-    cuerpo +
+    '<div style="padding:24px 30px 0">' + datosCliente +
+    (panelUrl ? '<p style="' + P + '"><a href="' + panelUrl + '" style="color:' + FUCSIA + ';font-weight:bold">Abrir en mi panel de lectura</a> (PIN)</p>' : '') +
+    '<p style="' + ETQ + ';margin-top:10px">1 · Lo que recibió la persona</p></div>' +
+    cuerpoSintesis(sint, scoresData, conSimbolo) +
+    '<div style="margin:30px 0 0;border-top:6px solid ' + VIOLETA + ';padding:26px 30px 10px">' +
+    '<p style="' + ETQ + '">2 · Solo para vos</p>' +
+    '<h1 style="' + H1 + '">' + ((lectura && lectura.titulo) || 'Ampliación') + '</h1>' +
+    '<p style="' + P + ';color:' + TINTA2 + '">Interpretación desde la teoría de base para preparar la lectura profunda. Los puntajes son cálculos; lo demás son hipótesis para explorar en la consulta.</p>' +
+    ampliacion +
     '</div>'
   );
 }

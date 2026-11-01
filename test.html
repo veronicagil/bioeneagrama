@@ -141,74 +141,16 @@
   </div>
 </div>
 
-<!-- SECCIÓN RESULTADOS — síntesis para la persona (textos en js/devolucion.js → construirSintesis) -->
-<div id="results-section" class="container hidden sx">
-
-  <!-- Aviso del PDF (se oculta al generar el PDF) -->
-  <div id="pdf-banner" class="sx-pdf">
-    <span>Te enviamos este resultado por mail, con el PDF adjunto.</span>
-    <button id="btn-pdf" onclick="generarPDF()" class="sx-pdf-btn">📄 Descargar PDF</button>
+<!-- AL TERMINAR: solo el aviso. El resultado llega por mail (js/test.js → enviarResultado) -->
+<div id="results-section" class="container hidden">
+  <div class="fin">
+    <p class="fin-firma">Bio Eneagrama · Vero Gil</p>
+    <p class="fin-texto">Recibirás el resultado de tu lectura en tu casilla de mail.</p>
   </div>
-
-  <article class="sx-hoja">
-    <p class="sx-firma">Bio Eneagrama · Vero Gil</p>
-
-    <h1 class="sx-h1">El Eneagrama, <em>¿qué es?</em></h1>
-    <div id="sx-que-es" class="sx-intro"></div>
-
-    <h1 class="sx-h1 sx-h1-2">Tu lectura de <em>Eneagrama</em></h1>
-
-    <h2 class="sx-h2">Tu mapa de hoy</h2>
-    <div class="sx-mapa">
-      <div class="sx-ref">
-        <div class="sx-ref-num" id="sx-ref-num"></div>
-        <div class="sx-ref-txt" id="sx-ref-txt"></div>
-      </div>
-      <div class="enea-wrap enea-wrap-lg sx-enea">
-        <div id="enea-results" class="enea-svg-box"></div>
-      </div>
-      <div id="sx-barras" class="sx-barras"></div>
-      <p class="sx-nota">La línea vertical marca tu referencia. Cada energía puede sumar hasta 20.</p>
-    </div>
-
-    <h2 class="sx-h2">Tu síntesis de hoy</h2>
-    <div id="sx-sintesis"></div>
-    <p class="sx-pregunta" id="sx-pregunta"></p>
-    <p id="sx-pausa"></p>
-
-    <section class="sx-invita">
-      <h2 class="sx-h2">Esto es solo el comienzo</h2>
-      <p>Esta foto muestra una parte de tu mapa. En una <strong>lectura personalizada</strong> vemos:</p>
-      <ul id="sx-teaser" class="sx-teaser"></ul>
-      <a class="sx-cta" data-accion="cuestionario" href="cuestionario.html">Profundizar mi lectura en consulta individual</a>
-      <button class="sx-cta2" data-accion="proceso">Quiero hacer un proceso a partir del Eneagrama</button>
-      <p class="sx-mini">Al solicitar tu consulta vas a completar un cuestionario personal; tus respuestas me llegan a <strong>mverogil@gmail.com</strong>. La consulta es arancelada y se reserva con el 50% de seña.</p>
-    </section>
-
-    <p class="sx-cierre">El Eneagrama no te define: te ayuda a comprenderte para vivir con mayor conciencia.</p>
-  </article>
-
-  <div class="sx-pie">
-    <button class="sx-link" id="btn-guardar">💾 Guardar mis resultados en WhatsApp</button>
-    <a class="sx-link" href="https://instagram.com/consultoraveronicagil" target="_blank">📲 @consultoraveronicagil</a>
-  </div>
-  <div class="footer">Bio Eneagrama · VG · Vero Gil</div>
-
+  <!-- Símbolo con la marcación, dibujado fuera de pantalla para enviarlo como imagen en el mail -->
+  <div id="enea-results" class="enea-oculto" aria-hidden="true"></div>
 </div>
 
-<!-- VENTANA AL FINALIZAR: invitación a profundizar -->
-<div id="modal-profundizar" class="modal-prof hidden" role="dialog" aria-modal="true" aria-labelledby="modal-prof-titulo">
-  <div class="modal-prof-caja">
-    <button class="modal-prof-cerrar" id="modal-prof-cerrar" aria-label="Cerrar">×</button>
-    <p class="res-profundizar-titulo" id="modal-prof-titulo">¿Querés profundizar tu lectura?</p>
-    <p class="res-profundizar-texto">Tu foto de hoy es una parte de tu mapa. En una consulta individual vemos cómo se combinan tus energías, qué recursos podés integrar y una práctica para tu momento de vida.</p>
-    <a class="sx-cta" data-accion="cuestionario" href="cuestionario.html">Profundizar mi lectura en consulta individual</a>
-    <button class="sx-cta2" data-accion="proceso">Quiero hacer un proceso a partir del Eneagrama</button>
-    <button class="modal-prof-seguir" id="modal-prof-seguir">Seguir viendo mi resultado</button>
-  </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="js/data.js"></script>
 <script src="js/enea.js"></script>
 <script src="js/devolucion.js"></script>

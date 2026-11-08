@@ -199,7 +199,10 @@ function cuerpoSintesis(sint, scoresData, conSimbolo) {
 
     // 2º la MEDIA como concepto, con la lista ordenada respecto de ella (sin número destacado)
     '<h2 style="' + H2 + '">La MEDIA, tu valor de referencia</h2>' +
-    parrafos([m.texto, m.uso]) +
+    parrafos([m.texto]) +
+    // Resultado de la media destacado (sin competir con la energía más marcada)
+    (m.calc ? '<p style="margin:4px 0 16px;text-align:center"><span style="display:inline-block;padding:10px 22px;border:2px solid ' + FUCSIA + ';border-radius:999px;font-family:Helvetica,Arial,sans-serif;font-size:15px;color:' + TINTA2 + '">Tu MEDIA: ' + m.calc + '<strong style="font-size:24px;color:' + FUCSIA + ';font-family:Georgia,serif;vertical-align:-2px">' + fmt(ref) + '</strong></span></p>' : '') +
+    parrafos([m.uso]) +
     '<div style="margin:6px 0 6px;background:' + FONDO + ';border-radius:6px;padding:8px 20px 16px">' +
     mapaBarras(scoresData, ref) +
     '</div>' +

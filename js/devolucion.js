@@ -286,10 +286,11 @@ function construirSintesis(scores) {
     // La MEDIA va después de la energía más marcada, explicada como concepto (sin un número destacado que confunda)
     media: {
       valor: a.media, max: a.max, min: a.min,
-      texto: 'Para leer tu mapa usamos la <strong>MEDIA</strong>, tu <strong>valor de referencia</strong>. Se calcula sumando tu puntaje más alto y tu puntaje más bajo, y dividiendo por 2. En tu caso: (' + a.max + ' + ' + a.min + ') ÷ 2 = ' + fmtMedia(a.media) + '.',
+      texto: 'Para leer tu mapa usamos la <strong>MEDIA</strong>, tu <strong>valor de referencia</strong>. Se calcula sumando tu puntaje más alto y tu puntaje más bajo, y dividiendo por 2. Es el número que aparece en el centro del símbolo.',
+      calc: '(' + a.max + ' + ' + a.min + ') ÷ 2 = ',
       uso: 'No indica cuánto vale una energía: sirve para ubicarlas. Las que quedan <strong>por encima</strong> de tu media son las más activas hoy; las que quedan <strong>por debajo</strong> son las que hoy están más en pausa.'
     },
-    leyendaSimbolo: 'El punto con el halo es tu energía más marcada. En fucsia, las energías por encima de tu media; en violeta, las que están por debajo. Las líneas interiores unen las energías que se influyen entre sí.',
+    leyendaSimbolo: 'El punto con el halo es tu energía más marcada; en el centro está tu media. En fucsia, las energías por encima de tu media; en violeta, las que están por debajo. Las líneas interiores unen las energías que se influyen entre sí.',
     grupos: { encima: a.encima, enRef: a.enRef, debajo: a.debajo },
     marcada: [
       marcada,

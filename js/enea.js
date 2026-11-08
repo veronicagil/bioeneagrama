@@ -126,6 +126,11 @@ function buildEneaResultados(containerId, scores, media) {
     labels += `<text x="${lx.toFixed(1)}" y="${(ly + dy).toFixed(1)}" text-anchor="${anchor}" font-family="${FONT}" font-size="8.5" font-weight="${esMax ? 700 : 600}" fill="${esMax ? '#B5004F' : '#3D2060'}">${t} · ${nombre}</text>`;
   }
 
+  const mediaText = media > 0
+    ? `<text x="${CX}" y="${CY - 4}" text-anchor="middle" font-family="${FONT}" font-size="7.5" font-weight="700" fill="#5E4A7A" letter-spacing="1.2">MEDIA</text>` +
+      `<text x="${CX}" y="${CY + 13}" text-anchor="middle" font-family="${FONT}" font-size="17" font-weight="700" fill="url(#mg${containerId})">${fmtMedia(media)}</text>`
+    : '';
+
   return `<svg viewBox="-55 -12 310 226" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
   <defs>
     <linearGradient id="mg${containerId}" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -137,5 +142,6 @@ function buildEneaResultados(containerId, scores, media) {
   ${lines}
   ${points}
   ${labels}
+  ${mediaText}
 </svg>`;
 }

@@ -226,6 +226,14 @@
   function showResults() {
     document.getElementById('results-section').classList.remove('hidden');
     window.scrollTo(0, 0);
+
+    // La media destacada, para que la persona la tenga presente al leer el mail
+    const totales = Object.values(scores).map(s => s.total);
+    const alto = Math.max(...totales), bajo = Math.min(...totales);
+    document.getElementById('fin-media-num').textContent = fmtMedia(calcMedia());
+    document.getElementById('fin-media-txt').textContent =
+      'Es tu valor de referencia: tu puntaje más alto más el más bajo, dividido 2: (' + alto + ' + ' + bajo + ') ÷ 2. Tenela presente al leer tu resultado.';
+
     enviarResultado().catch(function () {});
   }
 

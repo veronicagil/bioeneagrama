@@ -102,32 +102,29 @@ function buildEneaResultados(containerId, scores, media) {
 
   for (let t = 1; t <= 9; t++) {
     const [x, y] = typeXY(t, CX, CY, RC);
+    const esMax = totals[t] === maxVal; // la (o las) más marcadas llevan un halo: tendencia hacia la esencia
     let color;
-    if (t === maxT)               color = '#B5004F';
+    if (esMax)                    color = '#B5004F';
     else if (t === minT)          color = '#4B0082';
     else if (totals[t] >= media)  color = '#E91E8C';
     else                          color = '#7B2FBE';
-    const r = t === maxT ? 12 : 10;
+    const r = esMax ? 13 : 10;
 
+    if (esMax) points += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="19" fill="#B5004F" fill-opacity="0.12" stroke="#B5004F" stroke-width="1.6"/>`;
     points += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${color}" stroke="#fff" stroke-width="1.5"/>` +
-      `<text x="${x.toFixed(1)}" y="${(y + 3.6).toFixed(1)}" text-anchor="middle" font-family="${FONT}" font-size="${t === maxT ? 11 : 10}" font-weight="700" fill="#fff">${totals[t]}</text>`;
+      `<text x="${x.toFixed(1)}" y="${(y + 3.8).toFixed(1)}" text-anchor="middle" font-family="${FONT}" font-size="${esMax ? 12 : 10}" font-weight="700" fill="#fff">${totals[t]}</text>`;
 
     const a = typeAngle(t) * Math.PI / 180;
     const cos = Math.cos(a), sin = Math.sin(a);
-    const lr = RC + 17;
+    const lr = RC + (esMax ? 24 : 17);
     const lx = CX + lr * cos;
     const ly = CY + lr * sin;
     const anchor = cos > 0.3 ? 'start' : cos < -0.3 ? 'end' : 'middle';
     const dy = sin > 0.3 ? 8 : sin < -0.3 ? -2 : 3;
     const nombre = (typeof TIPOS !== 'undefined' && TIPOS[t]) ? TIPOS[t].nombre.replace(/^El /, '') : '';
 
-    labels += `<text x="${lx.toFixed(1)}" y="${(ly + dy).toFixed(1)}" text-anchor="${anchor}" font-family="${FONT}" font-size="8.5" font-weight="${t === maxT ? 700 : 600}" fill="${t === maxT ? '#B5004F' : '#3D2060'}">${t} · ${nombre}</text>`;
+    labels += `<text x="${lx.toFixed(1)}" y="${(ly + dy).toFixed(1)}" text-anchor="${anchor}" font-family="${FONT}" font-size="8.5" font-weight="${esMax ? 700 : 600}" fill="${esMax ? '#B5004F' : '#3D2060'}">${t} · ${nombre}</text>`;
   }
-
-  const mediaText = media > 0
-    ? `<text x="${CX}" y="${CY - 3}" text-anchor="middle" font-family="${FONT}" font-size="7" font-weight="600" fill="#5E4A7A" letter-spacing="1">MEDIA</text>` +
-      `<text x="${CX}" y="${CY + 11}" text-anchor="middle" font-family="${FONT}" font-size="14" font-weight="700" fill="url(#mg${containerId})">${fmtMedia(media)}</text>`
-    : '';
 
   return `<svg viewBox="-55 -12 310 226" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
   <defs>
@@ -140,6 +137,5 @@ function buildEneaResultados(containerId, scores, media) {
   ${lines}
   ${points}
   ${labels}
-  ${mediaText}
 </svg>`;
 }

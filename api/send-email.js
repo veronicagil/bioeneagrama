@@ -191,22 +191,18 @@ function cuerpoSintesis(sint, scoresData, conSimbolo) {
     '<h1 style="' + H1 + '">Tu lectura de <em style="color:' + FUCSIA + '">Eneagrama</em></h1>' +
     parrafos(sint.intro) +
 
-    // MEDIA: el concepto clave, destacado
-    '<div style="margin:22px 0 6px;background:' + FONDO + ';border-radius:6px;padding:22px 22px 18px">' +
-    '<table role="presentation" cellpadding="0" cellspacing="0" width="100%"><tr>' +
-    '<td style="width:96px;padding-right:16px;vertical-align:top;text-align:center">' +
-    '<p style="margin:0;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:bold;color:' + FUCSIA + ';font-family:Helvetica,Arial,sans-serif">Tu media</p>' +
-    '<p style="margin:2px 0 0;font-size:60px;line-height:1;color:' + FUCSIA + ';font-family:Georgia,serif;font-weight:bold">' + fmt(ref) + '</p></td>' +
-    '<td style="vertical-align:top"><p style="' + P + ';margin-bottom:8px">' + estilizar(m.texto) + '</p>' +
-    '<p style="' + P + ';margin:0;color:' + TINTA2 + '">' + estilizar(m.uso) + '</p></td>' +
-    '</tr></table>' +
+    // 1º la energía más marcada, con el símbolo (la más marcada lleva un halo)
+    '<h2 style="' + H2 + '">Tu energía más marcada</h2>' +
     simbolo(conSimbolo) +
-    (conSimbolo && sint.leyendaSimbolo ? '<p style="margin:0 0 6px;font-size:12px;line-height:1.5;color:' + TINTA3 + ';text-align:center;font-family:Helvetica,Arial,sans-serif">' + sint.leyendaSimbolo + '</p>' : '') +
+    (conSimbolo && sint.leyendaSimbolo ? '<p style="margin:0 0 16px;font-size:12px;line-height:1.5;color:' + TINTA3 + ';text-align:center;font-family:Helvetica,Arial,sans-serif">' + sint.leyendaSimbolo + '</p>' : '') +
+    parrafos(sint.marcada) +
+
+    // 2º la MEDIA como concepto, con la lista ordenada respecto de ella (sin número destacado)
+    '<h2 style="' + H2 + '">La MEDIA, tu valor de referencia</h2>' +
+    parrafos([m.texto, m.uso]) +
+    '<div style="margin:6px 0 6px;background:' + FONDO + ';border-radius:6px;padding:8px 20px 16px">' +
     mapaBarras(scoresData, ref) +
     '</div>' +
-
-    '<h2 style="' + H2 + '">Tu energía más marcada</h2>' +
-    parrafos(sint.marcada) +
 
     ((sint.bajas && sint.bajas.items && sint.bajas.items.length)
       ? '<h2 style="' + H2 + '">Tus energías más bajas</h2>' +

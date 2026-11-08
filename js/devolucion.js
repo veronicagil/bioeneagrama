@@ -283,16 +283,17 @@ function construirSintesis(scores) {
       'El Eneagrama es un mapa de autoconocimiento. <strong>No te encasilla</strong>: te muestra desde qué energías estás actuando hoy, en este momento de tu vida.',
       'Todos tenemos las nueve energías, y todas tienen <strong>luces y sombras</strong>. El Eneagrama busca la <strong>armonía y el equilibrio</strong> entre ellas.'
     ],
+    // La MEDIA va después de la energía más marcada, explicada como concepto (sin un número destacado que confunda)
     media: {
       valor: a.media, max: a.max, min: a.min,
-      texto: 'La <strong>MEDIA</strong> es tu <strong>valor de referencia</strong>: tu puntaje más alto más tu puntaje más bajo, dividido 2. En tu caso: (' + a.max + ' + ' + a.min + ') ÷ 2 = <strong>' + fmtMedia(a.media) + '</strong>.',
-      uso: 'Las energías que quedan <strong>por encima</strong> de tu media son las más activas hoy; las que quedan <strong>por debajo</strong> son las que hoy están más en pausa.'
+      texto: 'Para leer tu mapa usamos la <strong>MEDIA</strong>, tu <strong>valor de referencia</strong>. Se calcula sumando tu puntaje más alto y tu puntaje más bajo, y dividiendo por 2. En tu caso: (' + a.max + ' + ' + a.min + ') ÷ 2 = ' + fmtMedia(a.media) + '.',
+      uso: 'No indica cuánto vale una energía: sirve para ubicarlas. Las que quedan <strong>por encima</strong> de tu media son las más activas hoy; las que quedan <strong>por debajo</strong> son las que hoy están más en pausa.'
     },
-    leyendaSimbolo: 'Cada punto del símbolo muestra tu puntaje: en fucsia, por encima de la media; en violeta, por debajo. Las líneas interiores unen las energías que se influyen entre sí.',
+    leyendaSimbolo: 'El punto con el halo es tu energía más marcada. En fucsia, las energías por encima de tu media; en violeta, las que están por debajo. Las líneas interiores unen las energías que se influyen entre sí.',
     grupos: { encima: a.encima, enRef: a.enRef, debajo: a.debajo },
     marcada: [
       marcada,
-      'Esto <strong>no necesariamente es tu esencia</strong> (la energía con la que nacemos, que no cambia): muestra cómo te estás moviendo en este momento, y puede cambiar.',
+      'En el símbolo aparece destacada porque marca una <strong>tendencia hacia tu esencia</strong>, la energía con la que nacemos y que no cambia. Esa tendencia se confirma con el tiempo y en una lectura personalizada; por ahora muestra cómo te estás moviendo hoy.',
       'En su luz, ' + L.recurso.charAt(0).toLowerCase() + L.recurso.slice(1) + ' En su sombra, puede aparecer la tendencia a ' + L.sombra + '. Las dos caras son parte de lo que todos tenemos.'
     ],
     bajas: {
@@ -305,107 +306,224 @@ function construirSintesis(scores) {
   };
 }
 
+// ── Teoría para la ampliación de Vero (fuente: "Lectura de Eneagrama", Vero Gil) ──
+const TEORIA_TIPO = {
+  1: { ampliada: "busca mejorar para aportar mejor; le importan la esencia y la trascendencia. Es gran guía y orientador, con visión de conjunto y discernimiento práctico; logra bajar la presión y la tensión, y reírse de sí mismo",
+       alterada: "necesita tener todo bajo control y se autoexige; hace monólogos en vez de diálogos, prejuzga y critica; la forma pasa a importar más que el fondo y puede volverse castigador",
+       evitar: "la ira. Necesita relajarse y conectar con la alegría del fluir",
+       alas: "desarrolla el ala 2; lo que más le cuesta es la paz del 9" },
+  2: { ampliada: "es altruista y original (flecha al 4), con gran capacidad de escucha; puede reconocer su propio valor sin depender del reconocimiento externo",
+       alterada: "se olvida de sí y se posterga; puede ponerse en víctima y manipular mediante la culpa, pasar de servicial a servil y de colaborador a controlador, y esperar que le compensen lo que dio. No sabe decir que no",
+       evitar: "vivir para el otro y la soberbia. Aprender a poner límites y a considerar al otro como un igual",
+       alas: "desarrolla el ala 1; lo que más le cuesta es la autoestima del 3" },
+  3: { ampliada: "es gran motivador y despierta liderazgo; empieza a darle tiempo al amor, busca logros cualitativos y se vuelve más auténtico",
+       alterada: "confunde el hacer con el ser; el fin justifica los medios y se miente a sí mismo; es competitivo, vanidoso y ansioso, y no puede ver gente quieta",
+       evitar: "engañarse y engañar. Necesita lograr veracidad",
+       alas: "desarrolla el ala 2; lo que más le cuesta es la autenticidad del 4" },
+  4: { ampliada: "es creador e innovador, con profundidad emocional, intuición y sentido de la belleza; sueña con un mundo mejor",
+       alterada: "la emocionalidad lo domina: muy bien o muy mal, entre la melancolía y la exaltación; vive observando lo que falta, le cuesta concretar y puede trasladar al cuerpo lo que no expresa",
+       evitar: "la envidia y la comparación. Salir de su mundo interior para cumplir y concretar",
+       alas: "desarrolla el ala 5; lo que más le cuesta es concretar como el 3" },
+  5: { ampliada: "vive la vida y se compromete con ella; tiene capacidad de asombro, puede ser gran maestro y pasa a buscar el para qué",
+       alterada: "pierde sensibilidad, se aísla, escapa a los sentimientos y racionaliza todo; no se mete, busca el por qué y puede caer en la soberbia intelectual",
+       evitar: "la codicia intelectual. Pasar de la sabiduría a la acción",
+       alas: "desarrolla el ala 4; lo que más le cuesta es compartir como el 6" },
+  6: { ampliada: "es responsable, confiable, humilde y colaborador: acompaña, sostiene y cuida. Apuntala su autoestima con la espiritualidad y con espacios donde comprenderse",
+       alterada: "se vuelve dependiente y sumiso a la autoridad, y se posterga; los miedos tiñen su vida (duda, indecisión, el qué dirán) y puede guardar resentimiento",
+       evitar: "perderse en los miedos que le generan las cosas nuevas. ¡Animarse!",
+       alas: "desarrolla el ala 5; lo que más le cuesta es disfrutar como el 7" },
+  7: { ampliada: "aporta frescura y esperanza, y saca a los otros del dolor; cuando madura conecta con el dolor y desde ahí con la alegría, camino a la sabiduría",
+       alterada: "aparecen sus dos sombras: la dispersión (hace de todo, superficialmente) y la ilusión (no ve la realidad, niega el dolor); escapa de los límites y de la rutina",
+       evitar: "la gula de experiencias. Trabajar la templanza: mesura, realismo, constancia y compromiso",
+       alas: "desarrolla el ala 8; lo que más le cuesta es la rutina del 6" },
+  8: { ampliada: "defiende la justicia y levanta causas como líder; es capaz de dar la vida por el otro. Adentro esconde un niño que necesita afecto",
+       alterada: "defiende cualquier causa, cae en el sincericidio que hiere, se vuelve extremista y posesivo, y puede inspirar miedo",
+       evitar: "la lujuria, atravesar los límites. Aprender a disfrutar la sencillez",
+       alas: "desarrolla el ala 7; lo que más le cuesta es la paciencia del 9" },
+  9: { ampliada: "tiene percepción espiritual y visión amplia; cuando se compromete lo motiva la paz y en su evolución encuentra su eje",
+       alterada: "aparecen la pasividad, la comodidad y la complacencia; detrás de un «está todo bien» se esconde un «no hagamos nada». Evita conflictos y, antes de expresar enojo, se enferma",
+       evitar: "la pereza. Aprender a entrar en acción; se lo mueve motivándolo, no presionándolo",
+       alas: "desarrolla el ala 1; lo que más le cuesta es la determinación del 8" }
+};
+
+const DILEMA_TEXTO = {
+  '1-5': "Lo negativo es quedarse en la Forma; lo positivo, poner la Forma en función del Fondo. En esto va la felicidad de ambas tipologías.",
+  '2-6': "Ser para los otros es anteponerlos a uno mismo (en el 2, actuar en forma paternalista; en el 6, con sumisión). Lo positivo es ser con el otro: decidir juntos, ser pares.",
+  '3-7': "El problema es vivir para afuera: el 3 en el logro y el éxito, el 7 en la dispersión. Resuelto, consiste en ir al interior y, desde la profundidad, salir a mejorar la calidad vincular.",
+  '4-8': "Lo negativo es optar por la destrucción (el 4 hacia la depresión y la angustia; el 8 destruyendo al otro y terminando por destruirse); lo positivo, la construcción y conectar con la vida."
+};
+
+// Tríadas hornevianas clásicas (Karen Horney, en la lectura de Riso-Hudson): cómo cada energía busca lo que necesita
+const HORNEVIANAS = [
+  { nombre: 'Asertivos',   tipos: [3, 7, 8], texto: 'buscan lo que necesitan exigiéndolo, con una energía expansiva que va hacia adelante y pone su yo en primer plano' },
+  { nombre: 'Cumplidores', tipos: [1, 2, 6], texto: 'buscan lo que necesitan ganándoselo: cumplen con lo que se espera de ellos y se guían por el deber, lo correcto y lo útil' },
+  { nombre: 'Retraídos',   tipos: [4, 5, 9], texto: 'buscan lo que necesitan replegándose en su mundo interior y tomando distancia' }
+];
+
+const CEREBRO = { accion: 'cerebro reptiliano · vísceras', sentimiento: 'cerebro límbico · corazón', pensamiento: 'neocórtex · mente' };
+
 // ── Ampliación para Vero: interpretación teórica para la lectura profunda ──
 function construirLecturaCompleta(scores) {
   const a = analizarResultados(scores);
   const d = a.principales[0];
-  const tipo = TIPOS[d], E = ENERGIAS[d], L = LECTURA_TIPO[d], s = scores[d];
+  const tipo = TIPOS[d], E = ENERGIAS[d], L = LECTURA_TIPO[d], T = TEORIA_TIPO[d], s = scores[d];
   const pts = t => tTipo(t) + ' <strong>' + a.tot(t) + '</strong>';
   const ls = t => ' (luz ' + scores[t].luz + ' / sombra ' + scores[t].sombra + ')';
-  const estado = t => a.sobre(t) ? 'sobre la media' : 'bajo la media';
+  const estado = t => a.tot(t) > a.media ? 'sobre la media' : a.tot(t) === a.media ? 'en la media' : 'bajo la media';
   const secciones = [];
+  const c = a.centros;
+  const cDom = c.find(x => x.tipos.includes(d));
+  const trDom = REACCION_TRIADA[tipo.triada];
+
+  // 0. Síntesis interpretativa
+  let sint = 'Hoy se mueve sobre todo desde la energía <strong>' + delTipo(d) + '</strong> (' + a.tot(d) + '), del centro de ' + cDom.nombre.toLowerCase();
+  if (a.segunda) sint += ', acompañada por la ' + delTipo(a.segunda) + ' (' + a.tot(a.segunda) + ')';
+  sint += '. ';
+  if (c[0].suma > c[2].suma) sint += 'El centro más activo es el de ' + c[0].nombre.toLowerCase() + ' y el más en pausa, el de ' + c[2].nombre.toLowerCase() + '. ';
+  sint += 'Ante los conflictos, su energía principal tiende a ' + trDom.accion + '. ';
+  if (a.bajas.length) sint += 'Las energías más bajas (' + enLista(a.bajas.map(t => nombreTipo(t) + ' ' + a.tot(t))) + ') orientan los miedos circunstanciales a explorar en la consulta.';
+  secciones.push({
+    titulo: 'Síntesis para la consultora',
+    parrafos: [sint, 'Hipótesis de trabajo: observar la respuesta automática de ' + L.automatismo + (a.bajas[0] ? ', y cómo integrar la energía ' + delTipo(a.bajas[0]) + ' (' + LECTURA_TIPO[a.bajas[0]].recursoBajo.replace(/.$/, '') + ')' : '') + '.']
+  });
 
   // 1. Más altos y más bajos
-  const grupos = ['<strong>Sobre la media</strong> (' + fmtMedia(a.media) + '):<br>' + a.encima.map(t => pts(t) + ls(t)).join('<br>')];
+  const grupos = ['<strong>Media: ' + fmtMedia(a.media) + '</strong> = (' + a.max + ' + ' + a.min + ') ÷ 2. Es la referencia para observar a la persona y su modo de vincularse con el entorno.'];
+  grupos.push('<strong>Sobre la media:</strong><br>' + a.encima.map(t => pts(t) + ls(t)).join('<br>'));
   if (a.enRef.length) grupos.push('<strong>En la media:</strong><br>' + a.enRef.map(t => pts(t) + ls(t)).join('<br>'));
   if (a.debajo.length) grupos.push('<strong>Bajo la media:</strong><br>' + a.debajo.map(t => pts(t) + ls(t)).join('<br>'));
   grupos.push(a.encima.length + a.enRef.length >= a.debajo.length
     ? 'Hay más tipologías por arriba de la media: es favorable, hay recursos activos en los que apoyarse.'
-    : 'Hay más tipologías por debajo de la media: no indica por sí mismo desequilibrio, pero muestra varios recursos para despertar.');
+    : 'Hay más tipologías por debajo de la media (' + a.debajo.length + ' de 9): varios recursos para despertar. No indica por sí mismo desequilibrio; las más bajas marcan por dónde empezar a trabajar.');
   secciones.push({ titulo: 'Más altos y más bajos', parrafos: grupos });
 
   // 2. Las energías más marcadas
   const marc = [];
   marc.push(a.principales.length > 1
     ? 'Energías más marcadas, empatadas: ' + enLista(a.principales.map(pts)) + '.'
-    : 'Energía más marcada: <strong>' + tTipo(d) + '</strong> (' + a.tot(d) + '), identificada con ' + E.identidad + '. No necesariamente es la esencia: es la energía desde la que se está actuando hoy.');
-  marc.push('Motivación: ' + tipo.motivacion.toLowerCase() + '. Miedo constitutivo de la energía: ' + tipo.miedo.toLowerCase() + '. Transformación: ' + tipo.transformacion.toLowerCase() + '.');
-  marc.push('En la luz es ' + E.luz + '; en la sombra, ' + E.sombra + '.');
+    : '<strong>' + tTipo(d) + '</strong> (' + a.tot(d) + '), identificada con ' + E.identidad + '. No necesariamente es la esencia: es la energía desde la que se está actuando hoy; la esencia se descubre con tiempo y una lectura más profunda.');
+  marc.push('<strong>Motivación:</strong> ' + tipo.motivacion.toLowerCase() + '. <strong>Miedo base:</strong> ' + tipo.miedo.toLowerCase() + '. <strong>Transformación:</strong> ' + tipo.transformacion.toLowerCase() + '.');
+  marc.push('<strong>En conciencia ampliada</strong> ' + T.ampliada + '.');
+  marc.push('<strong>En conciencia alterada</strong> ' + T.alterada + '.');
+  marc.push('<strong>Tiene que evitar</strong> ' + T.evitar + '.');
   const dif = s.luz - s.sombra;
-  marc.push('Luz ' + s.luz + ' / sombra ' + s.sombra + ' (10 posibles en cada una): ' +
-    (Math.abs(dif) < DIF_LUZ_SOMBRA ? 'presencia cercana de ambas caras.' : dif > 0 ? 'predomina la luz.' : 'predomina la sombra: conviene trabajar las formas automáticas de responder.'));
-  if (a.segunda) marc.push('La acompaña <strong>' + tTipo(a.segunda) + '</strong> (' + a.tot(a.segunda) + '): una forma de estar que combina ' + L.verbo + ' con ' + LECTURA_TIPO[a.segunda].verbo + '. No confundir con un ala.');
+  marc.push('<strong>Luz ' + s.luz + ' / sombra ' + s.sombra + '</strong> (10 posibles en cada una): ' +
+    (Math.abs(dif) < DIF_LUZ_SOMBRA ? 'presencia cercana de ambas caras.' : dif > 0 ? 'predomina la luz: está viviendo esta energía más desde su versión ' + E.luz + '.' : 'predomina la sombra (' + E.sombra + '): invitación a poner conciencia para llevarla hacia la luz.'));
+  if (a.segunda) {
+    const T2 = TEORIA_TIPO[a.segunda];
+    marc.push('La acompaña <strong>' + tTipo(a.segunda) + '</strong> (' + a.tot(a.segunda) + ls(a.segunda) + '), que en conciencia ampliada ' + T2.ampliada + '; en conciencia alterada ' + T2.alterada + '. Juntas combinan ' + L.verbo + ' con ' + LECTURA_TIPO[a.segunda].verbo + '. No confundir con un ala.');
+  }
   secciones.push({
     titulo: 'Las energías más marcadas',
     parrafos: marc,
     facetas: [['Para observar', 'La respuesta automática de ' + L.automatismo + '.'], ['Por ejemplo', L.ejemplo]],
     pregunta: L.pregunta,
     cita: 'Aquello que es tu don puede ser también tu trampa.',
-    citaTexto: L.donTrampa
+    citaTexto: L.donTrampa + ' «El exceso enferma» (E. Fromm).'
   });
 
-  // 3. Centros de energía y miedos constitutivos
-  const c = a.centros;
-  const cen = c.map(x => '<strong>' + x.nombre + '</strong> (' + x.tipos.join('·') + '): ' + x.suma + ' de 60 · miedo constitutivo: ' + x.miedo);
-  let lecC = c[0].suma === c[2].suma ? 'Los tres centros aparecen parejos.'
-    : 'Se mueve principalmente desde el ' + c[0].largo + ' (' + c[0].foco + '), cuyo miedo constitutivo es ' + c[0].miedo + '. Darse cuenta de cuándo ese miedo domina es un indicador para volver al observador interno.' +
-      (c[1].suma === c[2].suma ? '' : ' El centro que pide más atención es el ' + c[2].largo + '.');
-  const cDom = CENTROS_INTELIGENCIA.find(x => x.tipos.includes(d));
-  lecC += ' La energía más marcada pertenece al centro de ' + cDom.nombre.toLowerCase() + '.';
-  secciones.push({ titulo: 'Centros de energía', intro: 'Cada centro reúne 3 energías × 20 afirmaciones = 60 posibles: se comparan en bruto.', items: cen, cierre: [lecC] });
-
-  // 4. Tríadas hornevianas
-  const tr = a.triadas;
-  const trItems = tr.map(x => '<strong>' + x.nombre + '</strong> (' + x.tipos.join('·') + '): ' + x.suma + ' de 60');
-  const trDom = REACCION_TRIADA[tipo.triada];
-  const trCierre = ['Ante los conflictos, la energía más marcada tiende a <strong>' + trDom.accion + '</strong>. Herida primaria: ' + trDom.herida + '. Clave evolutiva: ' + trDom.clave + '.'];
-  if (tr[0].id !== tipo.triada && tr[0].suma > tr[1].suma) {
-    trCierre.push('La tríada con más puntaje es la ' + tr[0].nombre.toLowerCase() + ' (' + REACCION_TRIADA[tr[0].id].accion + '): explorar si esa reacción aparece con más fuerza que la de su energía principal.');
+  // 3. Centros operativos y miedos constitutivos
+  const cen = c.map(x => '<strong>' + x.nombre + '</strong> (' + x.tipos.join('·') + ', ' + CEREBRO[x.clave] + '): ' + x.suma + ' de 60 · miedo constitutivo: <em>' + x.miedo + '</em>');
+  const lecC = [];
+  if (c[0].suma === c[2].suma) lecC.push('Los tres centros aparecen parejos.');
+  else {
+    lecC.push('Se mueve principalmente desde el ' + c[0].largo + ', cuyo miedo constitutivo es ' + c[0].miedo + '. Darse cuenta de cuándo ese miedo domina es un buen indicador para volver al observador interno.');
+    if (c[1].suma !== c[2].suma) lecC.push('El centro más en pausa es el ' + c[2].largo + ' (' + c[2].foco + '): ahí hay recursos para integrar.');
   }
-  secciones.push({ titulo: 'Tríadas hornevianas', items: trItems, cierre: trCierre });
+  lecC.push('La energía más marcada pertenece al centro de ' + cDom.nombre.toLowerCase() + ' (miedo constitutivo: ' + cDom.miedo + ')' +
+    (cDom.clave === c[0].clave ? ', que coincide con el centro más activo.' : '; el centro más activo es otro: explorar esa diferencia.'));
+  secciones.push({
+    titulo: 'Centros operativos y miedos constitutivos',
+    intro: 'Los miedos constitutivos acompañan a cada esencia a lo largo de toda la vida: hay uno de los tres cerebros que actúa más allá de la voluntad. Cada centro reúne 3 energías × 20 afirmaciones = 60 posibles, por eso se comparan en bruto.',
+    items: cen, cierre: lecC
+  });
 
-  // 5. Alas y brazos
+  // 4. Tríadas según cómo reaccionan ante los conflictos
+  const tr = a.triadas;
+  const trCierre = ['Ante los conflictos, la energía más marcada tiende a <strong>' + trDom.accion + '</strong>. Herida primaria (experiencia primaria del nacimiento): ' + trDom.herida + '. <strong>Clave evolutiva:</strong> ' + trDom.clave + '.'];
+  if (tr[0].id !== tipo.triada && tr[0].suma > tr[1].suma) {
+    trCierre.push('La tríada con más puntaje es la ' + tr[0].nombre.toLowerCase() + ' (' + REACCION_TRIADA[tr[0].id].accion + '): explorar si esa reacción aparece hoy con más fuerza que la de su energía principal.');
+  }
+  secciones.push({
+    titulo: 'Tríadas según cómo reaccionan ante los conflictos',
+    items: tr.map(x => '<strong>' + x.nombre + '</strong> (' + x.tipos.join('·') + '): ' + x.suma + ' de 60 · herida: ' + x.herida),
+    cierre: trCierre
+  });
+
+  // 5. Tríadas hornevianas (clásicas)
+  const hv = HORNEVIANAS.map(h => ({ ...h, suma: h.tipos.reduce((acc, t) => acc + a.tot(t), 0) })).sort((x, y) => y.suma - x.suma);
+  const hvDom = hv.find(h => h.tipos.includes(d));
+  const hvCierre = ['La energía más marcada pertenece al grupo de los <strong>' + hvDom.nombre.toLowerCase() + '</strong>: ' + hvDom.texto + '.'];
+  if (hv[0].suma > hv[1].suma && hv[0].nombre !== hvDom.nombre) hvCierre.push('El grupo con más puntaje es el de los ' + hv[0].nombre.toLowerCase() + ': ' + hv[0].texto + '.');
+  secciones.push({
+    titulo: 'Tríadas hornevianas',
+    intro: 'Agrupan las energías según cómo buscan obtener lo que necesitan (teoría clásica de Karen Horney; no figura en tus documentos).',
+    items: hv.map(h => '<strong>' + h.nombre + '</strong> (' + h.tipos.join('·') + '): ' + h.suma + ' de 60'),
+    cierre: hvCierre
+  });
+
+  // 6. Alas
   const alaD = tipo.ala_desarrolla, alaC = tipo.ala_cuesta;
-  let alas = 'Alas de ' + tTipo(d) + ': ' + pts(alaD) + ' (' + estado(alaD) + ') y ' + pts(alaC) + ' (' + estado(alaC) + '). ';
-  if (a.sobre(alaD) && a.sobre(alaC))        alas += 'Las dos sobre la media: energías activas que la equilibran.';
-  else if (!a.sobre(alaD) && !a.sobre(alaC)) alas += 'Las dos bajo la media: puede costar «levantar vuelo»; trabajar aspectos de esas energías ayuda a equilibrarse.';
-  else alas += 'Una activa y otra bajo la media: ahí hay una energía para conocer y desarrollar.';
-  const int = tipo.integracion, des = tipo.desintegracion;
-  let brazos = 'Brazos: integración → ' + pts(int) + ' (' + estado(int) + '); desintegración → ' + pts(des) + ' (' + estado(des) + '). ';
-  if (a.sobre(int) && a.sobre(des))        brazos += 'Los dos sobre la media: está tomando el tesoro, va bien en su camino de integración.';
-  else if (!a.sobre(int) && !a.sobre(des)) brazos += 'Los dos bajo la media, «brazos caídos»: momento de activar el camino de crecimiento.';
-  else if (a.sobre(int))                   brazos += 'Integración activa y el otro brazo bajo la media: cuidado con quedarse en la forma y no ir al fondo.';
-  else                                     brazos += 'Integración bajo la media: observar cuándo actúa desde la sombra para volver más rápido a su centro.';
-  secciones.push({ titulo: 'Alas y brazos', parrafos: [alas, brazos] });
+  let alas = 'El ' + d + ' ' + T.alas + '. En sus resultados: ' + pts(alaD) + ' (' + estado(alaD) + ') y ' + pts(alaC) + ' (' + estado(alaC) + '). ';
+  if (a.sobre(alaD) && a.sobre(alaC))        alas += 'Las dos alas están encendidas: energías activas y conocidas que la equilibran.';
+  else if (!a.sobre(alaD) && !a.sobre(alaC)) alas += 'Con las dos alas por debajo de la media le costará «levantar vuelo» en su camino de evolución: necesita enfocar y trabajar aspectos de esas tipologías para equilibrarse.';
+  else {
+    const on = a.sobre(alaD) ? alaD : alaC, off = on === alaD ? alaC : alaD;
+    alas += 'El ala ' + on + ' está activa; el ala ' + off + ' está por debajo de la media y puede ser una energía desconocida para trabajar.';
+  }
+  secciones.push({ titulo: 'Alas', intro: 'Son las tipologías a ambos lados de la propia: representan las cualidades y atributos que equilibran. Es conveniente que estén por encima de la media.', parrafos: [alas] });
 
-  // 6. Dilemas
+  // 7. Brazos
+  const int = tipo.integracion, des = tipo.desintegracion;
+  let brazos = 'Integración → ' + pts(int) + ' (' + estado(int) + '); desintegración → ' + pts(des) + ' (' + estado(des) + '). ';
+  if (a.sobre(int) && a.sobre(des))        brazos += 'Los dos por encima de la media: está tomando el tesoro y va bien en su camino de integración.';
+  else if (!a.sobre(int) && !a.sobre(des)) brazos += 'Los dos por debajo de la media, «brazos caídos»: no está tomando el tesoro ni yendo hacia el crecimiento. Momento de activar el camino de integración.';
+  else if (a.sobre(int))                   brazos += 'Integración arriba y el otro brazo abajo: peligro de quedarse en la forma y no ir al fondo.';
+  else                                     brazos += 'Integración por debajo de la media: conocer el camino de desintegración le permite saber cuándo actúa desde la sombra, mirarlo y volver cada vez más rápido.';
+  secciones.push({ titulo: 'Brazos (integración y desintegración)', intro: 'Muestran cómo se fue constituyendo el ego olvidando el Yo esencial, y qué camino recorrer para encontrarlo.', parrafos: [brazos] });
+
+  // 8. Dilemas
   const dil = DILEMAS.map(x => {
     const [t1, t2] = x.tipos;
     const mas = a.tot(t1) >= a.tot(t2) ? t1 : t2, menos = mas === t1 ? t2 : t1;
-    return '<strong>' + x.nombre + '</strong> (T' + t1 + ' vs T' + t2 + '): ' +
-      (a.tot(t1) === a.tot(t2) ? 'polos parejos (' + a.tot(t1) + ').' : 'polo más activado T' + mas + ' ' + nombreTipo(mas) + ' (' + a.tot(mas) + ', ' + estado(mas) + '); menos activado T' + menos + ' ' + nombreTipo(menos) + ' (' + a.tot(menos) + ', ' + estado(menos) + ').');
+    const propio = x.tipos.includes(d) ? ' <em>(incluye su energía más marcada)</em>' : '';
+    return '<strong>' + x.nombre + '</strong> (' + t1 + '–' + t2 + ')' + propio + ': ' +
+      (a.tot(t1) === a.tot(t2) ? 'polos parejos (' + a.tot(t1) + ', ' + estado(t1) + ').' : 'más activado el ' + mas + ' (' + a.tot(mas) + ', ' + estado(mas) + '), menos el ' + menos + ' (' + a.tot(menos) + ', ' + estado(menos) + ').') +
+      ' ' + DILEMA_TEXTO[t1 + '-' + t2];
   });
+  secciones.push({ titulo: 'Dilemas', intro: 'Los dilemas acompañan y son parte de nuestra realidad: tienen un polo en luz y uno en sombra. Ir hacia el extremo de la sombra afecta a uno mismo y al entorno.', items: dil });
+
+  // 9. Ejes de equilibrio
+  const ejesForm = [];
   const ejes = EJES.map(e => {
     const [t1, t2] = e.tipos, dd = Math.abs(a.tot(t1) - a.tot(t2));
-    return e.nombre + ' (T' + t1 + ' ' + a.tot(t1) + ' · T' + t2 + ' ' + a.tot(t2) + '): ' + (dd <= 2 ? '<strong>se forma</strong>' : 'no se forma') + ' (diferencia ' + dd + ')';
+    if (dd <= 2) ejesForm.push(e);
+    let txt = '<strong>' + e.nombre + '</strong> (' + t1 + ' ' + a.tot(t1) + ' · ' + t2 + ' ' + a.tot(t2) + '): ';
+    if (dd > 2) return txt + 'no se forma (diferencia ' + dd + ').';
+    const prom = (a.tot(t1) + a.tot(t2)) / 2;
+    return txt + '<strong>se forma</strong> (diferencia ' + dd + '), ' +
+      (prom < a.media ? 'por debajo de la media: es la llave para trabajar en este momento de su vida.' : prom > a.media ? 'por encima de la media: puede estar en luz o en sombra.' : 'en la media.');
   });
-  const ningunEje = EJES.every(e => Math.abs(a.tot(e.tipos[0]) - a.tot(e.tipos[1])) > 2);
-  secciones.push({ titulo: 'Dilemas y ejes de equilibrio', items: dil.concat(ejes), cierre: ningunEje ? ['Sin ningún eje formado: momento de gran transformación en la vida de la persona.'] : [] });
+  const ejesCierre = [];
+  if (!ejesForm.length) ejesCierre.push('Sin ningún eje formado: está atravesando una gran transformación, una metamorfosis; un gran cambio en muchos aspectos de su vida en este momento.');
+  else ejesCierre.push('Un eje formado indica que hay algo estático, quieto, en esa área.' + (ejesForm.length === 1 ? ' Si hay un solo eje y está en la media, se considera bajo.' : ''));
+  secciones.push({ titulo: 'Ejes de equilibrio', intro: 'Son los tensores del Eneagrama y aportan estabilidad: pares que suman 9. Se forma eje cuando las marcaciones son iguales o difieren hasta dos puntos.', items: ejes, cierre: ejesCierre });
 
-  // 7. Miedos circunstanciales (energías bajo la media, de la más baja a la más alta)
+  // 10. Miedos circunstanciales (de la más baja a la más alta bajo la media)
   const bajoMedia = a.debajo.slice().reverse();
   if (bajoMedia.length) {
     secciones.push({
       titulo: 'Miedos circunstanciales',
-      intro: 'Las tipologías menos marcadas hablan de lo que se teme en este momento de la vida. No son defectos: cambian cuando se pone conciencia en acciones, pensamientos y sentimientos.',
+      intro: 'Surgen de las respuestas: lo menos marcado hace referencia a lo que se teme en este momento de la vida. Estos valores cambian cuando se pone conciencia en acciones, pensamientos y sentimientos y se deja de actuar en automático.',
       items: bajoMedia.map(t => '<strong>' + tTipo(t) + ' (' + a.tot(t) + ')</strong> — ' + ENERGIAS[t].baja + ' <em>Sugerencia:</em> ' + ENERGIAS[t].sugerencia)
     });
   }
 
-  // 8. Práctica
+  // 11. Prácticas
   const foco = a.bajas[0];
   const prac = ['<strong>Desde la energía más marcada:</strong> ' + L.practica + ' <em>' + L.preguntaFinal + '</em>'];
   if (foco) prac.push('<strong>Para integrar la energía ' + delTipo(foco) + ':</strong> ' + mayus(ENERGIAS[foco].practica) + ' <em>' + ENERGIAS[foco].pregunta + '</em>');
+  prac.push('Y en cada situación: <strong>¿fluyo o empujo?</strong>');
   secciones.push({ titulo: 'Prácticas posibles', parrafos: prac });
 
   return { titulo: 'Ampliación para la lectura profunda', secciones: secciones };

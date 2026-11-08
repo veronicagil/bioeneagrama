@@ -1464,14 +1464,6 @@ textarea.campo:focus { border-color: var(--violet-l); }
   font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: clamp(1.9rem, 7vw, 2.5rem);
   line-height: 1.2; color: var(--violet); text-wrap: balance;
 }
-.fin-media { margin: 28px auto 0; padding-top: 22px; border-top: 1px solid var(--border); max-width: 380px; }
-.fin-media-etq { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; color: var(--fucsia); }
-.fin-media-num {
-  font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 4.2rem; line-height: 1;
-  background: linear-gradient(135deg, #B5004F, #4B0082); -webkit-background-clip: text; background-clip: text; color: transparent;
-  margin: 6px 0 10px;
-}
-.fin-media-txt { font-size: 0.92rem; line-height: 1.55; color: var(--sub); }
 .enea-oculto { position: absolute; left: -10000px; top: 0; width: 420px; }
 
 /* Lectura completa (panel de Vero) */

@@ -53,7 +53,7 @@ module.exports = async function (req, res) {
 
     // Email a Vero con datos de contacto completos del cliente
     const datosCliente =
-      '<div style="background:#f0e8f8;padding:16px 20px;border-radius:8px;margin-bottom:20px;font-family:sans-serif;font-size:13px;color:#3a3a5c">' +
+      '<div style="background:#F3EAFE;border-left:4px solid #472E56;padding:16px 20px;border-radius:8px;margin-bottom:20px;font-family:sans-serif;font-size:13px;color:#2A1A35">' +
       '<p style="margin:0 0 6px;font-weight:bold;font-size:14px">📋 Datos del cliente</p>' +
       '<p style="margin:2px 0">👤 ' + nombreCompleto + '</p>' +
       '<p style="margin:2px 0">📧 ' + toEmail + '</p>' +
@@ -114,10 +114,11 @@ module.exports = async function (req, res) {
 // Mails: la persona recibe la síntesis (js/devolucion.js → construirSintesis);
 // Vero recibe la lectura completa (construirLecturaCompleta). Estilos inline para Gmail.
 // ──────────────────────────────────────────────
-var FUCSIA = '#B5004F', VIOLETA = '#4B0082', TINTA = '#1F1230', TINTA2 = '#4A3A60', TINTA3 = '#75668A', FONDO = '#F4EDFA';
+var FUCSIA = '#B83E1A', NARANJA = '#FF6634', VIOLETA = '#472E56', CIRUELA = '#8B1D5A', LILA = '#E3CCFF', TINTA = '#2A1A35', TINTA2 = '#472E56', TINTA3 = '#6B5A78', FONDO = '#F6EDDE';
+var BOTON = 'background:#C4461F;background:linear-gradient(135deg,#E8552A,#8B1D5A);color:#fff';
 var P = 'margin:0 0 14px;font-size:15px;color:' + TINTA + ';line-height:1.7;font-family:Helvetica,Arial,sans-serif';
 var H1 = 'margin:0 0 14px;font-size:32px;line-height:1.1;font-weight:normal;color:' + TINTA + ';font-family:Georgia,serif';
-var H2 = 'margin:28px 0 10px;font-size:23px;line-height:1.2;font-weight:bold;color:' + VIOLETA + ';font-family:Georgia,serif';
+var H2 = 'margin:30px 0 12px;padding:0 0 6px;border-bottom:3px solid ' + NARANJA + ';display:inline-block;font-size:23px;line-height:1.2;font-weight:bold;color:' + VIOLETA + ';font-family:Georgia,serif';
 var ETQ = 'margin:0 0 6px;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:bold;color:' + FUCSIA + ';font-family:Helvetica,Arial,sans-serif';
 
 function estilizar(html) {
@@ -143,10 +144,10 @@ function mapaBarras(scoresData, ref) {
     return '<tr><td colspan="3" style="padding:12px 0 4px;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:bold;color:' + TINTA3 + ';font-family:Helvetica,Arial,sans-serif">' + txt + '</td></tr>';
   };
   var fila = function (f) {
-    var ancho = Math.max(2, Math.round(f.v / 20 * 100)), color = f.v >= ref ? '#C2185B' : '#8E5CC9';
+    var ancho = Math.max(2, Math.round(f.v / 20 * 100)), color = f.v >= ref ? NARANJA : VIOLETA;
     return '<tr>' +
       '<td style="padding:3px 10px 3px 0;font-size:13px;color:' + TINTA + ';font-family:Helvetica,Arial,sans-serif;white-space:nowrap">' + NOMBRES[f.t] + ' <span style="color:' + TINTA3 + '">T' + f.t + '</span></td>' +
-      '<td style="padding:3px 0;width:100%"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#E6DDF0;border-radius:0 4px 4px 0"><tr>' +
+      '<td style="padding:3px 0;width:100%"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#EEE0F8;border-radius:0 4px 4px 0"><tr>' +
       '<td width="' + ancho + '%" style="height:10px;background:' + color + ';border-radius:0 4px 4px 0;font-size:0;line-height:0">&nbsp;</td>' +
       '<td style="font-size:0;line-height:0">&nbsp;</td></tr></table></td>' +
       '<td style="padding:3px 0 3px 10px;font-size:13px;font-weight:bold;color:' + TINTA + ';text-align:right;font-family:Helvetica,Arial,sans-serif">' + f.v + '</td>' +
@@ -170,14 +171,14 @@ function simbolo(conSimbolo) {
 
 function envolver(contenido) {
   return '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>' +
-    '<body style="margin:0;padding:20px 10px;background:#F4EDFA">' +
+    '<body style="margin:0;padding:20px 10px;background:#472E56">' +
     '<div style="max-width:600px;margin:0 auto;background:#fff;border-radius:6px;overflow:hidden">' +
     contenido +
-    '<div style="padding:18px 30px 26px;text-align:center"><p style="margin:0;font-size:11px;color:#9a8fb0;font-family:Helvetica,Arial,sans-serif">Bio Eneagrama · VG · Vero Gil · bioeneagrama.vercel.app</p></div>' +
+    '<div style="padding:18px 30px 26px;text-align:center"><p style="margin:0;font-size:11px;color:#6B5A78;font-family:Helvetica,Arial,sans-serif">Bio Eneagrama · VG · Vero Gil · bioeneagrama.vercel.app</p></div>' +
     '</div></body></html>';
 }
 
-var CABECERA = '<div style="background:linear-gradient(135deg,#B5004F,#4B0082);background-color:#7A0F6A;padding:24px 30px">' +
+var CABECERA = '<div style="background-color:#8B1D5A;background:linear-gradient(135deg,#E8552A 0%,#8B1D5A 50%,#472E56 100%);padding:30px 30px">' +
   '<p style="margin:0;color:#fff;font-size:12px;letter-spacing:3px;text-transform:uppercase;font-family:Helvetica,Arial,sans-serif;font-weight:bold">Bio Eneagrama · Vero Gil</p></div>';
 
 // ── Síntesis: lo que recibe la persona (y Vero, igual, al principio de su mail) ──
@@ -201,7 +202,7 @@ function cuerpoSintesis(sint, scoresData, conSimbolo) {
     '<h2 style="' + H2 + '">La MEDIA, tu valor de referencia</h2>' +
     parrafos([m.texto]) +
     // Resultado de la media destacado (sin competir con la energía más marcada)
-    (m.calc ? '<p style="margin:4px 0 16px;text-align:center"><span style="display:inline-block;padding:10px 22px;border:2px solid ' + FUCSIA + ';border-radius:999px;font-family:Helvetica,Arial,sans-serif;font-size:15px;color:' + TINTA2 + '">Tu MEDIA: ' + m.calc + '<strong style="font-size:24px;color:' + FUCSIA + ';font-family:Georgia,serif;vertical-align:-2px">' + fmt(ref) + '</strong></span></p>' : '') +
+    (m.calc ? '<p style="margin:4px 0 16px;text-align:center"><span style="display:inline-block;padding:10px 22px;border:2px solid ' + NARANJA + ';border-radius:999px;font-family:Helvetica,Arial,sans-serif;font-size:15px;color:' + TINTA2 + '">Tu MEDIA: ' + m.calc + '<strong style="font-size:24px;color:' + FUCSIA + ';font-family:Georgia,serif;vertical-align:-2px">' + fmt(ref) + '</strong></span></p>' : '') +
     parrafos([m.uso]) +
     '<div style="margin:6px 0 6px;background:' + FONDO + ';border-radius:6px;padding:8px 20px 16px">' +
     mapaBarras(scoresData, ref) +
@@ -212,7 +213,7 @@ function cuerpoSintesis(sint, scoresData, conSimbolo) {
         parrafos([sint.bajas.intro]) +
         '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 10px">' +
         sint.bajas.items.map(function (i) {
-          return '<tr><td style="padding:4px 10px 4px 0;color:#8E5CC9;font-size:12px;vertical-align:top">◆</td><td style="padding:4px 0;font-size:15px;line-height:1.6;color:' + TINTA + ';font-family:Helvetica,Arial,sans-serif">' + estilizar(i) + '</td></tr>';
+          return '<tr><td style="padding:4px 10px 4px 0;color:' + NARANJA + ';font-size:12px;vertical-align:top">◆</td><td style="padding:4px 0;font-size:15px;line-height:1.6;color:' + TINTA + ';font-family:Helvetica,Arial,sans-serif">' + estilizar(i) + '</td></tr>';
         }).join('') + '</table>'
       : '') +
 
@@ -220,18 +221,18 @@ function cuerpoSintesis(sint, scoresData, conSimbolo) {
     parrafos([sint.autoobservacion]) +
 
     // Una sola práctica, destacada
-    '<div style="margin:22px 0 8px;border-top:3px solid ' + FUCSIA + ';background:' + FONDO + ';border-radius:0 0 6px 6px;padding:20px 22px">' +
-    '<p style="' + ETQ + '">Para poner en práctica</p>' +
-    '<p style="margin:0 0 10px;font-size:18px;line-height:1.5;color:' + TINTA + ';font-family:Georgia,serif">' + (sint.practica || '') + '</p>' +
-    (sint.preguntaPractica ? '<p style="margin:0;font-size:17px;line-height:1.45;font-style:italic;color:' + VIOLETA + ';font-family:Georgia,serif">' + sint.preguntaPractica + '</p>' : '') +
+    '<div style="margin:24px 0 8px;border-top:5px solid ' + NARANJA + ';background:' + VIOLETA + ';border-radius:0 0 8px 8px;padding:22px 24px">' +
+    '<p style="' + ETQ + ';color:#FFB59A">Para poner en práctica</p>' +
+    '<p style="margin:0 0 10px;font-size:18px;line-height:1.5;color:#fff;font-family:Georgia,serif">' + (sint.practica || '') + '</p>' +
+    (sint.preguntaPractica ? '<p style="margin:0;font-size:17px;line-height:1.45;font-style:italic;color:' + LILA + ';font-family:Georgia,serif">' + sint.preguntaPractica + '</p>' : '') +
     '</div>' +
 
     // Invitación breve
     '<div style="text-align:center;padding:18px 0 4px">' +
     '<h2 style="' + H2 + ';margin-top:10px">¿Querés profundizar tu lectura?</h2>' +
     '<p style="' + P + '">Esta es una síntesis de tu momento actual. En una consulta individual vemos tu mapa completo, con tu historia y tu momento de vida.</p>' +
-    '<a href="https://bioeneagrama.vercel.app/cuestionario.html" style="display:block;padding:14px 18px;background:' + FUCSIA + ';color:#fff;text-decoration:none;border-radius:999px;font-weight:bold;font-size:15px;font-family:Helvetica,Arial,sans-serif">Profundizar mi lectura en consulta individual</a>' +
-    '<a href="' + waProceso + '" style="display:block;margin-top:10px;padding:12px 18px;border:1.5px solid ' + VIOLETA + ';color:' + VIOLETA + ';text-decoration:none;border-radius:999px;font-weight:bold;font-size:14px;font-family:Helvetica,Arial,sans-serif">Quiero hacer un proceso a partir del Eneagrama</a>' +
+    '<a href="https://bioeneagrama.vercel.app/cuestionario.html" style="display:block;padding:14px 18px;' + BOTON + ';text-decoration:none;border-radius:999px;font-weight:bold;font-size:15px;font-family:Helvetica,Arial,sans-serif">Profundizar mi lectura en consulta individual</a>' +
+    '<a href="' + waProceso + '" style="display:block;margin-top:10px;padding:12px 18px;border:2px solid ' + VIOLETA + ';color:' + VIOLETA + ';text-decoration:none;border-radius:999px;font-weight:bold;font-size:14px;font-family:Helvetica,Arial,sans-serif">Quiero hacer un proceso a partir del Eneagrama</a>' +
     '<p style="margin:14px 0 0;font-size:12px;line-height:1.5;color:' + TINTA3 + ';font-family:Helvetica,Arial,sans-serif">Al solicitar tu consulta vas a completar un cuestionario personal; tus respuestas me llegan a mverogil@gmail.com. La consulta es arancelada y se reserva con el 50% de seña.</p>' +
     '</div>' +
 
@@ -258,7 +259,7 @@ function buildVeroEmail(datosCliente, nombre, sint, lectura, scoresData, conSimb
       (sec.facetas ? '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 12px">' + sec.facetas.map(function (f) {
         return '<tr><td style="padding:4px 12px 4px 0;vertical-align:top;white-space:nowrap"><p style="' + ETQ + ';margin:2px 0 0">' + f[0] + '</p></td><td style="padding:4px 0"><p style="' + P + ';margin:0">' + estilizar(f[1]) + '</p></td></tr>';
       }).join('') + '</table>' : '') +
-      (sec.pregunta ? '<p style="margin:14px 0;padding-left:14px;border-left:2px solid ' + FUCSIA + ';font-size:19px;font-style:italic;color:' + VIOLETA + ';font-family:Georgia,serif">' + sec.pregunta + '</p>' : '') +
+      (sec.pregunta ? '<p style="margin:14px 0;padding-left:14px;border-left:3px solid ' + NARANJA + ';font-size:19px;font-style:italic;color:' + VIOLETA + ';font-family:Georgia,serif">' + sec.pregunta + '</p>' : '') +
       (sec.cita ? '<p style="margin:18px 0 6px;text-align:center;font-size:20px;color:' + TINTA + ';font-family:Georgia,serif">' + sec.cita + '</p><p style="' + P + ';text-align:center">' + estilizar(sec.citaTexto) + '</p>' : '') +
       (sec.items ? '<ul style="margin:0 0 12px;padding-left:18px">' + sec.items.map(function (i) { return '<li style="' + P + ';margin-bottom:6px">' + estilizar(i) + '</li>'; }).join('') + '</ul>' : '') +
       parrafos(sec.cierre);

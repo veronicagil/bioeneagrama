@@ -50,7 +50,7 @@ function renderEnea(containerId, scores, media, showLabels) {
 
     if (t === maxT)      { color = '#FF6634'; size = 5; }
     else if (t === minT) { color = '#472E56'; size = 3; }
-    else if (totals[t] >= media) { color = '#8B1D5A'; size = 3.5; }
+    else if (totals[t] >= media) { color = '#E8552A'; size = 3.5; }
     else                 { color = '#C9B3E6'; size = 2.2; }
 
     points += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${size}" fill="${color}"/>`;
@@ -94,7 +94,7 @@ function buildEneaResultados(containerId, scores, media) {
   for (const [a, b] of [...TRIANGLE, ...HEXAD]) {
     const [x1, y1] = typeXY(a, CX, CY, RC);
     const [x2, y2] = typeXY(b, CX, CY, RC);
-    lines += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#C8B8E8" stroke-width="1"/>`;
+    lines += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#CBB4E3" stroke-width="1"/>`;
   }
 
   let points = '';
@@ -104,13 +104,13 @@ function buildEneaResultados(containerId, scores, media) {
     const [x, y] = typeXY(t, CX, CY, RC);
     const esMax = totals[t] === maxVal; // la (o las) más marcadas llevan un halo: tendencia hacia la esencia
     let color;
-    if (esMax)                    color = '#B5004F';
-    else if (t === minT)          color = '#4B0082';
-    else if (totals[t] >= media)  color = '#E91E8C';
-    else                          color = '#7B2FBE';
+    if (esMax)                    color = '#E8552A';
+    else if (t === minT)          color = '#472E56';
+    else if (totals[t] >= media)  color = '#E8552A';
+    else                          color = '#7A5A92';
     const r = esMax ? 13 : 10;
 
-    if (esMax) points += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="19" fill="#B5004F" fill-opacity="0.12" stroke="#B5004F" stroke-width="1.6"/>`;
+    if (esMax) points += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="19" fill="#FF6634" fill-opacity="0.16" stroke="#FF6634" stroke-width="2"/>`;
     points += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${color}" stroke="#fff" stroke-width="1.5"/>` +
       `<text x="${x.toFixed(1)}" y="${(y + 3.8).toFixed(1)}" text-anchor="middle" font-family="${FONT}" font-size="${esMax ? 12 : 10}" font-weight="700" fill="#fff">${totals[t]}</text>`;
 
@@ -123,22 +123,22 @@ function buildEneaResultados(containerId, scores, media) {
     const dy = sin > 0.3 ? 8 : sin < -0.3 ? -2 : 3;
     const nombre = (typeof TIPOS !== 'undefined' && TIPOS[t]) ? TIPOS[t].nombre.replace(/^El /, '') : '';
 
-    labels += `<text x="${lx.toFixed(1)}" y="${(ly + dy).toFixed(1)}" text-anchor="${anchor}" font-family="${FONT}" font-size="8.5" font-weight="${esMax ? 700 : 600}" fill="${esMax ? '#B5004F' : '#3D2060'}">${t} · ${nombre}</text>`;
+    labels += `<text x="${lx.toFixed(1)}" y="${(ly + dy).toFixed(1)}" text-anchor="${anchor}" font-family="${FONT}" font-size="8.5" font-weight="${esMax ? 700 : 600}" fill="${esMax ? '#B83E1A' : '#472E56'}">${t} · ${nombre}</text>`;
   }
 
   const mediaText = media > 0
-    ? `<text x="${CX}" y="${CY - 4}" text-anchor="middle" font-family="${FONT}" font-size="7.5" font-weight="700" fill="#5E4A7A" letter-spacing="1.2">MEDIA</text>` +
+    ? `<text x="${CX}" y="${CY - 4}" text-anchor="middle" font-family="${FONT}" font-size="7.5" font-weight="700" fill="#6B5A78" letter-spacing="1.2">MEDIA</text>` +
       `<text x="${CX}" y="${CY + 13}" text-anchor="middle" font-family="${FONT}" font-size="17" font-weight="700" fill="url(#mg${containerId})">${fmtMedia(media)}</text>`
     : '';
 
   return `<svg viewBox="-55 -12 310 226" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
   <defs>
     <linearGradient id="mg${containerId}" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#B5004F"/>
-      <stop offset="100%" stop-color="#4B0082"/>
+      <stop offset="0%" stop-color="#E8552A"/>
+      <stop offset="100%" stop-color="#472E56"/>
     </linearGradient>
   </defs>
-  <circle cx="${CX}" cy="${CY}" r="${RC}" fill="none" stroke="#C8B8E8" stroke-width="1.5"/>
+  <circle cx="${CX}" cy="${CY}" r="${RC}" fill="none" stroke="#CBB4E3" stroke-width="1.5"/>
   ${lines}
   ${points}
   ${labels}

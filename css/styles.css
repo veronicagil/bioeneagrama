@@ -1485,3 +1485,19 @@ textarea.campo:focus { border-color: var(--violet-l); }
 .lc-pregunta { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.3rem; color: var(--violet); border-left: 2px solid var(--fucsia); padding-left: 14px; }
 .lc-cita { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; text-align: center; margin-top: 16px; }
 @media (max-width: 480px) { .lc-facetas { grid-template-columns: 1fr; } }
+
+/* ══════════════════════════════════════════════
+   IMPRONTA: violeta y naranja como colores fuerza (misma línea que el mail)
+   ══════════════════════════════════════════════ */
+#question-card, .email-card, .fin { border-top: 5px solid var(--fucsia-l); }
+.email-titulo, .question-text, .fin-texto, .loading-logro { color: var(--violet); }
+.btn-si { background: #fff; border-color: var(--fucsia-l); color: var(--fucsia); }
+.btn-si.selected { background: linear-gradient(135deg, #E8552A, #B83E1A); border-color: #B83E1A; color: #fff; }
+.btn-no { background: #fff; border-color: var(--violet); }
+.btn-no.selected { background: var(--grad-profundo); }
+.progress-bar-track { background: var(--violet-bg); }
+.progress-label { color: var(--violet); }
+.campo-input:focus { border-color: var(--fucsia-l); box-shadow: 0 0 0 3px rgba(255,102,52,0.15); }
+.loading-dots span { background: var(--fucsia-l); }
+.loading-dots span:nth-child(2) { background: var(--ciruela); }
+.loading-dots span:nth-child(3) { background: var(--violet); }

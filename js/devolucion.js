@@ -290,7 +290,7 @@ function construirSintesis(scores) {
       calc: '(' + a.max + ' + ' + a.min + ') ÷ 2 = ',
       uso: 'No indica cuánto vale una energía: sirve para ubicarlas. Las que quedan <strong>por encima</strong> de tu media son las más activas hoy; las que quedan <strong>por debajo</strong> son las que hoy están más en pausa.'
     },
-    leyendaSimbolo: 'El punto con el halo es tu energía más marcada; en el centro está tu media. En fucsia, las energías por encima de tu media; en violeta, las que están por debajo. Las líneas interiores unen las energías que se influyen entre sí.',
+    leyendaSimbolo: 'El punto con el halo es tu energía más marcada; en el centro está tu media. En naranja, las energías por encima de tu media; en violeta, las que están por debajo. Las líneas interiores unen las energías que se influyen entre sí.',
     grupos: { encima: a.encima, enRef: a.enRef, debajo: a.debajo },
     marcada: [
       marcada,

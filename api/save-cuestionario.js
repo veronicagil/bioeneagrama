@@ -30,16 +30,16 @@ async function enviarPorMail(data) {
   const respuestas = Array.isArray(data.respuestas) ? data.respuestas : [];
   const filas = respuestas.map(function (r, i) {
     return '<div style="margin:0 0 16px">' +
-      '<p style="margin:0 0 4px;font-weight:bold;color:#4B0082;font-family:sans-serif;font-size:14px">' + (i + 1) + '. ' + esc(preguntas[i] || 'Pregunta ' + (i + 1)) + '</p>' +
-      '<p style="margin:0;color:#1A0A2E;font-family:sans-serif;font-size:14px;line-height:1.6">' + (String(r || '').trim() ? esc(r.trim()) : '<em style="color:#888">(sin respuesta)</em>') + '</p>' +
+      '<p style="margin:0 0 4px;font-weight:bold;color:#472E56;font-family:sans-serif;font-size:14px">' + (i + 1) + '. ' + esc(preguntas[i] || 'Pregunta ' + (i + 1)) + '</p>' +
+      '<p style="margin:0;color:#2A1A35;font-family:sans-serif;font-size:14px;line-height:1.6">' + (String(r || '').trim() ? esc(r.trim()) : '<em style="color:#6B5A78">(sin respuesta)</em>') + '</p>' +
       '</div>';
   }).join('');
 
-  const html = '<div style="max-width:620px;margin:0 auto;background:#fff;border:1px solid #ede8f5;border-radius:12px;overflow:hidden">' +
-    '<div style="padding:20px 26px;background:linear-gradient(135deg,#B5004F,#4B0082);color:#fff;font-family:Georgia,serif">' +
+  const html = '<div style="max-width:620px;margin:0 auto;background:#fff;border:1px solid #DCC8EE;border-top:5px solid #FF6634;border-radius:12px;overflow:hidden">' +
+    '<div style="padding:20px 26px;background-color:#8B1D5A;background:linear-gradient(135deg,#E8552A 0%,#8B1D5A 50%,#472E56 100%);color:#fff;font-family:Georgia,serif">' +
     '<p style="margin:0;font-size:22px;font-weight:bold">Cuestionario + solicitud de consulta</p>' +
     '<p style="margin:6px 0 0;font-size:13px;font-family:sans-serif;opacity:0.9">Bio Eneagrama · Vero Gil</p></div>' +
-    '<div style="padding:20px 26px;background:#f5f0ff;font-family:sans-serif;font-size:14px;color:#1A0A2E;line-height:1.7">' +
+    '<div style="padding:20px 26px;background:#F6EDDE;font-family:sans-serif;font-size:14px;color:#2A1A35;line-height:1.7">' +
     '<strong>Nombre:</strong> ' + esc(data.nombre) + '<br>' +
     '<strong>Mail:</strong> ' + esc(data.email) + '<br>' +
     '<strong>Teléfono:</strong> ' + esc(data.telefono || '—') + '</div>' +

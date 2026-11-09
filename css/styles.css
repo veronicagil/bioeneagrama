@@ -1501,3 +1501,13 @@ textarea.campo:focus { border-color: var(--violet-l); }
 .loading-dots span { background: var(--fucsia-l); }
 .loading-dots span:nth-child(2) { background: var(--ciruela); }
 .loading-dots span:nth-child(3) { background: var(--violet); }
+
+/* Cuestionario para la consulta individual: misma impronta violeta + naranja */
+.cues-card { border-top: 5px solid var(--fucsia-l); }
+.cues-card .cuestionario-aviso { background: var(--violet); border: none; color: #fff; font-size: 0.95rem; }
+.cues-contacto { background: var(--bg); border-left: 4px solid var(--fucsia-l); border-radius: 12px; padding: 16px 18px; margin-bottom: 24px; }
+.cues-card .pregunta-label { color: var(--violet); }
+.cues-card .pregunta-num { background: var(--grad-calido); }
+.cues-card textarea.campo:focus { border-color: var(--fucsia-l); box-shadow: 0 0 0 3px rgba(255,102,52,0.15); }
+.cues-card .cuestionario-final { color: var(--violet); }
+.cues-card .cuestionario-final strong { color: var(--fucsia); }

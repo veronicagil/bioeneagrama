@@ -37,10 +37,10 @@ function renderEnea(containerId, scores, media, showLabels) {
   for (const [a, b] of [...TRIANGLE, ...HEXAD]) {
     const [x1, y1] = typeXY(a, CX, CY, RC);
     const [x2, y2] = typeXY(b, CX, CY, RC);
-    lines += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#C8B8E8" stroke-width="1" opacity="0.7"/>`;
+    lines += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#CBB4E3" stroke-width="1" opacity="0.7"/>`;
   }
 
-  const circle = `<circle cx="${CX}" cy="${CY}" r="${RC}" fill="none" stroke="#C8B8E8" stroke-width="1.5"/>`;
+  const circle = `<circle cx="${CX}" cy="${CY}" r="${RC}" fill="none" stroke="#CBB4E3" stroke-width="1.5"/>`;
 
   let points = '';
 
@@ -48,10 +48,10 @@ function renderEnea(containerId, scores, media, showLabels) {
     const [x, y] = typeXY(t, CX, CY, RC);
     let color, size;
 
-    if (t === maxT)      { color = '#B5004F'; size = 5; }
-    else if (t === minT) { color = '#4B0082'; size = 3; }
-    else if (totals[t] >= media) { color = '#E91E8C'; size = 3.5; }
-    else                 { color = '#B0A0CC'; size = 2.2; }
+    if (t === maxT)      { color = '#FF6634'; size = 5; }
+    else if (t === minT) { color = '#472E56'; size = 3; }
+    else if (totals[t] >= media) { color = '#8B1D5A'; size = 3.5; }
+    else                 { color = '#C9B3E6'; size = 2.2; }
 
     points += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${size}" fill="${color}"/>`;
   }
@@ -63,8 +63,8 @@ function renderEnea(containerId, scores, media, showLabels) {
   el.innerHTML = `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
   <defs>
     <linearGradient id="mg${containerId}" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#B5004F"/>
-      <stop offset="100%" stop-color="#4B0082"/>
+      <stop offset="0%" stop-color="#E8552A"/>
+      <stop offset="100%" stop-color="#472E56"/>
     </linearGradient>
   </defs>
   ${circle}

@@ -194,6 +194,8 @@ function cuerpoSintesis(sint, scoresData, conSimbolo) {
 
     // 1º la energía más marcada, con el símbolo (la más marcada lleva un halo)
     '<h2 style="' + H2 + '">Tu energía más marcada</h2>' +
+    // Dato explícito, con el mismo formato que el valor de la MEDIA
+    (sint.energiaMarcada ? '<p style="margin:4px 0 6px;text-align:center"><span style="display:inline-block;padding:10px 22px;border:2px solid ' + NARANJA + ';border-radius:999px;font-family:Helvetica,Arial,sans-serif;font-size:15px;color:' + TINTA2 + '">' + sint.energiaMarcada.etiqueta + ': <strong style="font-size:22px;color:' + FUCSIA + ';font-family:Georgia,serif;vertical-align:-2px">' + sint.energiaMarcada.nombre + '</strong> · ' + sint.energiaMarcada.puntos + ' puntos</span></p>' : '') +
     simbolo(conSimbolo) +
     (conSimbolo && sint.leyendaSimbolo ? '<p style="margin:0 0 16px;font-size:12px;line-height:1.5;color:' + TINTA3 + ';text-align:center;font-family:Helvetica,Arial,sans-serif">' + sint.leyendaSimbolo + '</p>' : '') +
     parrafos(sint.marcada) +

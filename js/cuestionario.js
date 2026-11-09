@@ -56,23 +56,35 @@
       }
       const nombre = respuestas[0] || ''; // La primera pregunta es el nombre completo
 
+      const btn = document.getElementById('btn-enviar');
+      btn.textContent = 'Enviando…';
+      btn.disabled = true;
+
       // Enviar las respuestas al mail de Vero y guardarlas en Google Sheets
       fetch('/api/save-cuestionario', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ nombre, email, telefono, respuestas, preguntas: PREGUNTAS })
-      }).catch(function () {});
+      }).then(function (r) {
+        if (!r.ok) throw new Error('envio');
+        mostrarTurno(nombre, email);
+      }).catch(function () {
+        btn.textContent = '📩 Enviar cuestionario y solicitar consulta';
+        btn.disabled = false;
+        alert('No pudimos enviar el cuestionario. Revisá tu conexión y probá de nuevo.');
+      });
+    });
 
-      // Aviso por WhatsApp: cuestionario enviado + solicitud de consulta
-      let msg = '🌀 *Bio Eneagrama — Solicitud de consulta*\n\n';
-      msg += 'Hola Vero, te envié el cuestionario por mail y quiero solicitar una consulta personalizada.\n\n';
+    // Cierre: cuestionario recibido → tecla para coordinar el turno por WhatsApp
+    function mostrarTurno(nombre, email) {
+      let msg = '🌀 *Bio Eneagrama — Turno de consulta*\n\n';
+      msg += 'Hola Vero, ya te envié el cuestionario. Quiero coordinar un turno para mi devolución personalizada.\n\n';
       if (nombre.trim()) msg += '👤 ' + nombre.trim().split('\n')[0] + '\n';
       if (email.trim())  msg += '📧 ' + email.trim() + '\n';
-      window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
-
-      const btn = document.getElementById('btn-enviar');
-      btn.textContent = '✓ Cuestionario enviado';
-      btn.disabled = true;
-    });
+      document.getElementById('btn-turno').href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
+      document.getElementById('cues-form').classList.add('hidden');
+      document.getElementById('cues-turno').classList.remove('hidden');
+      window.scrollTo(0, 0);
+    }
   });
 })();

@@ -279,6 +279,12 @@ function construirSintesis(scores) {
 
   return {
     nombreTipo: nombreTipo(d),
+    // Destacado explícito, con el mismo peso visual que el valor de la MEDIA
+    energiaMarcada: {
+      etiqueta: a.principales.length > 1 ? 'Tus energías más marcadas' : 'Tu energía más marcada',
+      nombre: enLista(a.principales.map(t => 'El ' + nombreTipo(t) + ' (tipo ' + t + ')')),
+      puntos: a.max
+    },
     intro: [
       'El Eneagrama es un mapa de autoconocimiento. <strong>No te encasilla</strong>: te muestra desde qué energías estás actuando hoy, en este momento de tu vida.',
       'Todos tenemos las nueve energías, y todas tienen <strong>luces y sombras</strong>. El Eneagrama busca la <strong>armonía y el equilibrio</strong> entre ellas.'

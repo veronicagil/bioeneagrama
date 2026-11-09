@@ -16,7 +16,7 @@
 
 <div class="container">
 
-  <div class="card cues-card">
+  <div class="card cues-card" id="cues-form">
     <div class="cuestionario-aviso">
       📝 Respondé cada pregunta de manera sintética y honesta. Este cuestionario me ayuda a hacer una lectura más profunda y personalizada de tu mapa del Eneagrama.
     </div>
@@ -37,7 +37,7 @@
     <div id="preguntas-container"></div>
 
     <div class="cuestionario-final">
-      Al enviar, tus respuestas me llegan por mail y se abre WhatsApp para avisarme que solicitás una consulta.<br>
+      Al enviar, tus respuestas me llegan por mail y vas a poder coordinar tu turno por WhatsApp.<br>
       ¡Muchas gracias! — <strong>Vero Gil</strong>
     </div>
 
@@ -48,6 +48,15 @@
     <div style="margin-top:12px; text-align:center">
       <a href="index.html" style="color:var(--muted); font-size:0.85rem; text-decoration:none">← Volver al inicio</a>
     </div>
+  </div>
+
+  <!-- Al enviar: cuestionario recibido + tecla para coordinar el turno -->
+  <div class="card cues-card cues-turno hidden" id="cues-turno">
+    <p class="fin-firma">Bio Eneagrama · Vero Gil</p>
+    <h2 class="cues-turno-titulo">¡Recibí tu cuestionario!</h2>
+    <p class="cues-turno-texto">Escribime por WhatsApp y coordinamos el día y horario de tu consulta para la devolución personalizada.</p>
+    <a class="btn btn-primary" id="btn-turno" href="#" target="_blank" rel="noopener">Coordinar mi turno por WhatsApp</a>
+    <p class="cues-turno-nota">La consulta se reserva con el 50% de seña.</p>
   </div>
 
   <div class="footer">

@@ -1511,3 +1511,7 @@ textarea.campo:focus { border-color: var(--violet-l); }
 .cues-card textarea.campo:focus { border-color: var(--fucsia-l); box-shadow: 0 0 0 3px rgba(255,102,52,0.15); }
 .cues-card .cuestionario-final { color: var(--violet); }
 .cues-card .cuestionario-final strong { color: var(--fucsia); }
+.cues-turno { text-align: center; padding: 36px 24px; }
+.cues-turno-titulo { font-size: 2rem; font-weight: 600; color: var(--violet); margin-bottom: 12px; line-height: 1.2; }
+.cues-turno-texto { font-size: 1rem; line-height: 1.7; color: var(--text); margin-bottom: 22px; }
+.cues-turno-nota { font-size: 0.82rem; color: var(--muted); margin-top: 12px; }
